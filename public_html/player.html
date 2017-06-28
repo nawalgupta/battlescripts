@@ -35,21 +35,6 @@
         $scope.autoplay = true;
         $scope.user = null;
 
-        // Editor config
-        $scope.conf = {
-          mode: "javascript",
-          theme: "mdn-like",
-          indentUnit: 2,
-          smartIndent: true,
-          tabSize: 2,
-          indentWithTabs: false,
-          electricChars: true,
-          lineWrapping: false,
-          lineNumbers: true,
-          undoDepth: 10,
-          historyEventDelay: 200
-        };
-
         // Initial Load
         // ------------
 
@@ -63,7 +48,6 @@
         if (!!id) {
           $battlescripts.login().then((user)=>$battlescripts.get_player(id))
             .then( player => {
-console.log(player);
               $scope.player=player;
               $scope.$apply();
             } )
@@ -79,14 +63,19 @@ console.log(player);
           $scope.player.published=$scope.player.source;
           $scope.save();
         };
+        $scope.unpublish = function() {
+          $scope.player.published=null;
+          $scope.save();
+        };
         $scope.save = function() {
           $battlescripts.login()
             .then( user => $battlescripts.save_player($scope.player) )
             .then( updated_player => $scope.player=updated_player )
             .then( () => $scope.console.log("<span>[Save]</span> Successful","success") )
-            .then( () => { if($scope.autoplay) { $scope.test(); } })
+            .then( () => { if($scope.autoplay && $scope.opponent) { $scope.test(); } })
             .catch( (err) => $scope.console.log("<span>[Save]</span> Error with Save: "+err.toString(),"error") )
         };
+        // ctrl+s to save
         $(document).bind('keydown', function(e) {
           if(e.ctrlKey && (e.which == 83)) {
             e.preventDefault();
@@ -297,12 +286,14 @@ console.log(player);
 </head>
 
 <body ng-app="battlescripts" ng-controller="ScreenController">
-<div ng-show="!game || !id || !player.$id" style="height:100%;">Loading...</div>
+<div ng-show="!game || (id && !player.$id)" style="height:100%;">Loading...</div>
 <div ng-show="game && (!id || player.$id)" class="vbox" style="height:100%;">
     <div class="header">
-        <div style="float:right;height:30px;min-width:100px;border:2px solid black;border-radius:10px;padding:0 10px;line-height:28px;font-size:14px;">
-            <img src="{{user.photoURL}}" style="max-height:24px;"> {{user.displayName}}
-        </div>
+        <a href="dashboard.html">
+            <div style="float:right;height:30px;min-width:100px;border:2px solid black;border-radius:10px;padding:0 10px;line-height:28px;font-size:14px;">
+                <img src="{{user.photoURL}}" style="max-height:24px;"> {{user.displayName}}
+            </div>
+        </a>
         <div class="title"><a href="/">BattleScripts</a> / <a href="game.html?game_id={{game.$id}}">{{game.name}}</a> / Player Editor</div>
     </div>
     <div class="main hbox space-between">
@@ -321,7 +312,8 @@ console.log(player);
 
         <div>
             <div><button ng-click="save()">Save</button></div>
-            <div><button ng-click="publish()">Publish</button></div>
+            <div ng-if="!player.published"><button ng-click="publish()">Publish</button></div>
+            <div ng-if="player.published"><button ng-click="unpublish()">Unpublish</button></div>
             <div><button ng-click="delete_player()">Delete</button></div>
         </div>
 

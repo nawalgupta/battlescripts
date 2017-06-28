@@ -20,6 +20,7 @@
     $scope.game_id = $queryparam.get('game_id');
     $scope.players = [];
     $scope.player_list = [];
+    $scope.my_player_list = [];
     $scope.game = null;
     $scope.results = null;
     $scope.options = {
@@ -41,6 +42,10 @@
         // Retrieve a list of available players for this game
         $battlescripts.search_players({"game_id":$scope.game.$id}).then(
           players=>$scope.player_list=players
+        );
+        // Retrieve a list of my players for this game
+        $battlescripts.get_my_players($scope.game.$id).then(
+          myplayers=>$scope.my_player_list=myplayers
         )
       }
     });
@@ -91,8 +96,8 @@
 
     </div>
     <div>
-        <div>Edit Players:</div>
-        <div ng-repeat="p in player_list">
+        <div>My Players:</div>
+        <div ng-repeat="p in my_player_list">
             <a href="player.html?game_id={{game.$id}}&id={{p.$id}}">{{p.name}}</a>
         </div>
     </div>

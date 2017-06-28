@@ -78,7 +78,19 @@ bsapp.directive("codemirror", function($timeout) {
 
       var editor = CodeMirror.fromTextArea(elem);
 
-      var config = scope.$eval(attrs.codemirror) || {lineNumbers: true};
+      var config = {
+          mode: "javascript",
+          theme: "mdn-like",
+          indentUnit: 2,
+          smartIndent: true,
+          tabSize: 2,
+          indentWithTabs: false,
+          electricChars: true,
+          lineWrapping: false,
+          lineNumbers: true,
+          undoDepth: 10,
+          historyEventDelay: 200
+        };
       for( var option in config )
         editor.setOption(option, config[option]);
 
@@ -126,6 +138,21 @@ bsapp.directive("codemirror", function($timeout) {
     }
   };
 });
+
+// File upload directive
+// https://stackoverflow.com/questions/42238362/how-to-upload-files-with-angularfire-to-firebase-storage
+bsapp.directive('fileModel',['$parse', function ($parse){
+  return {
+    restrict: 'A',
+    link: function (scope, element, attrs) {
+      element.bind('change', function () {
+        $parse(attrs.fileModel)
+          .assign(scope, element[0].files[0])
+        scope.$apply();
+      })
+    }
+  }
+}]);
 
 bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseAuth","$rootScope", function($firebaseArray,$firebaseObject,$firebaseAuth,$rootScope) {
 	var api = {};
@@ -176,22 +203,18 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
   api.login = function() {
     return new Promise((resolve,reject)=>{
       if (api.user) {
-console.log(1);
         return resolve(api.user);
       }
       $firebaseAuth().$waitForSignIn().then((user)=>{
         if (user) {
           api.user=user;
-console.log(user);
           return resolve(user);
         }
         else {
           return $firebaseAuth().$signInWithPopup("google").then((userCredential)=>{
             api.user = userCredential.user;
-console.log(3);
             return resolve(api.user);
           }).catch((err)=>{
-console.log(err);
             reject(err);
           });
         }
@@ -236,7 +259,7 @@ console.log(err);
     var userPlayerRef=firebase.database().ref("users/"+api.user.uid+"/players");
     if (game_id){
       var q = userPlayerRef.orderByChild("game_id").equalTo(game_id);
-      return $firebaseArray(query).$loaded();
+      return $firebaseArray(q).$loaded();
     } else {
       return $firebaseArray(userPlayerRef).$loaded().catch(()=>[]);
     }
