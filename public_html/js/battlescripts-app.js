@@ -75,7 +75,6 @@ bsapp.directive("codemirror", function($timeout) {
       if( window.CodeMirror === undefined ) throw new Error("The CodeMirror library is not available");
       if( !attrs.ngModel ) throw new Error("ng-model is required for linking code-mirror");
       if( elem.type !== "textarea" ) throw new Error("Only textarea is supported right now...");
-
       var editor = CodeMirror.fromTextArea(elem);
 
       var config = {
@@ -130,7 +129,10 @@ bsapp.directive("codemirror", function($timeout) {
         if(newValue) {
           var position = editor.getCursor();
           var scroll = editor.getScrollInfo();
-          editor.setValue(newValue);
+          // This is a dumb hack because setting the value while there is a delay in loading causes the editor to not display
+          setTimeout(()=>{
+            editor.setValue(newValue);
+          },200);
           editor.setCursor(position);
           editor.scrollTo(scroll.left, scroll.top);
         }
