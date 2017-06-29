@@ -79,7 +79,6 @@ bsapp.directive("codemirror", function($timeout) {
 
       var config = {
           mode: "javascript",
-          theme: "mdn-like",
           indentUnit: 2,
           smartIndent: true,
           tabSize: 2,
@@ -327,7 +326,7 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
   };
 
   // A wrapper to create a Player object from code and enable debugging, etc.
-  api.Player = function(code,debug_functions, prevent_logging) {
+  api.Player = function(code,options) {
     var p = null;
     try {
       p = eval(`${code}`);
@@ -351,21 +350,21 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
         var console={
           log:function(m){
             if (typeof m!=="string") { m=JSON.stringify(m); }
-            ${(prevent_logging?'':'$rootScope.$broadcast("log/player",m);')}
+            ${(options.prevent_logging?'':'$rootScope.$broadcast("log/player",m);')}
           }
         };
         return (${code});
       })();
     `);
-    debug_functions = debug_functions || {};
+    options = options || {};
     this.player = new p();
     this.move = function(data) {
       var player_move = null;
       // Debugger functions (if defined) can return promises (async) or values (sync)
-      return Promise.resolve( debug_functions.before_move ? debug_functions.before_move(data) : null)
+      return Promise.resolve( options.before_move ? options.before_move(data) : null)
         .then((changed_data)=>{
           player_move = this.player.move(changed_data || data);
-          return debug_functions.after_move ? debug_functions.after_move(player_move) : player_move;
+          return options.after_move ? options.after_move(player_move) : player_move;
         }).then((changed_player_move)=>{
           return (typeof changed_player_move!=="undefined")?changed_player_move:player_move;
         });

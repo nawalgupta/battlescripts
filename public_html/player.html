@@ -8,7 +8,6 @@
     <script type="text/javascript" src="/lib/codemirror-5.27.2/lib/codemirror.js"></script>
     <script type="text/javascript" src="/lib/codemirror-5.27.2/mode/javascript/javascript.js"></script>
     <link rel="stylesheet" href="/lib/codemirror-5.27.2/lib/codemirror.css" />
-    <link rel="stylesheet" href="/lib/codemirror-5.27.2/theme/mdn-like.css" />
 
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type='text/javascript' src='js/angular.js'></script>
@@ -142,7 +141,7 @@
             $scope.console.log("<span>[Compile Error]</span>"+e.toString(), "compile_error");
             return;
           }
-          var p2 = new $battlescripts.Player($scope.opponent.source, {}, true);
+          var p2 = new $battlescripts.Player($scope.opponent.source, {prevent_logging:true});
           var players = [ p1, p2 ];
 
           var match = new Match(game, players,{
@@ -313,7 +312,8 @@
 
         <div>
             <div><button ng-click="save()">Save</button></div>
-            <div ng-if="player.source!=player.published"><button ng-click="publish()">Publish</button></div>
+            <div ng-if="!player.published"><button ng-click="publish()">Save &amp; Publish</button></div>
+            <div ng-if="player.published && player.source!=player.published"><button ng-click="publish()">Save &amp; Re-Publish</button></div>
             <div ng-if="player.published"><button ng-click="unpublish()">Unpublish</button></div>
             <div><button ng-click="delete_player()">Delete</button></div>
         </div>
