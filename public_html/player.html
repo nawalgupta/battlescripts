@@ -21,7 +21,7 @@
     <script type='text/javascript' src='js/micromarkdown.js'></script>
 
     <script>
-      bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$compile", "$rootScope", function($scope, $battlescripts, $queryparam, $compile, $rootScope) {
+      bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$compile", "$rootScope", "$http", function($scope, $battlescripts, $queryparam, $compile, $rootScope, $http) {
         var id = $queryparam.get('id');
         var game_id = $queryparam.get('game_id');
         $scope.id=id;
@@ -34,6 +34,11 @@
         $scope.opponent = null;
         $scope.autoplay = true;
         $scope.user = null;
+        // Docs
+        $scope.doc_player_api = "";
+        $http.get('/docs/Player.md').then((response)=>{
+          $scope.doc_player_api = response.data;
+        });
 
         // Initial Load
         // ------------
@@ -55,7 +60,7 @@
 
         // Load opponents
         $battlescripts.search_players({"game_id":game_id})
-          .then( (players)=> $scope.opponents = players )
+          .then( (players)=> $scope.opponents = players );
 
         // Player Persistence
         // ------------------
@@ -207,10 +212,15 @@
         }
 
     /* FLEXBOX Layout stolen from the web */
-    html, body, .viewport {
+    html, body {
         width: 100%;
         height: 100%;
         margin: 0;
+    }
+    .viewport {
+        width:100vw !important;
+        height:100vh !important;
+        max-height:100vh !important;
     }
     .panel {
         border: 1px solid black;
@@ -221,7 +231,10 @@
         display:flex;
         flex-direction:column;
     }
-
+    .expand-v {
+        flex-grow:1;
+        overflow:auto;
+    }
     /* items flex/expand vertically */
     .vbox {
         display:         flex;
@@ -232,9 +245,6 @@
         display:         flex;
         flex-direction: row;
     }
-    .space-between {
-        justify-content: space-between;
-    }
     .header {
         height: 30px;
     }
@@ -242,7 +252,7 @@
         height:150px;
     }
     .main {
-        flex: 1;
+        flex-grow:1;
     }
     .main > * {
         flex-grow: 4;
@@ -259,15 +269,15 @@
         .details div {
             margin-bottom:5px;
         }
-        .editor {
-            box-sizing: content-box;
+        .documentation {
+            max-width:400px;
         }
-
         .panel .title {
             height:24px;
             font-size:20px;
             background-color:#ccc;
             cursor:pointer;
+            flex-grow:0;
         }
         .panel.collapsed {
             flex-grow:0;
@@ -282,12 +292,15 @@
             text-orientation: sideways;
             flex-grow:1;
         }
+        .CodeMirror {
+            flex-grow:1;
+        }
     </style>
 </head>
 
 <body ng-app="battlescripts" ng-controller="ScreenController">
 <div ng-show="!game || (id && !player.$id)" style="height:100%;">Loading...</div>
-<div ng-show="game && (!id || player.$id)" class="vbox" style="height:100%;">
+<div ng-show="game && (!id || player.$id)" class="vbox viewport">
     <div class="header">
         <a href="dashboard.html">
             <div style="float:right;height:30px;min-width:100px;border:2px solid black;border-radius:10px;padding:0 10px;line-height:28px;font-size:14px;">
@@ -296,7 +309,7 @@
         </a>
         <div class="title"><a href="/">BattleScripts</a> / <a href="game.html?game_id={{game.$id}}">{{game.name}}</a> / Player Editor</div>
     </div>
-    <div class="main hbox space-between">
+    <div class="main hbox">
         <div class="panel details">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Details</div>
 
@@ -320,20 +333,22 @@
 
             <div>Player id:<br>{{player.$id}}</div>
         </div>
-        <div class="panel source">
+        <div class="panel source" style="position:relative;">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Source</div>
-            <div class="editor" style="flex-grow:1;"><textarea codemirror="conf" ng-model="player.source"></textarea></div>
+            <textarea codemirror ng-model="player.source"></textarea>
         </div>
         <div class="panel test">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Tester</div>
-            <div>
-                Test Opponent: <select ng-options="p as p.name for p in opponents track by p.$id" ng-model="opponent"></select>
-                <input type="checkbox" ng-model="autoplay"> Auto play when saved
+            <div class="expand-v">
+                <div>
+                    Test Opponent: <select ng-options="p as p.name for p in opponents track by p.$id" ng-model="opponent"></select>
+                    <input type="checkbox" ng-model="autoplay"> Auto play when saved
+                </div>
+                <div>
+                    <button ng-click="test()">Play A Test Game</button>
+                </div>
+                <div id="canvas" ng-controller="CanvasController" style="box-sizing:content-box;"></div>
             </div>
-            <div>
-                <button ng-click="test()">Play A Test Game</button>
-            </div>
-            <div id="canvas" ng-controller="CanvasController" style="box-sizing:content-box;"></div>
         </div>
         <div class="panel collapsed debugger">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Debugger</div>
@@ -353,13 +368,11 @@
         </div>
         <div class="panel collapsed documentation">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Game Documentation</div>
-            <div ng-bind-html="game.documentation | markdown"></div>
+            <div class="expand-v" ng-bind-html="game.documentation | markdown"></div>
         </div>
         <div class="panel collapsed documentation">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Player API Documentation</div>
-            <div>
-                This will be static content
-            </div>
+            <div class="expand-v" ng-bind-html="doc_player_api | markdown"></div>
         </div>
     </div>
     <div class="panel footer" id="console">

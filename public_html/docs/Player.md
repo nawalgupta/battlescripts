@@ -1,11 +1,21 @@
 # PLAYER API
 ------------
 
-A Player has a constructor that returns an object with the following methods. The only required method is move().
+Simple Player Template
+
+```
+module.exports = function() {
+  this.move = function(game_data_json) {
+    return my_move;
+  }
+}
+```
+
+A Player is a constructor that returns an object with the following methods. The only required method is move().
 
 Players are not allowed to require() any modules, and must expose their Constructor using module.exports.
 
-Players are written specifically for a single Game and contain the logic required to play that game.
+Players are written specifically for a single Game and contain the logic required to play only that game.
 
 ## move ( data )
 

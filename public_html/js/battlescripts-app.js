@@ -87,7 +87,8 @@ bsapp.directive("codemirror", function($timeout) {
           lineWrapping: false,
           lineNumbers: true,
           undoDepth: 10,
-          historyEventDelay: 200
+          historyEventDelay: 200,
+          viewportMargin:Infinity
         };
       for( var option in config )
         editor.setOption(option, config[option]);
@@ -101,16 +102,6 @@ bsapp.directive("codemirror", function($timeout) {
           scope.$digest();
         });
       });
-
-      //Listen for parent resize
-      scope.$watch(
-          function() { return elem.parentNode.clientHeight; },
-          function() {
-            if (elem.parentNode.clientHeight>0) {
-              editor.setSize(null, elem.parentNode.clientHeight);
-            }
-          }
-      );
 
       //Keeps the model in sync
       editor.on("change", function(editor, changeObj) { //TODO use changeObj to increase speed???
