@@ -142,7 +142,7 @@
             $scope.console.log("<span>[Compile Error]</span>"+e.toString(), "compile_error");
             return;
           }
-          var p2 = new $battlescripts.Player($scope.opponent.source);
+          var p2 = new $battlescripts.Player($scope.opponent.source, {}, true);
           var players = [ p1, p2 ];
 
           var match = new Match(game, players,{
@@ -313,7 +313,7 @@
 
         <div>
             <div><button ng-click="save()">Save</button></div>
-            <div ng-if="!player.published"><button ng-click="publish()">Publish</button></div>
+            <div ng-if="player.source!=player.published"><button ng-click="publish()">Publish</button></div>
             <div ng-if="player.published"><button ng-click="unpublish()">Unpublish</button></div>
             <div><button ng-click="delete_player()">Delete</button></div>
         </div>

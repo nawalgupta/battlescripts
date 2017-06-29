@@ -125,14 +125,21 @@ bsapp.directive("codemirror", function($timeout) {
       });
 
       //Watches for model changes
+      var init = true;
       scope.$watch(attrs.ngModel, function(newValue, oldValue, scope) {
         if(newValue) {
           var position = editor.getCursor();
           var scroll = editor.getScrollInfo();
           // This is a dumb hack because setting the value while there is a delay in loading causes the editor to not display
-          setTimeout(()=>{
+          if (init) {
+            setTimeout(() => {
+              editor.setValue(newValue);
+              init = false;
+            }, 200);
+          }
+          else {
             editor.setValue(newValue);
-          },200);
+          }
           editor.setCursor(position);
           editor.scrollTo(scroll.left, scroll.top);
         }
@@ -320,15 +327,16 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
   };
 
   // A wrapper to create a Player object from code and enable debugging, etc.
-  api.Player = function(code,debug_functions) {
+  api.Player = function(code,debug_functions, prevent_logging) {
     var p = null;
     try {
-      p = eval(`(${code})`);
+      p = eval(`${code}`);
     }
     catch(e) {
       throw "Could not compile player code: "+e.toString();
     }
     try {
+      p = eval(`(${code})`);
       p = new p();
     }
     catch(e) {
@@ -343,7 +351,7 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
         var console={
           log:function(m){
             if (typeof m!=="string") { m=JSON.stringify(m); }
-            $rootScope.$broadcast("log/player",m);
+            ${(prevent_logging?'':'$rootScope.$broadcast("log/player",m);')}
           }
         };
         return (${code});
