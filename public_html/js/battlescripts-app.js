@@ -328,36 +328,46 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
   // A wrapper to create a Player object from code and enable debugging, etc.
   api.Player = function(code,options) {
     var p = null;
+    // Eval the code and inspect it to make sure it meets requirements
     try {
-      p = eval(`${code}`);
+      eval(`${code}`);
     }
     catch(e) {
       throw "Could not compile player code: "+e.toString();
     }
+    // Wrap the player code to provide functionality in the web context
     try {
-      p = eval(`(${code})`);
-      p = new p();
+      var wrapped=`
+        p=(function(){
+          var console={
+            log:function(m){
+              if (typeof m!=="string") { m=JSON.stringify(m); }
+              ${(options.prevent_logging ? '' : '$rootScope.$broadcast("log/player",m);')}
+            }
+          };
+          var module = {};
+          ${code};
+          var f= module.exports;
+          return f;
+        })();
+      `;
+      eval(wrapped);
+    } catch(e) {
+      throw "Player compilation error: "+e.toString();
+    }
+    if (!p) {
+      throw "Player code must use module.exports=... syntax!";
+    }
+    try {
+      this.player = new p();
     }
     catch(e) {
       throw "Player code does not appear to be a constructor: "+e.toString();
     }
-    if (typeof p.move!=="function") {
+    if (typeof this.player.move!=="function") {
       throw "Player does not have a required move() function";
     }
-    // Wrap the player code to provide functionality in the web context
-    p = eval(`
-      (()=>{
-        var console={
-          log:function(m){
-            if (typeof m!=="string") { m=JSON.stringify(m); }
-            ${(options.prevent_logging?'':'$rootScope.$broadcast("log/player",m);')}
-          }
-        };
-        return (${code});
-      })();
-    `);
     options = options || {};
-    this.player = new p();
     this.move = function(data) {
       var player_move = null;
       // Debugger functions (if defined) can return promises (async) or values (sync)
