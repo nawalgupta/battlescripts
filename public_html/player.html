@@ -21,7 +21,7 @@
     <script type='text/javascript' src='js/micromarkdown.js'></script>
 
     <script>
-      bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$compile", "$rootScope", "$http", function($scope, $battlescripts, $queryparam, $compile, $rootScope, $http) {
+      bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$compile", "$rootScope", "$http", "$timeout", function($scope, $battlescripts, $queryparam, $compile, $rootScope, $http, $timeout) {
         var id = $queryparam.get('id');
         var game_id = $queryparam.get('game_id');
         $scope.id=id;
@@ -119,6 +119,35 @@
           });
           return ret;
         };
+
+        // Editor
+        // ------
+        $scope.debounce = function(func, wait, immediate) {
+          var timeout;
+          return function() {
+            var context = this, args = arguments;
+            var later = function() {
+              timeout = null;
+              if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            $timeout.cancel(timeout);
+            timeout = $timeout(later, wait);
+            if (callNow) func.apply(context, args);
+          };
+        };
+        $scope.$watch('player.source', function(newValue,oldValue) {
+          $scope.compile_check(newValue);
+        });
+        $scope.compile_check = $scope.debounce(function(src) {
+          try {
+            var p = new $battlescripts.Player(src);
+            $scope.status = "OK";
+          }
+          catch (e) {
+            $scope.status = e.toString();
+          }
+        },500);
 
         // Game Runner
         // -----------
@@ -320,11 +349,12 @@
             <div><input ng-model="player.name"></div>
 
             <label>Description</label>
-            <div><input ng-model="player.description"></div>
+            <div><textarea ng-model="player.description" style="width:90%;height:75px;"></textarea></div>
 
 
         <div>
             <div><button ng-click="save()">Save</button></div>
+            <div ng-if="!player.published || player.source!=player.published">Your changes will not be visible to others until you publish your new code!</div>
             <div ng-if="!player.published"><button ng-click="publish()">Save &amp; Publish</button></div>
             <div ng-if="player.published && player.source!=player.published"><button ng-click="publish()">Save &amp; Re-Publish</button></div>
             <div ng-if="player.published"><button ng-click="unpublish()">Unpublish</button></div>
@@ -336,6 +366,7 @@
         <div class="panel source" style="position:relative;">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Source</div>
             <textarea codemirror ng-model="player.source"></textarea>
+            <div class="status" ng-class="{{status_class}}">{{status}}</div>
         </div>
         <div class="panel test">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Tester</div>

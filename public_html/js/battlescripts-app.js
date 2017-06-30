@@ -319,12 +319,13 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
   // A wrapper to create a Player object from code and enable debugging, etc.
   api.Player = function(code,options) {
     var p = null;
+    options = options || {};
     // Eval the code and inspect it to make sure it meets requirements
     try {
       eval(`${code}`);
     }
     catch(e) {
-      throw "Could not compile player code: "+e.toString();
+      throw `Could not compile player code:${e.toString()} on line ${e.lineNumber}`;
     }
     // Wrap the player code to provide functionality in the web context
     try {
@@ -358,7 +359,6 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
     if (typeof this.player.move!=="function") {
       throw "Player does not have a required move() function";
     }
-    options = options || {};
     this.move = function(data) {
       var player_move = null;
       // Debugger functions (if defined) can return promises (async) or values (sync)
