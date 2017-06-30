@@ -14,9 +14,9 @@ exports.publish_player = functions.database.ref('/users/{uid}/players/{playerId}
               var player={};
 
               var src = snapshot.val().source;
-//              var obfuscated = obfuscator.obfuscate(src).toString();
-//              player.source=obfuscated;
-              player.source = src;
+              var obfuscated = obfuscator.obfuscate(src,{compact:true,selfDefending:true}).toString();
+              player.source=obfuscated;
+//              player.source = src;
 
               player.game_id=snapshot.val().game_id;
               player.name=snapshot.val().name;
