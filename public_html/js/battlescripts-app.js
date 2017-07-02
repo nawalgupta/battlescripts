@@ -320,6 +320,7 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
   api.Player = function(code,options) {
     var p = null;
     options = options || {};
+    if (!code) { return null; }
     // Eval the code and inspect it to make sure it meets requirements
     try {
       eval(`${code}`);

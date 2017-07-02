@@ -1,3 +1,8 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
 /* apply a natural box layout model to all elements, but allowing components to change */
 html {
     box-sizing: border-box;
@@ -5,3 +10,117 @@ html {
 *, *:before, *:after {
     box-sizing: inherit;
 }
+
+/* FLEXBOX IDE Layout */
+/* ================== */
+.ide {
+    width:100vw !important;
+    height:100vh !important;
+    max-height:100vh !important;
+    display: flex;
+    flex-direction: column;
+}
+.ide .panel {
+    border: 1px solid black;
+    padding: 0.25em;
+    margin: 0.25em;
+    border-radius: 0.25em;
+    overflow:auto;
+    display:flex;
+    flex-direction:column;
+}
+.ide .expand-v {
+    flex-grow:1;
+    overflow:auto;
+}
+.ide .header {
+    height: 30px;
+}
+.ide .header .title {
+    font-size:150%;
+    font-weight:bold;
+}
+.ide .footer {
+    height:150px;
+}
+.ide .main {
+    display: flex;
+    flex-direction: row;
+    flex-grow:1;
+    overflow:hidden;
+}
+.ide .main > * {
+    flex-grow: 4;
+    resize:horizontal;
+}
+.ide .details {
+    flex-grow: 1.5;
+    max-width:200px;
+}
+.ide .details label {
+    font-weight:bold;
+    text-decoration:underline;
+}
+.ide .details div {
+    margin-bottom:5px;
+}
+.ide .documentation {
+    max-width:400px;
+}
+.ide .panel .title {
+    height:24px;
+    font-size:20px;
+    background-color:#ccc;
+    cursor:pointer;
+    flex-grow:0;
+}
+.ide .panel.collapsed {
+    flex-grow:0;
+}
+.ide .panel.collapsed * {
+    display:none;
+}
+.ide .panel.collapsed .title {
+    display:block;
+    width:24px;
+    writing-mode: vertical-lr;
+    text-orientation: sideways;
+    flex-grow:1;
+}
+.ide .CodeMirror {
+    flex-grow:1;
+}
+.ide .status {
+    height:24px;
+    line-height:24px;
+    padding-left:28px;
+    font-family:monospace;
+    font-size:12px;
+}
+.ide .status.success {
+    background:transparent url(/img/success.png) no-repeat left center;
+}
+.ide .status.error {
+    background:transparent url(/img/error.png) no-repeat left center;
+}
+/* Console */
+.ide #console {
+    font-family:monospace;
+    font-size:90%;
+}
+.ide #console .entry {
+    color:#333;
+}
+.ide #console .entry span {
+    color:#999;
+    margin-right:5px;
+}
+.ide #console .entry.success {
+    background-color:green;
+    color:white;
+}
+.ide #console .entry.error {
+    background-color:red;
+    color:white;
+}
+

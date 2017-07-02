@@ -142,10 +142,12 @@
         $scope.compile_check = $scope.debounce(function(src) {
           try {
             var p = new $battlescripts.Player(src);
-            $scope.status = "OK";
+            $scope.status = "Code compiled successfully";
+            $scope.status_class="success";
           }
           catch (e) {
             $scope.status = e.toString();
+            $scope.status_class="error";
           }
         },500);
 
@@ -214,123 +216,11 @@
       }]);
 
     </script>
-    <style>
-        /* Console */
-        #console {
-            font-family:monospace;
-            font-size:90%;
-        }
-        #console .entry {
-            color:#333;
-        }
-        #console .entry span {
-            color:#999;
-            margin-right:5px;
-        }
-        #console .entry.success {
-            background-color:green;
-            color:white;
-        }
-        #console .entry.error {
-            background-color:red;
-            color:white;
-        }
-        .title {
-            font-size:150%;
-            font-weight:bold;
-        }
-
-    /* FLEXBOX Layout stolen from the web */
-    html, body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-    }
-    .viewport {
-        width:100vw !important;
-        height:100vh !important;
-        max-height:100vh !important;
-    }
-    .panel {
-        border: 1px solid black;
-        padding: 0.25em;
-        margin: 0.25em;
-        border-radius: 0.25em;
-        overflow:auto;
-        display:flex;
-        flex-direction:column;
-    }
-    .expand-v {
-        flex-grow:1;
-        overflow:auto;
-    }
-    /* items flex/expand vertically */
-    .vbox {
-        display:         flex;
-        flex-direction: column;
-    }
-    /* items flex/expand horizontally */
-    .hbox {
-        display:         flex;
-        flex-direction: row;
-    }
-    .header {
-        height: 30px;
-    }
-    .footer {
-        height:150px;
-    }
-    .main {
-        flex-grow:1;
-        overflow:hidden;
-    }
-    .main > * {
-        flex-grow: 4;
-        resize:horizontal;
-    }
-    .details {
-        flex-grow: 1.5;
-        max-width:200px;
-    }
-        .details label {
-            font-weight:bold;
-            text-decoration:underline;
-        }
-        .details div {
-            margin-bottom:5px;
-        }
-        .documentation {
-            max-width:400px;
-        }
-        .panel .title {
-            height:24px;
-            font-size:20px;
-            background-color:#ccc;
-            cursor:pointer;
-            flex-grow:0;
-        }
-        .panel.collapsed {
-            flex-grow:0;
-        }
-        .panel.collapsed * {
-            display:none;
-        }
-        .panel.collapsed .title {
-            display:block;
-            width:24px;
-            writing-mode: vertical-lr;
-            text-orientation: sideways;
-            flex-grow:1;
-        }
-        .CodeMirror {
-            flex-grow:1;
-        }
-    </style>
 </head>
 
-<body ng-app="battlescripts" ng-controller="ScreenController">
+<body class="" ng-app="battlescripts" ng-controller="ScreenController">
 <div ng-show="!game || (id && !player.$id)" style="height:100%;">Loading...</div>
-<div ng-show="game && (!id || player.$id)" class="vbox viewport">
+<div ng-show="game && (!id || player.$id)" class="ide">
     <div class="header">
         <a href="dashboard.html">
             <div style="float:right;height:30px;min-width:100px;border:2px solid black;border-radius:10px;padding:0 10px;line-height:28px;font-size:14px;">
@@ -339,7 +229,7 @@
         </a>
         <div class="title"><a href="/">BattleScripts</a> / <a href="game.html?game_id={{game.$id}}">{{game.name}}</a> / Player Editor</div>
     </div>
-    <div class="main hbox">
+    <div class="main">
         <div class="panel details">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Details</div>
 
@@ -367,7 +257,7 @@
         <div class="panel source" style="position:relative;">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Source</div>
             <textarea codemirror ng-model="player.source"></textarea>
-            <div class="status" ng-class="{{status_class}}">{{status}}</div>
+            <div class="status {{status_class}}">{{status}}</div>
         </div>
         <div class="panel test">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Tester</div>
