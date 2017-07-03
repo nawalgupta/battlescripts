@@ -5,68 +5,118 @@
   <title>Battle Scripts</title>
     <script>var module={}; // To allow module.exports not to fail</script>
 
+    <script type="text/javascript" src="/lib/codemirror-5.27.2/lib/codemirror.js"></script>
+    <script type="text/javascript" src="/lib/codemirror-5.27.2/mode/javascript/javascript.js"></script>
+    <script type="text/javascript" src="/lib/codemirror-5.27.2/mode/markdown/markdown.js"></script>
+    <link rel="stylesheet" href="/lib/codemirror-5.27.2/lib/codemirror.css" />
+
     <script type="text/javascript" src="js/jquery.js"></script>
-<script type='text/javascript' src='js/angular.js'></script>
-<script type='text/javascript' src='js/firebase.js'></script>
-<script type='text/javascript' src='js/angularfire.js'></script>
-<script type='text/javascript' src='js/angular-sanitize.js'></script>
-<script type='text/javascript' src='js/battlescripts-app.js'></script>
-<script type='text/javascript' src='js/Match.js'></script>
+    <script type='text/javascript' src='js/angular.js'></script>
+    <script type='text/javascript' src='js/firebase.js'></script>
+    <script type='text/javascript' src='js/angularfire.js'></script>
+    <script type='text/javascript' src='js/angular-sanitize.js'></script>
+    <script type='text/javascript' src='js/battlescripts-app.js'></script>
+    <script type='text/javascript' src='js/Match.js'></script>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script type='text/javascript' src='js/micromarkdown.js'></script>
+    <script>
+      bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$http", function($scope, $battlescripts, $queryparam, $http) {
+        var id = $queryparam.get('id');
+        $scope.id=id;
+        $scope.game = null;
+        // Docs
+        $scope.doc_game_api = "";
+        $http.get('/docs/Game.md').then((response)=>{
+          $scope.doc_game_api = response.data;
+        });
+
+        if (!!id) {
+          $battlescripts.get_game(id).then(
+            game => $scope.game=game
+          );
+        }
+        else {
+          $scope.game = {};
+        }
+
+        $scope.save = function() {
+          $battlescripts.save_game($scope.game).then(
+            updated_game => $scope.game=updated_game
+          );
+        };
+
+        $scope.delete = function() {
+          if (confirm("Are you sure?")) {
+            $battlescripts.delete_game($scope.game).then(()=>{
+              window.location.href="/";
+            });
+          }
+        }
+      }]);
+    </script>
+    <style>
+        .panel.canvas {
+            max-width:600px;
+        }
+    </style>
 </head>
+
 <body ng-app="battlescripts" ng-controller="ScreenController">
-
-<h1>Game Editor</h1>
-<a href="/">Home</a>
-
-<script>
-bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", function($scope, $battlescripts, $queryparam) {
-  var id = $queryparam.get('id');
-  $scope.id=id;
-  $scope.game = null;
-  if (!!id) {
-    $battlescripts.get_game(id).then(
-      game => $scope.game=game
-    );
-  }
-  else {
-    $scope.game = {};
-  }
-
-  $scope.save = function() {
-      $battlescripts.save_game($scope.game).then(
-        updated_game => $scope.game=updated_game
-      );
-  };
-
-  $scope.delete = function() {
-    if (confirm("Are you sure?")) {
-      $battlescripts.delete_game($scope.game).then(()=>{
-        window.location.href="/";
-      });
-    }
-  }
-}]);
-</script>
-
-<div ng-if="id && !game">Loading...</div>
-<div ng-if="!id || game">
-    <div>
-        <button ng-click="save()">Save</button>
-        <button ng-click="delete()">Delete</button>
+<div ng-show="id && !game" style="height:100%;">Loading...</div>
+<div ng-show="!id || game" class="ide">
+    <div class="header">
+        <a href="dashboard.html">
+            <div style="float:right;height:30px;min-width:100px;border:2px solid black;border-radius:10px;padding:0 10px;line-height:28px;font-size:14px;">
+                <img src="{{user.photoURL}}" style="max-height:24px;"> {{user.displayName}}
+            </div>
+        </a>
+        <div class="title"><a href="/">BattleScripts</a> / {{game.name}}</div>
     </div>
-    <div>Name: <input ng-model="game.name"> (id: {{game.$id}})</div>
-    <div>Max Players: <input type="number" min="2" ng-model="game.max_players"></div>
-    <div>Source</div>
-    <div>
-        <textarea style="width:800px;height:300px;" ng-model="game.source"></textarea>
+    <div class="main">
+        <div class="panel details">
+            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Details</div>
+            <label>Game Name</label>
+            <div><input ng-model="game.name"> </div>
+            <label>Description</label>
+            <div><textarea ng-model="game.description" style="width:90%;height:75px;"></textarea></div>
+            <label>Max Players</label>
+            <div><input type="number" min="2" ng-model="game.max_players"></div>
+            <div>
+                <div><button ng-click="save()">Save</button></div>
+                <div ng-if="!game.published || game.source!=game.published">Your changes will not be visible to others until you publish your new code!</div>
+                <div ng-if="!game.published"><button ng-click="publish()">Save &amp; Publish</button></div>
+                <div ng-if="game.published && game.source!=game.published"><button ng-click="publish()">Save &amp; Re-Publish</button></div>
+                <div ng-if="game.published"><button ng-click="unpublish()">Unpublish</button></div>
+                <div><button ng-click="delete_player()">Delete</button></div>
+            </div>
+
+            <div>Game id:<br>{{game.$id}}</div>
+        </div>
+        <div class="panel source" style="position:relative;">
+            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Source</div>
+            <textarea codemirror ng-model="game.source"></textarea>
+            <div class="status {{status_class}}">{{status}}</div>
+        </div>
+        <div class="panel canvas" style="position:relative;">
+            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Canvas</div>
+            <textarea codemirror ng-model="game.canvas"></textarea>
+        </div>
+        <div class="panel" style="position:relative;">
+            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Canvas Tester</div>
+            <textarea codemirror ng-model="json"></textarea>
+            <div id="canvas"></div>
+        </div>
+        <div class="panel collapsed source" style="position:relative;">
+            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Game Documentation</div>
+            <textarea codemirror language="markdown" ng-model="game.documentation"></textarea>
+        </div>
+        <div class="panel collapsed documentation">
+            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Game API</div>
+            <div class="expand-v" ng-bind-html="doc_game_api | markdown"></div>
+        </div>
     </div>
-    <div>Canvas</div>
-    <div>
-        <textarea style="width:800px;height:300px;" ng-model="game.canvas"></textarea>
-    </div>
-    <div>Documentation (Markdown)</div>
-    <div>
-        <textarea style="width:800px;height:300px;" ng-model="game.documentation"></textarea>
+    <div class="panel footer" id="console">
+        Console
     </div>
 </div>
 

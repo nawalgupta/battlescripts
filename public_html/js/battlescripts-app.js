@@ -92,6 +92,9 @@ bsapp.directive("codemirror", function($timeout) {
         };
       for( var option in config )
         editor.setOption(option, config[option]);
+      if (attrs.language) {
+        editor.setOption('mode',attrs.language);
+      }
 
       editor.setSize(null, elem.parentNode.clientHeight);
 
