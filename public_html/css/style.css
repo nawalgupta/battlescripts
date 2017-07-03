@@ -22,7 +22,7 @@ html {
 }
 .ide .panel {
     border: 1px solid black;
-    padding: 0.25em;
+    /*padding: 0.25em;*/
     margin: 0.25em;
     border-radius: 0.25em;
     overflow:auto;
@@ -48,14 +48,40 @@ html {
     flex-direction: row;
     flex-grow:1;
     overflow:hidden;
+    overflow-x:auto;
 }
+
+/* Main editor content (center row) */
 .ide .main > * {
     flex-grow: 4;
     resize:horizontal;
+    min-width:25%;
+    max-width:80%;
 }
+.ide .main > .collapsed {
+    flex-grow:0;
+    min-width:24px;
+}
+.ide .main > .collapsed * {
+    display:none;
+}
+.ide .main > * .title {
+    padding-left:10px;
+}
+.ide .main > .collapsed .title {
+    display:block;
+    width:24px;
+    padding-left:0px;
+    padding-top:10px;
+    writing-mode: vertical-lr;
+    text-orientation: sideways;
+    flex-grow:1;
+}
+
 .ide .details {
     flex-grow: 1.5;
     max-width:200px;
+    min-width:100px;
 }
 .ide .details label {
     font-weight:bold;
@@ -73,19 +99,6 @@ html {
     background-color:#ccc;
     cursor:pointer;
     flex-grow:0;
-}
-.ide .panel.collapsed {
-    flex-grow:0;
-}
-.ide .panel.collapsed * {
-    display:none;
-}
-.ide .panel.collapsed .title {
-    display:block;
-    width:24px;
-    writing-mode: vertical-lr;
-    text-orientation: sideways;
-    flex-grow:1;
 }
 .ide .CodeMirror {
     flex-grow:1;

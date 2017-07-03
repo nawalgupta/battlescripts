@@ -122,24 +122,10 @@
 
         // Editor
         // ------
-        $scope.debounce = function(func, wait, immediate) {
-          var timeout;
-          return function() {
-            var context = this, args = arguments;
-            var later = function() {
-              timeout = null;
-              if (!immediate) func.apply(context, args);
-            };
-            var callNow = immediate && !timeout;
-            $timeout.cancel(timeout);
-            timeout = $timeout(later, wait);
-            if (callNow) func.apply(context, args);
-          };
-        };
         $scope.$watch('player.source', function(newValue,oldValue) {
           $scope.compile_check(newValue);
         });
-        $scope.compile_check = $scope.debounce(function(src) {
+        $scope.compile_check = $battlescripts.debounce(function(src) {
           try {
             var p = new $battlescripts.Player(src);
             $scope.status = "Code compiled successfully";

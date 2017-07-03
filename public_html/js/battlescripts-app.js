@@ -156,8 +156,27 @@ bsapp.directive('fileModel',['$parse', function ($parse){
   }
 }]);
 
-bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseAuth","$rootScope", function($firebaseArray,$firebaseObject,$firebaseAuth,$rootScope) {
+bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseAuth","$rootScope","$timeout", function($firebaseArray,$firebaseObject,$firebaseAuth,$rootScope,$timeout) {
 	var api = {};
+
+	// Util
+  api.debounce = function(func, wait, immediate) {
+    var timeout;
+    if (typeof wait=="undefined") {
+      wait = 250;
+    }
+    return function() {
+      var context = this, args = arguments;
+      var later = function() {
+        timeout = null;
+        if (!immediate) func.apply(context, args);
+      };
+      var callNow = immediate && !timeout;
+      $timeout.cancel(timeout);
+      timeout = $timeout(later, wait);
+      if (callNow) func.apply(context, args);
+    };
+  };
 
   //Initialize firebase
   var config = {

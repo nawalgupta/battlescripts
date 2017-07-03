@@ -23,20 +23,42 @@
       bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$http", function($scope, $battlescripts, $queryparam, $http) {
         var id = $queryparam.get('id');
         $scope.id=id;
-        $scope.game = null;
+        $scope.game = {"canvas":null};
         // Docs
         $scope.doc_game_api = "";
         $http.get('/docs/Game.md').then((response)=>{
           $scope.doc_game_api = response.data;
         });
 
+        // Watch for canvas changes to re-render
+        var update_canvas = $battlescripts.debounce(function() {
+          console.log($scope.game.test_json);
+          $battlescripts.render(JSON.parse($scope.game.test_json));
+        });
+        var init_canvas = $battlescripts.debounce(function() {
+          $battlescripts.init_canvas($scope.game.canvas);
+        });
+
         if (!!id) {
-          $battlescripts.get_game(id).then(
-            game => $scope.game=game
-          );
+          $battlescripts.get_game(id).then((game)=>{
+            $scope.game = game;
+            $battlescripts.init_canvas($scope.game.canvas);
+            $scope.$watch('game.canvas', function(newValue,oldValue) {
+              init_canvas();
+            });
+            $scope.$watch('game.test_json', function(newValue,oldValue) {
+              update_canvas();
+            });
+          });
         }
         else {
           $scope.game = {};
+          $scope.$watch($scope.game.canvas, function(newValue,oldValue) {
+            init_canvas();
+          });
+          $scope.$watch($scope.game.test_json, function(newValue,oldValue) {
+            update_canvas();
+          });
         }
 
         $scope.save = function() {
@@ -54,11 +76,6 @@
         }
       }]);
     </script>
-    <style>
-        .panel.canvas {
-            max-width:600px;
-        }
-    </style>
 </head>
 
 <body ng-app="battlescripts" ng-controller="ScreenController">
@@ -103,8 +120,16 @@
         </div>
         <div class="panel" style="position:relative;">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Canvas Tester</div>
-            <textarea codemirror ng-model="json"></textarea>
-            <div id="canvas"></div>
+            <div><textarea codemirror ng-model="game.test_json"></textarea></div>
+            <div id="canvas" ng-controller="CanvasController"></div>
+        </div>
+        <div class="panel collapsed source" style="position:relative;">
+            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Test Opponent Player</div>
+            <textarea codemirror ng-model="game.opponent"></textarea>
+        </div>
+        <div class="panel collapsed source" style="position:relative;">
+            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Player Template</div>
+            <textarea codemirror ng-model="game.player_template"></textarea>
         </div>
         <div class="panel collapsed source" style="position:relative;">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Game Documentation</div>
