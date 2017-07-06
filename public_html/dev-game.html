@@ -24,6 +24,9 @@
         var id = $queryparam.get('id');
         $scope.id=id;
         $scope.game = {"canvas":null};
+        $scope.json_status="OK";
+        $scope.json_status_class="";
+
         // Docs
         $scope.doc_game_api = "";
         $http.get('/docs/Game.md').then((response)=>{
@@ -31,13 +34,31 @@
         });
 
         // Watch for canvas changes to re-render
+        var parse_json = function() {
+          try {
+            var o = JSON.parse($scope.game.test_json);
+            $scope.json_status="OK";
+            $scope.json_status_class="success";
+            return o;
+          }
+          catch(e) {
+            $scope.json_status=e.toString();
+            $scope.json_status_class="error";
+            return null;
+          }
+        };
         var update_canvas = $battlescripts.debounce(function() {
-          console.log($scope.game.test_json);
-          $battlescripts.render(JSON.parse($scope.game.test_json));
-        });
+          var o = parse_json();
+          if (o) {
+            $battlescripts.render(o);
+          }
+        },500);
         var init_canvas = $battlescripts.debounce(function() {
-          $battlescripts.init_canvas($scope.game.canvas);
-        });
+          var o = parse_json();
+          if (o) {
+            $battlescripts.init_canvas($scope.game.canvas, o);
+          }
+        },500);
 
         if (!!id) {
           $battlescripts.get_game(id).then((game)=>{
@@ -121,6 +142,7 @@
         <div class="panel" style="position:relative;">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Canvas Tester</div>
             <div><textarea codemirror ng-model="game.test_json"></textarea></div>
+            <div class="status {{json_status_class}}">{{json_status}}</div>
             <div id="canvas" ng-controller="CanvasController"></div>
         </div>
         <div class="panel collapsed source" style="position:relative;">

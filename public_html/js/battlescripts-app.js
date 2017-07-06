@@ -110,24 +110,21 @@ bsapp.directive("codemirror", function($timeout) {
       editor.on("change", function(editor, changeObj) { //TODO use changeObj to increase speed???
         var newValue = editor.getValue();
         editor.save();
-
-        model.$setViewValue(newValue);
-        if (!scope.$$phase) {
-          scope.$apply();
-        }
+        scope.$apply(function() {
+          model.$setViewValue(newValue);
+        });
       });
 
       //Watches for model changes
-      var init = true;
       scope.$watch(attrs.ngModel, function(newValue, oldValue, scope) {
         if(newValue) {
           var position = editor.getCursor();
           var scroll = editor.getScrollInfo();
           // This is a dumb hack because setting the value while there is a delay in loading causes the editor to not display
-          if (init) {
+          if (!elem.getAttribute('codemirrorinit')) {
             setTimeout(() => {
               editor.setValue(newValue);
-              init = false;
+              elem.setAttribute('codemirrorinit','done');
             }, 200);
           }
           else {
@@ -163,7 +160,7 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
   api.debounce = function(func, wait, immediate) {
     var timeout;
     if (typeof wait=="undefined") {
-      wait = 250;
+      wait = 300;
     }
     return function() {
       var context = this, args = arguments;
@@ -408,26 +405,29 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
   api.render = function(data) {
     $rootScope.$broadcast("canvas/render",data);
   };
-  api.init_canvas = function(template) {
-    $rootScope.$broadcast("canvas/init",template);
+  api.init_canvas = function(template, json) {
+    $rootScope.$broadcast("canvas/init",{"template":template,"json":json||null});
   };
 
   return api;
 }]);
 
 // A general-purpose Canvas Controller for painting games
-bsapp.controller("CanvasController", ["$scope", "$battlescripts", "$queryparam", "$compile", "$rootScope", "$element", function($scope, $battlescripts, $queryparam, $compile, $rootScope, $element) {
+bsapp.controller("CanvasController", ["$scope", "$battlescripts", "$queryparam", "$compile", "$rootScope", "$element", "$timeout", function($scope, $battlescripts, $queryparam, $compile, $rootScope, $element, $timeout) {
   $scope.game={};
   $rootScope.$on("canvas/render",function(msg,data) {
-    $scope.$apply(function() {
-      $scope.game = data;
-    });
+    $scope.game = data;
+    $timeout(function() { $scope.$apply(); });
   });
-  $rootScope.$on("canvas/init",function(msg,template) {
+  $rootScope.$on("canvas/init",function(msg,data) {
     // Populate and compile the Game canvas
-    $element.html(template);
-    $compile($element)($scope);
-  })
+    if (data.json) {
+      $scope.game = data.json;
+    }
+    $element.html('');
+    $element.append($compile('<div>'+data.template+'</div>')($scope));
+    $timeout(function() { $scope.$apply();  });
+    });
 }]);
 
 bsapp.factory('$queryparam', function() {
