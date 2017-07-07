@@ -3,20 +3,21 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>Battle Scripts</title>
-    <script>var module={}; // To allow module.exports not to fail</script>
-
-    <script type="text/javascript" src="js/jquery.js"></script>
-<script type='text/javascript' src='js/angular.js'></script>
-<script type='text/javascript' src='js/firebase.js'></script>
-<script type='text/javascript' src='js/angularfire.js'></script>
-<script type='text/javascript' src='js/angular-sanitize.js'></script>
-<script type='text/javascript' src='js/battlescripts-app.js'></script>
-<script type='text/javascript' src='js/Match.js'></script>
+  <script>var module = {}; // To allow module.exports not to fail</script>
+  <link rel="stylesheet" type="text/css" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans:400,400i,800" rel="stylesheet">
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type='text/javascript' src='js/angular.js'></script>
+  <script type='text/javascript' src='js/firebase.js'></script>
+  <script type='text/javascript' src='js/angularfire.js'></script>
+  <script type='text/javascript' src='js/angular-sanitize.js'></script>
+  <script type='text/javascript' src='js/battlescripts-app.js'></script>
+  <script type='text/javascript' src='js/Match.js'></script>
 </head>
 <body ng-app="battlescripts" ng-controller="ScreenController">
 
 <script>
-  bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$compile", function($scope, $battlescripts, $queryparam, $compile) {
+  bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$compile", function ($scope, $battlescripts, $queryparam, $compile) {
     $scope.game_id = $queryparam.get('game_id');
     $scope.players = [];
     $scope.player_list = [];
@@ -24,15 +25,15 @@
     $scope.game = null;
     $scope.results = null;
     $scope.options = {
-      total_games:10,
-      move_delay:100,
-      render_history:true
+      total_games: 10,
+      move_delay: 100,
+      render_history: true
     };
 
     $battlescripts.get_game($scope.game_id).then(
-        game => $scope.game=game
+      game => $scope.game = game
     );
-    $scope.$watch('game', function() {
+    $scope.$watch('game', function () {
       if ($scope.game) {
         $battlescripts.init_canvas($scope.game.canvas);
 
@@ -40,78 +41,81 @@
         $scope.players = new Array($scope.game.max_players).fill(null);
 
         // Retrieve a list of available players for this game
-        $battlescripts.search_players({"game_id":$scope.game.$id}).then(
-          players=>$scope.player_list=players
+        $battlescripts.search_players({"game_id": $scope.game.$id}).then(
+          players => $scope.player_list = players
         );
         // Retrieve a list of my players for this game
         $battlescripts.get_my_players($scope.game.$id).then(
-          myplayers=>$scope.my_player_list=myplayers
+          myplayers => $scope.my_player_list = myplayers
         )
       }
     });
 
-    $scope.start = function() {
-        var Game = eval($scope.game.source);
-        var game = new Game();
-        var players = [];
-        $scope.players.forEach( p=>{
-          players.push( new $battlescripts.Player(p.source) );
-        });
+    $scope.start = function () {
+      var Game = eval($scope.game.source);
+      var game = new Game();
+      var players = [];
+      $scope.players.forEach(p => {
+        players.push(new $battlescripts.Player(p.source));
+      });
 
-        var match = new Match(game, players,$scope.options);
-        match.subscribe("game.render", $battlescripts.render);
-        match.subscribe("match.results", function(results) {
-            $scope.$apply(function() {
-              $scope.results = results;
-            });
+      var match = new Match(game, players, $scope.options);
+      match.subscribe("game.render", $battlescripts.render);
+      match.subscribe("match.results", function (results) {
+        $scope.$apply(function () {
+          $scope.results = results;
         });
+      });
 
       match.start({});
-      };
+    };
   }]);
 </script>
+<header>
 
-<h1>{{game.name}}</h1>
-<a href="/">Home</a>
-<br style="clear:both;">
+</header>
+<div class="static-content-wrap">
+  <h1 class="game-title">{{game.name}}</h1>
+  <a href="/">Home</a>
 
-<div style="float:left;width:200px;min-height:600px;">
+  <div style="float:left;width:200px;min-height:600px;">
     <div style="margin:10px;">
 
     </div>
     <div>
-        <a href="player.html?game_id={{game.$id}}">Create A Player</a>
+      <a href="player.html?game_id={{game.$id}}">Create A Player</a>
     </div>
     <div style="margin:10px;">
-        <div>Players:</div>
-        <div ng-repeat="p in players track by $index">
-            {{$index+1}}. <select ng-options="p as p.name for p in player_list track by p.$id" ng-model="players[$index]"></select>
-        </div>
+      <div>Players:</div>
+      <div ng-repeat="p in players track by $index">
+        {{$index+1}}. <select ng-options="p as p.name for p in player_list track by p.$id"
+                              ng-model="players[$index]"></select>
+      </div>
     </div>
     <div style="margin:10px;">
-        <div>Options:</div>
-        Number of games: <input ng-model="options.total_games" size="4"><br>
-        Move delay: <input ng-model="options.move_delay" size="5"><br>
-        <button ng-click="start()">Start</button>
+      <div>Options:</div>
+      Number of games: <input ng-model="options.total_games" size="4"><br>
+      Move delay: <input ng-model="options.move_delay" size="5"><br>
+      <button ng-click="start()">Start</button>
 
     </div>
     <div>
-        <div>My Players:</div>
-        <div ng-repeat="p in my_player_list">
-            <a href="player.html?game_id={{game.$id}}&id={{p.$id}}">{{p.name}}</a>
-        </div>
+      <div>My Players:</div>
+      <div ng-repeat="p in my_player_list">
+        <a href="player.html?game_id={{game.$id}}&id={{p.$id}}">{{p.name}}</a>
+      </div>
     </div>
+  </div>
+  <div style="float:left;width:800px;height:600px;border:1px solid black;margin:10px;">
+    <div>
+      Game #{{results.games_played}} of {{results.total_games}}<br>
+      Player 1 (X) Wins: {{results.player_wins[0]}}<br>
+      Player 2 (O) Wins: {{results.player_wins[1]}}<br>
+      Draws: {{results.draws}}<br>
+    </div>
+    <div ng-controller="CanvasController"></div>
+  </div>
 </div>
-<div style="float:left;width:800px;height:600px;border:1px solid black;margin:10px;">
-<div>
-    Game #{{results.games_played}} of {{results.total_games}}<br>
-    Player 1 (X) Wins: {{results.player_wins[0]}}<br>
-    Player 2 (O) Wins: {{results.player_wins[1]}}<br>
-    Draws: {{results.draws}}<br>
-</div>
-<div ng-controller="CanvasController"></div>
-</div>
-
 </body>
 </html>
 

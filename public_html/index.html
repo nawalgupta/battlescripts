@@ -75,7 +75,7 @@
 
 
 <div class="static-content-wrap">
-  <header>
+  <div class="static-header">
     <img src="./img/battlescripts-logo.png" class="hero-image">
     <div class="bs-hr-container">
       <div class="bs-hr-content-container">
@@ -87,7 +87,7 @@
     <h3>Beat your friends.</h3>
     <h3>Conquer your co-workers.</h3>
     <h2>May the best algorithm win.</h2>
-  </header>
+  </div>
   <section class="main-content">
 
 
@@ -139,15 +139,15 @@
 
 
     <div class="games-container">
-      <h2 class="games-title">Games</h2>
+      <h2 class="games-header">Games</h2>
       <div class="game" ng-repeat="game in games">
         <a href="game.html?game_id={{game.$id}}">
           <div class="logo"></div>
           <div class="body">
-            <div class="title">{{game.name}}</div>
-            <div class="description">{{game.description}}</div>
+            <div class="game-title">{{game.name}}</div>
+            <div class="game-description">{{game.description}}</div>
           </div>
-          <div class="footer"></div>
+          <div class="game-footer"></div>
         </a>
       </div>
 

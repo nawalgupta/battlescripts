@@ -24,7 +24,7 @@ body {
   border-left: 8px solid @BLUE;
   border-right: 8px solid @RED;
 }
-header{
+.static-header{ 
   font-size: 1.5rem;
   text-align: center;
 }
@@ -168,34 +168,35 @@ button{
   font-size: 3.8rem;
   margin: 0 0 2rem;
 }
-.game{
+.game {
   border: 1px solid @BLUE;
   padding: 2rem;
   //width: 50%;
   margin: 0 0 4rem 0;
-  &:nth-child(odd){
+  &:nth-child(odd) {
     border-color: @RED;
   }
   a {
     text-decoration: none;
     color: @LIGHT_THEME_TEXT;
   }
-  .logo{
-    border: 1px solid @LIGHT_THEME_COLOR1;
-    float: left;
-    width: 256px;
-    height: 256px;
-    margin-right: 25px;
-  }
-  .title {
-    font-size: 2.8rem;
-    font-family: "Open Sans", sans-serif;
-    font-weight: 800;
-  }
-  .footer {
-    clear: both;
-  }
 }
+.game-logo{
+  border: 1px solid @LIGHT_THEME_COLOR1;
+  float: left;
+  width: 256px;
+  height: 256px;
+  margin-right: 25px;
+}
+.game-title {
+  font-size: 2.8rem;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 800;
+}
+.game-footer {
+  clear: both;
+}
+
 /* FLEXBOX IDE Layout */
 /* ================== */
 @color_1: #333;

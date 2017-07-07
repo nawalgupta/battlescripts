@@ -141,7 +141,7 @@ body {
   border-left: 8px solid #28c4f1;
   border-right: 8px solid #e41e2b;
 }
-header {
+.static-header {
   font-size: 1.5rem;
   text-align: center;
 }
@@ -279,19 +279,19 @@ button.large {
   text-decoration: none;
   color: #555;
 }
-.game .logo {
+.game-logo {
   border: 1px solid #e7e7e7;
   float: left;
   width: 256px;
   height: 256px;
   margin-right: 25px;
 }
-.game .title {
+.game-title {
   font-size: 2.8rem;
   font-family: "Open Sans", sans-serif;
   font-weight: 800;
 }
-.game .footer {
+.game-footer {
   clear: both;
 }
 /* FLEXBOX IDE Layout */
