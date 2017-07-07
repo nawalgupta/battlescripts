@@ -3,178 +3,173 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>Battle Scripts</title>
-    <script>var module={}; // To allow module.exports not to fail</script>
+  <link rel="stylesheet" type="text/css" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans:400,400i,800" rel="stylesheet">
+  <script>var module = {}; // To allow module.exports not to fail</script>
 
-    <script type="text/javascript" src="js/jquery.js"></script>
-<script type='text/javascript' src='js/angular.js'></script>
-<script type='text/javascript' src='js/firebase.js'></script>
-<script type='text/javascript' src='js/angularfire.js'></script>
-<script type='text/javascript' src='js/angular-sanitize.js'></script>
-<script type='text/javascript' src='js/battlescripts-app.js'></script>
-<script type='text/javascript' src='js/Match.js'></script>
-    <script>
-      bsapp.controller("ScreenController", ["$scope", "$battlescripts", function ($scope, $battlescripts) {
-        $scope.games = [];
-        $scope.players = {};
-        $scope.example_game = null;
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type='text/javascript' src='js/angular.js'></script>
+  <script type='text/javascript' src='js/firebase.js'></script>
+  <script type='text/javascript' src='js/angularfire.js'></script>
+  <script type='text/javascript' src='js/angular-sanitize.js'></script>
+  <script type='text/javascript' src='js/battlescripts-app.js'></script>
+  <script type='text/javascript' src='js/Match.js'></script>
+  <script>
+    bsapp.controller("ScreenController", ["$scope", "$battlescripts", function ($scope, $battlescripts) {
+      $scope.games = [];
+      $scope.players = {};
+      $scope.example_game = null;
 
-        $scope.play = function() {
-          var code = $('#player').val();
-          var game_source = $scope.example_game.source;
-          $battlescripts.play( Match, game_source, [code,code], {move_delay:250}, function(e) {
-            alert(e);
-          });
-        };
-
-        $battlescripts.get_game('-Kn6geZ8YpA7w5oCoxzo').then((game)=> {
-          $scope.example_game = game;
-          $battlescripts.init_canvas(game.canvas);
+      $scope.play = function () {
+        var code = $('#player').val();
+        var game_source = $scope.example_game.source;
+        $battlescripts.play(Match, game_source, [code, code], {move_delay: 250}, function (e) {
+          alert(e);
         });
+      };
 
-        $battlescripts.get_all_games().then(
-          function (list) {
-            $scope.games = list;
-          }
-        );
-        $battlescripts.get_all_players().then(
-          (players) => {
-            (players || []).forEach(player => {
-              if (!$scope.players[player.game_id]) {
-                $scope.players[player.game_id] = [];
-              }
-              $scope.players[player.game_id].push(player);
-            })
-          }
-        );
-      }]);
-    </script><style>
-    body {
-        background-color:black;
-        color:white;
-    }
-    a { color:white; }
+      $battlescripts.get_game('-Kn6geZ8YpA7w5oCoxzo').then((game) => {
+        $scope.example_game = game;
+        $battlescripts.init_canvas(game.canvas);
+      });
 
-    /* Oops. This is temp */
-    #canvas { color:black; }
-</style>
+      $battlescripts.get_all_games().then(
+        function (list) {
+          $scope.games = list;
+        }
+      );
+      $battlescripts.get_all_players().then(
+        (players) => {
+          (players || []).forEach(player => {
+            if (!$scope.players[player.game_id]) {
+              $scope.players[player.game_id] = [];
+            }
+            $scope.players[player.game_id].push(player);
+          })
+        }
+      );
+    }]);
+  </script>
 </head>
+<!--     <svg xmlns="http://www.w3.org/2000/svg" width="1282" height="163" viewBox="0 0 1282.4 163.5">
+             <style>.a{fill:#21C3F0;}.b{fill:#E21E2A;}</style>
+             <path d="M1226.1 64.5l5.5-5.6 34.2 28.5 -34.2 28.5 -5.5-5.6 27.7-22.8L1226.1 64.5z" class="a"/>
+             <path d="M48.1 110.3l-5.5 5.6L8.4 87.4l34.2-28.5 5.5 5.6L20.4 87.3 48.1 110.3z" class="b"/>
+             <path d="M133.4 89.1c0 5.6-0.8 10.6-2.3 15 -1.5 4.4-3.8 8.1-6.6 11.2 -2.8 3.1-6.3 5.4-10.4 7.1 -4.1 1.6-8.7 2.4-13.7 2.4 -4 0-8.1-0.4-12.2-1.1 -4.2-0.8-8.3-2-12.3-3.6V29.2h11.7v26.1l-0.5 12.5c3.3-4.5 6.9-7.7 10.8-9.6 3.8-1.8 7.9-2.8 12.3-2.8 3.9 0 7.2 0.8 10.1 2.4 2.9 1.6 5.3 3.9 7.3 6.8 1.9 2.9 3.4 6.5 4.4 10.6C132.9 79.4 133.4 84 133.4 89.1zM121.5 89.6c0-3.5-0.2-6.8-0.8-9.7 -0.5-3-1.3-5.5-2.5-7.6 -1.1-2.1-2.5-3.8-4.3-4.9 -1.8-1.2-3.8-1.8-6.3-1.8 -1.5 0-3 0.2-4.5 0.7 -1.5 0.5-3.1 1.2-4.7 2.3 -1.6 1.1-3.4 2.5-5.2 4.4 -1.8 1.8-3.7 4.1-5.8 6.7v32.7c2.3 0.9 4.6 1.6 7 2.1 2.4 0.5 4.6 0.8 6.8 0.8 2.7 0 5.3-0.4 7.7-1.3 2.4-0.8 4.6-2.3 6.4-4.3 1.8-2 3.3-4.6 4.4-7.9C121 98.6 121.5 94.5 121.5 89.6z" class="b"/>
+             <path d="M203.3 124l-0.2-9.1c-3.7 3.6-7.4 6.2-11.2 7.9 -3.8 1.6-7.7 2.4-11.9 2.4 -3.9 0-7.2-0.5-9.9-1.5s-5-2.3-6.8-4.1c-1.8-1.7-3.1-3.7-3.9-6.1 -0.8-2.3-1.2-4.9-1.2-7.6 0-6.8 2.5-12.1 7.5-15.9 5-3.8 12.5-5.7 22.3-5.7h14v-5.9c0-4-1.3-7.2-3.8-9.6 -2.6-2.4-6.4-3.6-11.7-3.6 -3.8 0-7.6 0.4-11.2 1.3 -3.7 0.9-7.5 2.1-11.4 3.6V59.7c1.5-0.5 3.1-1.1 4.9-1.6 1.8-0.5 3.7-1 5.7-1.4 2-0.4 4.1-0.7 6.3-1 2.2-0.2 4.4-0.4 6.6-0.4 4.1 0 7.7 0.4 11 1.3 3.2 0.9 6 2.3 8.3 4.1 2.3 1.8 4 4.1 5.2 6.9 1.2 2.8 1.8 6 1.8 9.8v46.5H203.3zM202.1 93.3h-14.8c-2.9 0-5.4 0.3-7.5 0.9 -2.1 0.6-3.8 1.4-5.2 2.5 -1.3 1.1-2.4 2.4-3 3.9 -0.7 1.5-1 3.2-1 5.1 0 1.3 0.2 2.5 0.6 3.7 0.4 1.2 1 2.2 1.9 3.2 0.9 0.9 2.1 1.6 3.5 2.2 1.4 0.5 3.2 0.8 5.2 0.8 2.7 0 5.8-0.8 9.2-2.5 3.5-1.6 7.1-4.2 11-7.7V93.3z" class="b"/>
+             <path d="M298.6 123.1c-2.6 0.7-5.4 1.1-8.2 1.4 -2.8 0.3-5.7 0.4-8.6 0.4 -8.4 0-14.7-1.9-18.9-5.7 -4.2-3.8-6.3-9.7-6.3-17.6V66.4h-18.8v-9.8h18.8v-18.5l11.7-3v21.5h30.2v9.8h-30.2v34.2c0 4.8 1.3 8.4 3.8 10.8 2.6 2.4 6.4 3.6 11.4 3.6 2.2 0 4.5-0.2 7.1-0.5 2.5-0.3 5.2-0.9 8-1.6V123.1z" class="b"/>
+             <path d="M382.8 123.1c-2.7 0.7-5.4 1.1-8.2 1.4 -2.8 0.3-5.7 0.4-8.6 0.4 -8.5 0-14.8-1.9-18.9-5.7 -4.1-3.8-6.2-9.7-6.2-17.6V66.4h-18.9v-9.8h18.9v-18.5l11.7-3v21.5h30.3v9.8h-30.3v34.2c0 4.8 1.3 8.4 3.9 10.8 2.6 2.4 6.4 3.6 11.4 3.6 2.1 0 4.5-0.2 7-0.5 2.5-0.3 5.2-0.9 8-1.6V123.1z" class="b"/>
+             <path d="M435.7 38.8H415.8v-9.6h31.7v85.1h20.1v9.7h-54v-9.7h22.1V38.8z" class="b"/>
+             <path d="M553.8 86.7c0 1.7 0 3-0.1 4.2 0 1.1-0.1 2.2-0.2 3.2h-47.3c0 6.9 1.9 12.2 5.8 15.9 3.9 3.7 9.4 5.5 16.7 5.5 2 0 3.9-0.1 5.9-0.2 2-0.2 3.9-0.4 5.7-0.6 1.8-0.3 3.6-0.6 5.3-0.9 1.7-0.3 3.2-0.7 4.7-1.1v9.6c-3.2 0.9-6.8 1.6-10.8 2.2 -4 0.6-8.1 0.8-12.5 0.8 -5.8 0-10.7-0.8-14.9-2.3 -4.2-1.6-7.6-3.8-10.2-6.8 -2.6-3-4.6-6.6-5.9-10.9 -1.3-4.3-1.9-9.2-1.9-14.7 0-4.7 0.7-9.2 2-13.5 1.4-4.2 3.4-7.9 6-11.1 2.6-3.2 5.8-5.7 9.6-7.6 3.8-1.9 8.1-2.8 13-2.8 4.7 0 8.9 0.7 12.5 2.2 3.6 1.5 6.7 3.6 9.1 6.3 2.5 2.7 4.4 6 5.6 9.9C553.2 77.6 553.8 82 553.8 86.7zM541.7 85.1c0.1-3-0.1-5.7-0.9-8.2 -0.7-2.5-1.9-4.6-3.3-6.4 -1.5-1.8-3.4-3.2-5.6-4.2 -2.2-1-4.8-1.5-7.8-1.5 -2.5 0-4.9 0.5-7 1.5 -2.1 1-3.9 2.4-5.4 4.2 -1.5 1.8-2.8 3.9-3.7 6.4 -0.9 2.5-1.5 5.3-1.7 8.3H541.7z" class="b"/>
+             <polygon points="596.1 35.6 582.1 49.9 627.5 87.6 582 125 596.1 139.3 658.2 87.4 " class="b"/>
+             <polygon points="641.8 50.2 627.7 35.8 565.6 87.7 627.7 139.5 641.8 125.2 596.4 87.5 " class="a"/>
+             <path d="M726.1 105.8c0 2.4-0.4 4.5-1.2 6.4 -0.8 1.9-1.9 3.5-3.3 5 -1.4 1.5-3 2.7-4.8 3.7 -1.8 1-3.8 1.9-5.9 2.6 -2.1 0.7-4.2 1.2-6.4 1.5 -2.2 0.3-4.3 0.5-6.4 0.5 -4.6 0-8.8-0.2-12.6-0.6 -3.8-0.4-7.6-1.1-11.2-1.9v-10.7c3.9 1.1 7.8 2 11.7 2.5 3.9 0.6 7.8 0.9 11.6 0.9 5.6 0 9.7-0.8 12.4-2.3 2.7-1.5 4-3.7 4-6.5 0-1.2-0.2-2.3-0.6-3.3 -0.4-1-1.2-1.9-2.3-2.8 -1.1-0.9-2.8-1.8-5.2-2.7 -2.3-0.9-5.5-2-9.6-3.2 -3-0.9-5.8-1.9-8.4-3.1 -2.6-1.1-4.8-2.5-6.7-4.1 -1.9-1.6-3.3-3.4-4.4-5.5 -1.1-2.1-1.6-4.6-1.6-7.5 0-1.9 0.4-3.9 1.3-6.2 0.9-2.2 2.4-4.3 4.5-6.2 2.1-1.9 4.9-3.5 8.5-4.8 3.6-1.3 8.1-1.9 13.4-1.9 2.6 0 5.6 0.2 8.8 0.4 3.2 0.3 6.6 0.8 10.1 1.5V68c-3.7-0.9-7.2-1.5-10.5-2 -3.3-0.4-6.1-0.6-8.6-0.6 -2.9 0-5.3 0.2-7.3 0.7 -2 0.5-3.6 1.1-4.8 1.8 -1.2 0.8-2.1 1.7-2.7 2.8 -0.5 1.1-0.8 2.2-0.8 3.4 0 1.2 0.2 2.3 0.7 3.3 0.5 1 1.4 1.9 2.6 2.8 1.3 0.9 3.1 1.8 5.4 2.8 2.3 0.9 5.3 1.9 8.9 3 4 1.2 7.3 2.4 10.1 3.7 2.7 1.3 5 2.7 6.7 4.3 1.7 1.6 2.9 3.3 3.6 5.3C725.8 101.1 726.1 103.3 726.1 105.8z" class="a"/>
+             <path d="M804.6 121.7c-3 1.2-6.2 2-9.4 2.6 -3.2 0.6-6.5 0.8-9.9 0.8 -10.6 0-18.8-2.9-24.6-8.7 -5.7-5.8-8.6-14.2-8.6-25.3 0-5.3 0.9-10.2 2.5-14.5 1.7-4.3 4-8 7-11.1 3-3.1 6.6-5.5 10.7-7.1 4.1-1.7 8.7-2.5 13.8-2.5 3.5 0 6.7 0.3 9.8 0.7 3.1 0.5 5.9 1.3 8.7 2.4v11.1c-2.9-1.5-5.9-2.6-8.9-3.3 -3-0.7-6.1-1-9.4-1 -3 0-5.9 0.6-8.5 1.7 -2.6 1.2-5 2.8-7 4.9 -2 2.1-3.6 4.8-4.7 7.8 -1.2 3.1-1.8 6.6-1.8 10.5 0 8.1 2 14.2 5.9 18.3 4 4.1 9.5 6.1 16.5 6.1 3.2 0 6.3-0.4 9.2-1.1 2.9-0.7 5.8-1.8 8.6-3.2V121.7z" class="a"/>
+             <path d="M834.6 56.8h10.7l0.3 12.4c4-4.8 7.9-8.3 11.8-10.4 3.9-2.1 7.8-3.2 11.7-3.2 7 0 12.3 2.3 15.9 6.8 3.6 4.5 5.3 11.2 5 20.1H878.1c0.1-5.9-0.7-10.2-2.6-12.8 -1.8-2.7-4.6-4-8.1-4 -1.6 0-3.1 0.3-4.7 0.8 -1.6 0.6-3.2 1.5-4.9 2.7 -1.7 1.2-3.5 2.8-5.3 4.7 -1.8 1.9-3.9 4.3-6 7v43.3h-11.8V56.8z" class="a"/>
+             <path d="M931.9 66.5h-20v-9.7h31.8v57.7h20.1v9.7h-54v-9.7h22.1V66.5zM936 28.6c1.3 0 2.5 0.2 3.6 0.7 1.1 0.5 2.1 1.1 2.9 2 0.9 0.9 1.5 1.8 1.9 2.9 0.5 1.1 0.7 2.3 0.7 3.6 0 1.3-0.2 2.4-0.7 3.6 -0.5 1.1-1.1 2.1-1.9 3 -0.8 0.9-1.8 1.5-2.9 2 -1.1 0.5-2.3 0.7-3.6 0.7 -1.3 0-2.5-0.2-3.6-0.7 -1.1-0.5-2.1-1.1-2.9-2 -0.8-0.8-1.5-1.8-1.9-3 -0.5-1.1-0.7-2.3-0.7-3.6 0-1.3 0.2-2.5 0.7-3.6 0.5-1.1 1.1-2.1 1.9-2.9 0.9-0.8 1.8-1.5 2.9-2C933.5 28.8 934.7 28.6 936 28.6z" class="a"/>
+             <path d="M1046.1 89.3c0 6-0.8 11.2-2.5 15.7 -1.7 4.5-4 8.2-7 11.1 -2.9 2.9-6.4 5.2-10.4 6.7 -4 1.5-8.4 2.2-13.1 2.2 -2.1 0-4.3-0.1-6.4-0.3 -2.1-0.2-4.3-0.6-6.4-1.1v28.2h-11.7V56.8h10.4l0.7 11.3c3.4-4.6 6.9-7.8 10.8-9.7 3.8-1.9 7.9-2.8 12.3-2.8 3.9 0 7.2 0.8 10.1 2.4 2.9 1.6 5.4 3.9 7.3 6.8 2 2.9 3.4 6.5 4.4 10.6C1045.6 79.6 1046.1 84.2 1046.1 89.3zM1034.1 89.9c0-3.5-0.2-6.8-0.8-9.7 -0.5-3-1.3-5.5-2.5-7.6 -1.1-2.1-2.6-3.7-4.3-4.9 -1.7-1.2-3.8-1.8-6.2-1.8 -1.5 0-3 0.2-4.5 0.7 -1.5 0.5-3.1 1.3-4.7 2.4 -1.6 1.1-3.4 2.5-5.2 4.4 -1.8 1.8-3.7 4.1-5.8 6.7v32.7c2.1 0.9 4.4 1.6 6.8 2.1 2.4 0.5 4.7 0.8 7 0.8 6.3 0 11.2-2.1 14.8-6.4C1032.3 104.9 1034.1 98.5 1034.1 89.9z" class="a"/>
+             <path d="M1127 123.3c-2.6 0.7-5.4 1.2-8.2 1.4 -2.8 0.3-5.7 0.4-8.6 0.4 -8.4 0-14.7-1.9-18.9-5.7 -4.2-3.8-6.2-9.7-6.2-17.6V66.7h-18.9v-9.8h18.9V38.3l11.7-3v21.5h30.2v9.8h-30.2v34.2c0 4.8 1.3 8.4 3.8 10.8 2.6 2.4 6.4 3.6 11.4 3.6 2.2 0 4.5-0.2 7.1-0.5 2.5-0.3 5.2-0.9 8-1.6V123.3z" class="a"/>
+             <path d="M1205.6 105.8c0 2.4-0.4 4.5-1.2 6.4 -0.8 1.9-1.9 3.5-3.3 5 -1.4 1.5-3 2.7-4.8 3.7 -1.8 1-3.8 1.9-5.9 2.6 -2.1 0.7-4.2 1.2-6.4 1.5 -2.2 0.3-4.3 0.5-6.4 0.5 -4.5 0-8.7-0.2-12.6-0.6 -3.8-0.4-7.6-1.1-11.3-1.9v-10.7c3.9 1.1 7.8 2 11.7 2.5 3.9 0.6 7.8 0.9 11.6 0.9 5.6 0 9.7-0.8 12.4-2.3 2.7-1.5 4-3.7 4-6.5 0-1.2-0.2-2.3-0.6-3.3 -0.4-1-1.2-1.9-2.3-2.8 -1.1-0.9-2.8-1.8-5.2-2.7 -2.3-0.9-5.5-2-9.6-3.2 -3-0.9-5.9-1.9-8.4-3.1 -2.6-1.1-4.8-2.5-6.7-4.1 -1.8-1.6-3.3-3.4-4.4-5.5 -1.1-2.1-1.6-4.6-1.6-7.5 0-1.9 0.4-3.9 1.3-6.2 0.9-2.2 2.3-4.3 4.5-6.2 2.1-1.9 4.9-3.5 8.5-4.8 3.6-1.3 8.1-1.9 13.4-1.9 2.6 0 5.5 0.2 8.8 0.4 3.2 0.3 6.6 0.8 10.1 1.5V68c-3.7-0.9-7.2-1.5-10.4-2 -3.3-0.4-6.1-0.6-8.6-0.6 -2.9 0-5.4 0.2-7.3 0.7 -2 0.5-3.6 1.1-4.8 1.8 -1.2 0.8-2.1 1.7-2.7 2.8 -0.5 1.1-0.8 2.2-0.8 3.4 0 1.2 0.2 2.3 0.7 3.3 0.5 1 1.3 1.9 2.6 2.8 1.3 0.9 3.1 1.8 5.4 2.8 2.3 0.9 5.2 1.9 8.9 3 4 1.2 7.3 2.4 10.1 3.7 2.7 1.3 5 2.7 6.7 4.3 1.7 1.6 2.9 3.3 3.7 5.3C1205.2 101.1 1205.6 103.3 1205.6 105.8z" class="a"/>
+         </svg>-->
 <body ng-app="battlescripts" ng-controller="ScreenController">
 
-<h1 style="text-align:center;font-size:64px;">BattleScripts</h1>
 
-<div>
-    <img src="img/shall_we_play_a_game.png">
-</div>
+<div class="static-content-wrap">
+  <header>
+    <img src="./img/battlescripts-logo.png" class="hero-image">
+    <div class="bs-hr-container">
+      <div class="bs-hr-content-container">
+        <span class="tag-line">Shall We Play A Game?</span>
+      </div>
+    </div>
 
-<div>
-    Write javascript code to play games. Beat your friends. Conquer your co-workers. May the best algorithm win.
-</div>
+    <h3>Write javascript code to play games. </h3>
+    <h3>Beat your friends.</h3>
+    <h3>Conquer your co-workers.</h3>
+    <h2>May the best algorithm win.</h2>
+  </header>
+  <section class="main-content">
 
-<h3>Try It!</h3>
 
-<div>
-    You are X (player 0). Your move() function will be passed a data structure like this:<br>
-    <code>{ player_number:0, board:[-1,-1,-1,-1,-1,-1,-1,-1,-1] }</code><br>
-    The data structure represents each square on the board, from top left [0] to bottom right [8]. The value is either a -1 if the space is empty, or the player number if it's taken.<br>
-    Your player is a constructor that returns an object with a move() method. This method must return the square number of your move [0-8].<br>
-    Tic-Tac-Toe is a solvable game. If you code your player well, you should never lose!
-</div>
+<!--    <h3>Try It!</h3>-->
+<div class="example-container">
+  <div class="example-game">
+    <div id="canvas" ng-controller="CanvasController" style="height:320px;width:295px;"></div>
+    <div class="example-button-row">
+      <button ng-click="play()" class="primary large">Play!</button>
+    </div>
+  </div>
 
-<div>
-    <div style="height:320px;width:500px;float:left;">
-        <textarea style="width:90%;height:90%;" id="player">
-// A stupid random-guessing player
-module.exports = function () {
-  this.move = function (game) {
-    var board = game.board;
-    // Try 50 times to move
-    for (var i = 0; i < 50; i++) {
-      var m = Math.floor(Math.random() * 9);
-      if (board[m] == -1) {
-        return m;
+  <div class="instructions">
+    <textarea id="player" class="player-code">
+      // A stupid random-guessing player
+      module.exports = function () {
+        this.move = function (game) {
+          var board = game.board;
+          // Try 50 times to move
+          for (var i = 0; i < 50; i++) {
+            var m = Math.floor(Math.random() * 9);
+            if (board[m] == -1) {
+              return m;
+            }
+          }
+          return 0;
+        }
       }
-    }
-    return 0;
-  }
-}
-        </textarea>
-    </div>
-    <div style="height:320px;width:100px;float:left;">
-        <button ng-click="play()">Play!</button>
-    </div>
-    <div id="canvas" ng-controller="CanvasController" style="height:320px;width:295px;float:left;"></div>
+    </textarea>
+
+
+
+    <ul>
+      <li>You are X's (<span class="inline-code">player 0</span>). </li>
+      <li>Your <span class="inline-code">move()</span> function will be passed a data structure:<br><code class="inline-code">{ player_number:0, board:[-1,-1,-1,-1,-1,-1,-1,-1,-1] }</code></li>
+      <li>The data structure represents each square on the board, from top left [0] to bottom right [8].</li>
+      <li>The value is either a <span class="inline-code">-1</span> if the space is empty, or the player number if it's taken.</li>
+      <li>Your player is a constructor that returns an object with a <span class="inline-code">move()</span> method. It must return the square number of your move [0-8].</li>
+      <li>Tic-Tac-Toe is a solvable game. If you code your player well, you should never lose!</li>
+    </ul>
+  </div>
 </div>
 
-<br style="clear:both;">
+    <!--
+    <h3>Play</h3>
 
-<!--
-<h3>Play</h3>
+    <a href="match.html">Play a game</a>
+    -->
 
-<a href="match.html">Play a game</a>
--->
 
-<style>
-    .games {
-        text-align:center;
-    }
-    .games .title {
-        font-size:64px;
-        margin:20px 0;
-    }
-    .game {
-        border:1px solid white;
-        padding:15px;
-        width:50%;
-        margin-left:auto;
-        margin-right:auto;
-        margin-bottom:50px;
-    }
-    .game a {
-        text-decoration:none;
-    }
-    .game .logo {
-        border:1px solid white;
-        float:left;
-        width:256px;
-        height:256px;
-        margin-right:25px;
-    }
-    .game .title {
-        font-size:48px;
-        font-family:arial;
-    }
-    .game .footer {
-        clear:both;
-    }
-</style>
-<div class="games">
-    <div class="title">Games</div>
-    <div class="game" ng-repeat="game in games">
+    <div class="games-container">
+      <h2 class="games-title">Games</h2>
+      <div class="game" ng-repeat="game in games">
         <a href="game.html?game_id={{game.$id}}">
-            <div class="logo"></div>
-            <div class="body">
-                <div class="title">{{game.name}}</div>
-                <div class="description">{{game.description}}</div>
-            </div>
-            <div class="footer"></div>
+          <div class="logo"></div>
+          <div class="body">
+            <div class="title">{{game.name}}</div>
+            <div class="description">{{game.description}}</div>
+          </div>
+          <div class="footer"></div>
         </a>
+      </div>
+
     </div>
 
+    <!--
+    <ul>
+        <li ng-repeat="game in games">
+            <a href="game.html?id={{game.$id}}">{{game.name}}</a>
+            <ul>
+                <li ng-repeat="player in players[game.$id]"><a href="player.html?game_id={{game.$id}}&id={{player.$id}}">{{player.name}}</a></li>
+                <li><a href="player.html?game_id={{game.$id}}">+ Create New Player</a>
+            </ul>
+        </li>
+    </ul>
+    <a href="dev-game.html">Add a new game</a>
+    -->
+  </section>
 </div>
-
-<!--
-<ul>
-    <li ng-repeat="game in games">
-        <a href="game.html?id={{game.$id}}">{{game.name}}</a>
-        <ul>
-            <li ng-repeat="player in players[game.$id]"><a href="player.html?game_id={{game.$id}}&id={{player.$id}}">{{player.name}}</a></li>
-            <li><a href="player.html?game_id={{game.$id}}">+ Create New Player</a>
-        </ul>
-    </li>
-</ul>
-<a href="dev-game.html">Add a new game</a>
--->
 
 </body>
+</div>
+
 </html>
 
