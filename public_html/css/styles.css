@@ -136,10 +136,13 @@ body {
 }
 .static-content-wrap {
   max-width: 70rem ;
-  margin: 0 auto;
+  margin: 0;
   background-color: #FFF;
   border-left: 8px solid #28c4f1;
   border-right: 8px solid #e41e2b;
+}
+.static-content-wrap.center {
+  margin: 0 auto;
 }
 .static-header {
   font-size: 1.5rem;
@@ -148,6 +151,9 @@ body {
 .hero-image {
   max-width: 550px;
   margin: 2rem 0 0.5rem;
+}
+.tag-line {
+  font-family: 'Inconsolata';
 }
 h2 {
   font-size: 1.8rem;
@@ -158,11 +164,46 @@ h3 {
   font-size: 1.8rem;
   margin: 0 0 .5rem;
 }
-.tag-line {
-  font-family: 'Inconsolata';
+header {
+  padding: 1rem;
+  display: flex;
+  background-color: #FFF;
+  border-bottom: 1px solid #e7e7e7;
 }
-.main-contnet {
-  padding: 2rem;
+.bs-icon {
+  max-height: 40px;
+  margin: 0 1rem 0 0;
+}
+.bs-nav-icon {
+  max-height: 22px;
+  margin: 10px 1rem 0 0;
+}
+.bs-nav-container {
+  position: relative;
+}
+.bs-nav-container .bs-nav {
+  transform: scaleX(0);
+  transform-origin: 0;
+  transition: .25s;
+  font-size: 1.4rem;
+  position: absolute;
+  left: 100%;
+  top: 0;
+}
+.bs-nav-container:hover .bs-nav {
+  transform: scaleX(1);
+}
+.screen-title {
+  font-family: 'Inconsolata';
+  color: #28c4f1;
+  font-size: 2.0rem;
+}
+.page-actions {
+  flex-grow: 99;
+  margin-left: 1rem;
+}
+.user-actions {
+  margin-left: 1rem;
 }
 .bs-hr-container {
   background-color: #e7e7e7;
@@ -237,7 +278,9 @@ h3 {
   margin: .5rem 0 0 0;
   text-align: center;
 }
-button {
+button,
+.btn {
+  display: inline-block;
   padding: .5rem 1rem;
   font-weight: bold;
   border-radius: 2px;
@@ -245,13 +288,17 @@ button {
   border: 1px solid #cecece;
   color: #000000;
   font-family: 'Inconsolata';
+  text-decoration: none;
+  font-size: 1.0rem;
 }
-button.primary {
+button.primary,
+.btn.primary {
   background-color: #e41e2b;
   border: 1px solid #b91621;
   color: #ffffff;
 }
-button.large {
+button.large,
+.btn.large {
   font-size: 1.5rem;
   padding: .75rem 1.5rem;
 }
@@ -293,6 +340,21 @@ button.large {
 }
 .game-footer {
   clear: both;
+}
+.arena-container {
+  display: flex;
+  padding: 2rem;
+}
+.battle-options {
+  width: 200px;
+}
+.battle-arena {
+  flex-grow: 4;
+  margin: 0 0 0 1rem;
+  font-size: .9rem;
+  line-height: 1rem;
+  border: 1px solid #e7e7e7;
+  padding: .5rem;
 }
 /* FLEXBOX IDE Layout */
 /* ================== */

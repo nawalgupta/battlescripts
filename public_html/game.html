@@ -17,7 +17,7 @@
 <body ng-app="battlescripts" ng-controller="ScreenController">
 
 <script>
-  bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$compile", function ($scope, $battlescripts, $queryparam, $compile) {
+  bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$compile", function($scope, $battlescripts, $queryparam, $compile) {
     $scope.game_id = $queryparam.get('game_id');
     $scope.players = [];
     $scope.player_list = [];
@@ -33,8 +33,8 @@
     $battlescripts.get_game($scope.game_id).then(
       game => $scope.game = game
     );
-    $scope.$watch('game', function () {
-      if ($scope.game) {
+    $scope.$watch('game', function() {
+      if($scope.game) {
         $battlescripts.init_canvas($scope.game.canvas);
 
         // Initialize the players array
@@ -51,7 +51,7 @@
       }
     });
 
-    $scope.start = function () {
+    $scope.start = function() {
       var Game = eval($scope.game.source);
       var game = new Game();
       var players = [];
@@ -61,8 +61,8 @@
 
       var match = new Match(game, players, $scope.options);
       match.subscribe("game.render", $battlescripts.render);
-      match.subscribe("match.results", function (results) {
-        $scope.$apply(function () {
+      match.subscribe("match.results", function(results) {
+        $scope.$apply(function() {
           $scope.results = results;
         });
       });
@@ -72,49 +72,66 @@
   }]);
 </script>
 <header>
-
+  <img src="img/battlescripts-icon-med.png" class="bs-icon">
+  <div class="bs-nav-container">
+    <img src="img/nav-icon.png" class="bs-nav-icon">
+    <ul class="bs-nav">
+      <li><a href="/">Home</a></li>
+      <li>Games</li>
+      <li>Arena</li>
+    </ul>
+  </div>
+  <div class="screen-title">{{game.name}}</div>
+  <div class="page-actions"></div>
+  <div class="user-actions">Log Out</div>
 </header>
+
 <div class="static-content-wrap">
-  <h1 class="game-title">{{game.name}}</h1>
-  <a href="/">Home</a>
+  <div class="arena-container">
+    <div class="battle-options">
+      <a class="btn primary" href="player.html?game_id={{game.$id}}">Create A Player</a>
+      <div style="margin:10px;">
+        <div>Players:</div>
+        <div ng-repeat="p in players track by $index">
+          {{$index+1}}. <select ng-options="p as p.name for p in player_list track by p.$id"
+                                ng-model="players[$index]"></select>
+        </div>
+      </div>
+      <div style="margin:10px;">
+        <div>Options:</div>
+        Number of games: <input ng-model="options.total_games" size="4"><br>
+        Move delay: <input ng-model="options.move_delay" size="5"><br>
+        <button ng-click="start()">Start</button>
 
-  <div style="float:left;width:200px;min-height:600px;">
-    <div style="margin:10px;">
-
-    </div>
-    <div>
-      <a href="player.html?game_id={{game.$id}}">Create A Player</a>
-    </div>
-    <div style="margin:10px;">
-      <div>Players:</div>
-      <div ng-repeat="p in players track by $index">
-        {{$index+1}}. <select ng-options="p as p.name for p in player_list track by p.$id"
-                              ng-model="players[$index]"></select>
+        <div>My Players:</div>
+        <div ng-repeat="p in my_player_list">
+          <a href="player.html?game_id={{game.$id}}&id={{p.$id}}">{{p.name}}</a>
+        </div>
       </div>
     </div>
-    <div style="margin:10px;">
-      <div>Options:</div>
-      Number of games: <input ng-model="options.total_games" size="4"><br>
-      Move delay: <input ng-model="options.move_delay" size="5"><br>
-      <button ng-click="start()">Start</button>
-
+    <div class="battle-arena">
+      <div>
+        Game #{{results.games_played}} of {{results.total_games}}<br>
+        Player 1 (X) Wins: {{results.player_wins[0]}}<br>
+        Player 2 (O) Wins: {{results.player_wins[1]}}<br>
+        Draws: {{results.draws}}<br>
+      </div>
+      <div ng-controller="CanvasController"></div>
     </div>
-    <div>
-      <div>My Players:</div>
-      <div ng-repeat="p in my_player_list">
-        <a href="player.html?game_id={{game.$id}}&id={{p.$id}}">{{p.name}}</a>
+  </div>
+  <!--  <div style="float:left;width:200px;min-height:600px;">
+
+  &lt;!&ndash;    <div>
+        <a href="player.html?game_id={{game.$id}}">Create A Player</a>
+      </div>&ndash;&gt;
+
+      <div>
+
       </div>
     </div>
-  </div>
-  <div style="float:left;width:800px;height:600px;border:1px solid black;margin:10px;">
-    <div>
-      Game #{{results.games_played}} of {{results.total_games}}<br>
-      Player 1 (X) Wins: {{results.player_wins[0]}}<br>
-      Player 2 (O) Wins: {{results.player_wins[1]}}<br>
-      Draws: {{results.draws}}<br>
-    </div>
-    <div ng-controller="CanvasController"></div>
-  </div>
+    <div style="float:left;width:800px;height:600px;border:1px solid black;margin:10px;">
+
+    </div>-->
 </div>
 </body>
 </html>
