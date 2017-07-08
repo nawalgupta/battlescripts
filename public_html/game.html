@@ -51,8 +51,7 @@
     });
 
     $scope.start = function() {
-        var Game = eval($scope.game.source);
-        var game = new Game();
+        var game = new $battlescripts.Game($scope.game.source);
         var players = [];
         $scope.players.forEach( p=>{
           players.push( new $battlescripts.Player(p.source) );
