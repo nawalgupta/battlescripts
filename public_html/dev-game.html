@@ -8,6 +8,8 @@
     <script type="text/javascript" src="/lib/codemirror-5.27.2/lib/codemirror.js"></script>
     <script type="text/javascript" src="/lib/codemirror-5.27.2/mode/javascript/javascript.js"></script>
     <script type="text/javascript" src="/lib/codemirror-5.27.2/mode/markdown/markdown.js"></script>
+    <script type="text/javascript" src="/lib/codemirror-5.27.2/mode/css/css.js"></script>
+    <script type="text/javascript" src="/lib/codemirror-5.27.2/mode/htmlmixed/htmlmixed.js"></script>
     <link rel="stylesheet" href="/lib/codemirror-5.27.2/lib/codemirror.css" />
 
     <script type="text/javascript" src="js/jquery.js"></script>
@@ -23,7 +25,7 @@
       bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$http", function($scope, $battlescripts, $queryparam, $http) {
         var id = $queryparam.get('id');
         $scope.id=id;
-        $scope.game = {"canvas":null};
+        $scope.game = {};
         $scope.json_status="OK";
         $scope.json_status_class="";
 
@@ -33,7 +35,7 @@
           $scope.doc_game_api = response.data;
         });
 
-        // Watch for canvas changes to re-render
+        // Safely parse the test JSON
         var parse_json = function() {
           try {
             var o = JSON.parse($scope.game.test_json);
@@ -47,38 +49,26 @@
             return null;
           }
         };
-        var update_canvas = $battlescripts.debounce(function() {
-          var o = parse_json();
-          if (o) {
-            $battlescripts.render(o);
-          }
-        },500);
-        var init_canvas = $battlescripts.debounce(function() {
-          var o = parse_json();
-          if (o) {
-            $battlescripts.init_canvas($scope.game.canvas, o);
-          }
-        },500);
 
+        // Update the canvas when components change
+        $scope.$watchGroup(['game.test_json'], $battlescripts.debounce(function() {
+          $battlescripts.render(parse_json() || {});
+        },500));
+        $scope.$watchGroup(['game.canvas','game.css'], $battlescripts.debounce(function() {
+          $battlescripts.init_canvas($scope.game.canvas, $scope.game.css, parse_json() || {});
+        },500));
+
+        // Loading an existing game
         if (!!id) {
           $battlescripts.get_game(id).then((game)=>{
             $scope.game = game;
             $battlescripts.init_canvas($scope.game.canvas);
-            $scope.$watch('game.canvas', function(newValue,oldValue) {
-              init_canvas();
-            });
-            $scope.$watch('game.test_json', function(newValue,oldValue) {
-              update_canvas();
-            });
           });
         }
+        // New Game
         else {
-          $scope.game = {};
-          $scope.$watch($scope.game.canvas, function(newValue,oldValue) {
-            init_canvas();
-          });
-          $scope.$watch($scope.game.test_json, function(newValue,oldValue) {
-            update_canvas();
+          $http.get('/js/game_template.js').then((response)=>{
+            $scope.game.source = response.data;
           });
         }
 
@@ -137,7 +127,11 @@
         </div>
         <div class="panel canvas" style="position:relative;">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Canvas</div>
-            <textarea codemirror ng-model="game.canvas"></textarea>
+            <textarea codemirror language="htmlmixed" ng-model="game.canvas"></textarea>
+        </div>
+        <div class="panel canvas" style="position:relative;">
+            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Canvas CSS</div>
+            <textarea codemirror language="css" ng-model="game.css"></textarea>
         </div>
         <div class="panel" style="position:relative;">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Canvas Tester</div>

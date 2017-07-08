@@ -405,8 +405,8 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
   api.render = function(data) {
     $rootScope.$broadcast("canvas/render",data);
   };
-  api.init_canvas = function(template, json) {
-    $rootScope.$broadcast("canvas/init",{"template":template,"json":json||null});
+  api.init_canvas = function(template, css, json) {
+    $rootScope.$broadcast("canvas/init",{"template":template,"css":css,"json":json||null});
   };
 
   return api;
@@ -425,7 +425,12 @@ bsapp.controller("CanvasController", ["$scope", "$battlescripts", "$queryparam",
       $scope.game = data.json;
     }
     $element.html('');
-    $element.append($compile('<div>'+data.template+'</div>')($scope));
+    var canvas = "";
+    if (data.css) {
+      canvas += "<style>"+data.css+"</style>";
+    }
+    canvas += "<div>"+data.template+"</div>";
+    $element.append($compile(canvas)($scope));
     $timeout(function() { $scope.$apply();  });
     });
 }]);
