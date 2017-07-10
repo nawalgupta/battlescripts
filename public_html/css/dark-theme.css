@@ -1,0 +1,45 @@
+body.dark-theme {
+  background-color: #555;
+  color: #eee;
+}
+.dark-theme .static-content-wrap {
+  background-color: #555;
+}
+.dark-theme header {
+  background-color: #555;
+  border-bottom: 1px solid #888;
+}
+.dark-theme .bs-hr-container {
+  background-color: #888;
+}
+.dark-theme .bs-hr-content-container {
+  background-color: #555;
+}
+.dark-theme .inline-code {
+  color: #bbbbbb;
+}
+.dark-theme button,
+.dark-theme .btn {
+  background-color: #888;
+  border: 1px solid #6f6f6f;
+  color: #ffffff;
+}
+.dark-theme button.primary,
+.dark-theme .btn.primary {
+  background-color: #e41e2b;
+  border: 1px solid #b91621;
+  color: #ffffff;
+}
+.dark-theme .game a {
+  color: #eee;
+}
+.dark-theme .game-logo {
+  border: 1px solid #888;
+}
+.dark-theme .battle-arena {
+  border: 1px solid #888;
+}
+.dark-theme .theme-toggle {
+  background-color: #555;
+  border: 1px solid #888;
+}
