@@ -1,0 +1,67 @@
+@DARK_THEME_BACKGROUND_COLOR:#555;
+@DARK_THEME_COLOR1:#888;
+@DARK_THEME_TEXT:#eee;
+@BLUE:#28c4f1;
+@RED:#e41e2b;
+
+
+body.dark-theme{
+  background-color: @DARK_THEME_BACKGROUND_COLOR;
+  color: @DARK_THEME_TEXT;
+}
+
+.dark-theme {
+
+  .static-content-wrap {
+    background-color: @DARK_THEME_BACKGROUND_COLOR;
+  }
+
+  // ------------------------ HEADER ----------------------------
+  header {
+    background-color: @DARK_THEME_BACKGROUND_COLOR;
+    border-bottom: 1px solid @DARK_THEME_COLOR1;
+  }
+  // ------------------------------------------- BS Horizontal Rule ------------
+  .bs-hr-container {
+    background-color: @DARK_THEME_COLOR1;
+  }
+  .bs-hr-content-container {
+    background-color: @DARK_THEME_BACKGROUND_COLOR;
+  }
+  .inline-code {
+    color: darken(@DARK_THEME_TEXT, 20%);
+  }
+
+  //-------------------- BUTTONS ------------------------------
+  button, .btn {
+    background-color: @DARK_THEME_COLOR1;
+    border: 1px solid darken(@DARK_THEME_COLOR1, 10%);
+    color: contrast(@DARK_THEME_COLOR1);
+
+    &.primary {
+      background-color: @RED;
+      border: 1px solid darken(@RED, 10%);
+      color: contrast(@RED);
+    }
+
+  }
+
+  .game {
+    a {
+      color: @DARK_THEME_TEXT;
+    }
+  }
+  .game-logo {
+    border: 1px solid @DARK_THEME_COLOR1;
+  }
+
+  // --------------------------- BATTLE ARENA --------------------
+
+  .battle-arena {
+    border: 1px solid @DARK_THEME_COLOR1;
+  }
+  .theme-toggle{
+    background-color: @DARK_THEME_BACKGROUND_COLOR;
+    border: 1px solid @DARK_THEME_COLOR1;
+  }
+}
