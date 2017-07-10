@@ -314,8 +314,7 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
 
   // A quick shortcut to play a game
   api.play = function(Match, game_source, player_sources, options, error_handler) {
-    var Game = eval(game_source);
-    var game = new Game();
+    var game = new api.Game(game_source);
     var players = [];
     try {
       player_sources.forEach((code) => {
@@ -333,6 +332,56 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
       error_handler(msg);
     });
     match.start();
+  };
+
+  // The prototype object for Games, providing useful helper methods
+  api.game_prototype = function() {
+    // Build an array of objects
+    this.fill_array = function (num, o) {
+      var a = [];
+      for (var i = 0; i < num; i++) {
+        if (typeof o === "object") {
+          a[i] = JSON.parse(JSON.stringify(o));
+        }
+        else {
+          a[i] = o;
+        }
+      }
+      return a;
+    };
+    this.random = function (min, max) {
+      if (typeof min==="undefined") { min=0; }
+      if (typeof max==="undefined") { max=1; }
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+  };
+
+  // A wrapper to create a Game object from code and give it a prototype with useful functions
+  api.Game = function(code,options) {
+    var g = null;
+    options = options || {};
+    var wrapped=`
+        g=(function(){
+          var console={
+            log:function(m){
+              if (typeof m!=="string") { m=JSON.stringify(m); }
+              ${(options.prevent_logging ? '' : '$rootScope.$broadcast("log/game",m);')}
+            }
+          };
+          var module = {};
+          ${code};
+          return module.exports;
+        })();
+      `;
+    try {
+      eval(wrapped);
+      g.prototype = new api.game_prototype();
+    } catch(e) {
+      throw "Game compilation error: "+e.toString();
+    }
+    return g;
   };
 
   // A wrapper to create a Player object from code and enable debugging, etc.
@@ -405,8 +454,8 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
   api.render = function(data) {
     $rootScope.$broadcast("canvas/render",data);
   };
-  api.init_canvas = function(template, json) {
-    $rootScope.$broadcast("canvas/init",{"template":template,"json":json||null});
+  api.init_canvas = function(template, css, json) {
+    $rootScope.$broadcast("canvas/init",{"template":template,"css":css,"json":json||null});
   };
 
   return api;
@@ -425,7 +474,12 @@ bsapp.controller("CanvasController", ["$scope", "$battlescripts", "$queryparam",
       $scope.game = data.json;
     }
     $element.html('');
-    $element.append($compile('<div>'+data.template+'</div>')($scope));
+    var canvas = "";
+    if (data.css) {
+      canvas += "<style>"+data.css+"</style>";
+    }
+    canvas += "<div>"+data.template+"</div>";
+    $element.append($compile(canvas)($scope));
     $timeout(function() { $scope.$apply();  });
     });
 }]);

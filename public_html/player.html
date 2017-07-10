@@ -141,8 +141,7 @@
         // -----------
         $scope.test = function() {
           // START THE MATCH!!!
-          var Game = eval($scope.game.source);
-          var game = new Game();
+          var game = new $battlescripts.Game($scope.game.source);
           try {
             var p1 = new $battlescripts.Player($scope.player.source, {
               "before_move": function (data) {
