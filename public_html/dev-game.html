@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="/css/style.css" />
     <script type='text/javascript' src='js/micromarkdown.js'></script>
     <script>
-      bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$http", function($scope, $battlescripts, $queryparam, $http) {
+      bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$http", "$rootScope", function($scope, $battlescripts, $queryparam, $http, $rootScope) {
         var id = $queryparam.get('id');
         $scope.id=id;
         $scope.game = {};
@@ -67,16 +67,34 @@
         }
         // New Game
         else {
+          $scope.game.test_json = "{}";
           $http.get('/js/game_template.js').then((response)=>{
             $scope.game.source = response.data;
+          });
+          $http.get('/js/player_template.js').then((response)=>{
+            $scope.game.opponent = response.data;
+            $scope.game.player_template = response.data;
           });
         }
 
         $scope.save = function() {
           $battlescripts.save_game($scope.game).then(
             updated_game => $scope.game=updated_game
-          );
+          )
+          .then( () => $scope.console.log("<span>[Save]</span> Successful","success") )
+          .then( () => { if($scope.autoplay) { $scope.test(); } })
+          .catch( (err) => $scope.console.log("<span>[Save]</span> Error with Save: "+err.toString(),"error") )
         };
+        // ctrl+s to save
+        $(document).bind('keydown', function(e) {
+          if(e.ctrlKey && (e.which == 83)) {
+            e.preventDefault();
+            if ($scope.game && $scope.game.$id) {
+              $scope.save();
+            }
+            return false;
+          }
+        });
 
         $scope.delete = function() {
           if (confirm("Are you sure?")) {
@@ -84,7 +102,26 @@
               window.location.href="/";
             });
           }
-        }
+        };
+
+        // CONSOLE
+        // -------
+        $scope.console = {
+          log:function(msg,className) {
+            var $console = $('#console');
+            $console.append(`<div class="entry ${className}">${msg}</div>`);
+            $console.prop('scrollTop',9999);
+          }
+        };
+        $rootScope.$on('log/game',function(data,msg) {
+          $scope.console.log("<span>[game]</span>"+msg,"game");
+        });
+        $rootScope.$on('error/game',function(data,msg) {
+          $scope.console.log("<span>[game error]</span>"+msg,"error");
+        });
+        $rootScope.$on('compile/success',function(data,msg) {
+          $scope.console.log("<span>[game]</span> Compiled Successfully","success");
+        });
       }]);
     </script>
 </head>
@@ -126,17 +163,20 @@
             <div class="status {{status_class}}">{{status}}</div>
         </div>
         <div class="panel canvas" style="position:relative;">
-            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Canvas</div>
+            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Canvas Template</div>
             <textarea codemirror language="htmlmixed" ng-model="game.canvas"></textarea>
         </div>
-        <div class="panel canvas" style="position:relative;">
+        <div class="panel" style="position:relative;">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Canvas CSS</div>
             <textarea codemirror language="css" ng-model="game.css"></textarea>
         </div>
         <div class="panel" style="position:relative;">
-            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Canvas Tester</div>
-            <div><textarea codemirror ng-model="game.test_json"></textarea></div>
+            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Canvas Test Data</div>
+            <textarea codemirror ng-model="game.test_json"></textarea>
             <div class="status {{json_status_class}}">{{json_status}}</div>
+        </div>
+        <div class="panel" style="position:relative;">
+            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Canvas</div>
             <div id="canvas" ng-controller="CanvasController"></div>
         </div>
         <div class="panel collapsed source" style="position:relative;">
@@ -150,6 +190,10 @@
         <div class="panel collapsed source" style="position:relative;">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Game Documentation</div>
             <textarea codemirror language="markdown" ng-model="game.documentation"></textarea>
+        </div>
+        <div class="panel collapsed source" style="position:relative;">
+            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Game Documentation Output</div>
+            <div class="expand-v" ng-bind-html="game.documentation | markdown"></div>
         </div>
         <div class="panel collapsed documentation">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Game API</div>
