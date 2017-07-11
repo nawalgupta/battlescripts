@@ -8,6 +8,8 @@
     <script type="text/javascript" src="/lib/codemirror-5.27.2/lib/codemirror.js"></script>
     <script type="text/javascript" src="/lib/codemirror-5.27.2/mode/javascript/javascript.js"></script>
     <link rel="stylesheet" href="/lib/codemirror-5.27.2/lib/codemirror.css" />
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans:400,400i,600" rel="stylesheet">
 
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type='text/javascript' src='js/angular.js'></script>
@@ -17,7 +19,6 @@
     <script type='text/javascript' src='js/battlescripts-app.js'></script>
     <script type='text/javascript' src='js/Match.js'></script>
 
-    <link rel="stylesheet" href="/css/style.css" />
     <script type='text/javascript' src='js/micromarkdown.js'></script>
 
     <script>
@@ -34,6 +35,14 @@
         $scope.opponent = null;
         $scope.autoplay = true;
         $scope.user = null;
+        $scope.ideView = {
+          'details':false,
+          'source':false,
+          'tester':false,
+          'debugger':true,
+          'gameDoc':true,
+          'playerAPI':true
+        };
         // Docs
         $scope.doc_player_api = "";
         $http.get('/docs/Player.md').then((response)=>{
@@ -61,6 +70,12 @@
         // Load opponents
         $battlescripts.search_players({"game_id":game_id})
           .then( (players)=> $scope.opponents = players );
+
+        // View Toggle
+        // ------------------
+        $scope.toggleView = function(tab) {
+          $scope.ideView[tab] = !$scope.ideView[tab];
+        };
 
         // Player Persistence
         // ------------------
@@ -203,20 +218,50 @@
     </script>
 </head>
 
-<body class="" ng-app="battlescripts" ng-controller="ScreenController">
+<body class="no-bg" ng-app="battlescripts" ng-controller="ScreenController">
 <div ng-show="!game || (id && !player.$id)" style="height:100%;">Loading...</div>
 <div ng-show="game && (!id || player.$id)" class="ide">
-    <div class="header">
-        <a href="dashboard.html">
-            <div style="float:right;height:30px;min-width:100px;border:2px solid black;border-radius:10px;padding:0 10px;line-height:28px;font-size:14px;">
-                <img src="{{user.photoURL}}" style="max-height:24px;"> {{user.displayName}}
+    <header>
+        <img src="img/battlescripts-icon-med.png" class="bs-icon">
+        <div class="bs-nav-container">
+            <img src="img/nav-icon.png" class="bs-nav-icon">
+            <ul class="bs-nav">
+                <li><a href="/">Home</a></li>
+                <li>Games</li>
+                <li>Arena</li>
+            </ul>
+        </div>
+        <div class="screen-title-container">
+            <div class="screen-title">{{game.name}}</div>
+            <div class="player-name"></div>
+        </div>
+        <div class="page-actions">
+            <button class="primary page-action">Save & Run</button>
+            <div class="page-action" ng-click="save()">Save</div>
+            <div class="page-action" ng-click="publish()">Save &amp; Publish</div>
+        </div>
+        <div class="user-actions">
+          <div ng-if="user.displayName">
+            <div class="user-name">{{user.displayName}}</div>
+          </div>
+          <div ng-if="!user.displayName">Log In</div>
+        </div>
+    </header>
+    <div class="bs-hr-container">
+        <div class="bs-hr-content-container">
+            <div class="tab-container">
+                <div class="tab-toggle" ng-class="{'collapsed':ideView.details}" ng-click="toggleView('details')">Details</div>
+                <div class="tab-toggle" ng-class="{'collapsed':ideView.source}" ng-click="toggleView('source')">Source</div>
+                <div class="tab-toggle" ng-class="{'collapsed':ideView.tester}" ng-click="toggleView('tester')">Tester</div>
+                <div class="tab-toggle" ng-class="{'collapsed':ideView.debugger}" ng-click="toggleView('debugger')">Debugger</div>
+                <div class="tab-toggle" ng-class="{'collapsed':ideView.gameDoc}" ng-click="toggleView('gameDoc')">Game Documentation</div>
+                <div class="tab-toggle" ng-class="{'collapsed':ideView.playerAPI}" ng-click="toggleView('playerAPI')">Player API Documentation</div>
             </div>
-        </a>
-        <div class="title"><a href="/">BattleScripts</a> / <a href="game.html?game_id={{game.$id}}">{{game.name}}</a> / Player Editor</div>
+        </div>
     </div>
     <div class="main">
-        <div class="panel details">
-            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Details</div>
+        <div class="panel details" ng-class="{'collapsed':ideView.details}">
+            <h3 class="panel-title" >Details</h3>
 
             <label>Game</label>
             <div>{{game.name}}</div>
@@ -228,24 +273,22 @@
             <div><textarea ng-model="player.description" style="width:90%;height:75px;"></textarea></div>
 
 
-        <div>
-            <div><button ng-click="save()">Save</button></div>
-            <div ng-if="!player.published || player.source!=player.published">Your changes will not be visible to others until you publish your new code!</div>
-            <div ng-if="!player.published"><button ng-click="publish()">Save &amp; Publish</button></div>
-            <div ng-if="player.published && player.source!=player.published"><button ng-click="publish()">Save &amp; Re-Publish</button></div>
-            <div ng-if="player.published"><button ng-click="unpublish()">Unpublish</button></div>
-            <div><button ng-click="delete_player()">Delete</button></div>
-        </div>
+            <div>
+                <div ng-if="!player.published || player.source!=player.published">Your changes will not be visible to others until you publish your new code!</div>
+                <div ng-if="player.published && player.source!=player.published"><button ng-click="publish()">Save &amp; Re-Publish</button></div>
+                <div ng-if="player.published"><button ng-click="unpublish()">Unpublish</button></div>
+                <div><button ng-click="delete_player()">Delete</button></div>
+            </div>
 
             <div>Player id:<br>{{player.$id}}</div>
         </div>
-        <div class="panel source" style="position:relative;">
-            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Source</div>
+        <div class="panel source" style="position:relative;"  ng-class="{'collapsed':ideView.source}">
+            <div class="panel-title" >Source</div>
             <textarea codemirror ng-model="player.source"></textarea>
             <div class="status {{status_class}}">{{status}}</div>
         </div>
-        <div class="panel test">
-            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Tester</div>
+        <div class="panel test" ng-class="{'collapsed':ideView.tester}">
+            <div class="panel-title" >Tester</div>
             <div class="expand-v">
                 <div>
                     Test Opponent: <select ng-options="p as p.name for p in opponents track by p.$id" ng-model="opponent"></select>
@@ -257,8 +300,8 @@
                 <div id="canvas" ng-controller="CanvasController" style="box-sizing:content-box;"></div>
             </div>
         </div>
-        <div class="panel collapsed debugger">
-            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Debugger</div>
+        <div class="panel collapsed debugger" ng-class="{'collapsed':ideView.debugger}">
+            <div class="panel-title" >Debugger</div>
             <div>
                 <input type="checkbox" ng-model="debug"> Enable Debugging
             </div>
@@ -273,19 +316,18 @@
                 <textarea id="debugger_move" ng-model="debugger_move" style="width:90%;height:100px;"></textarea>
             </div>
         </div>
-        <div class="panel collapsed documentation">
-            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Game Documentation</div>
+        <div class="panel collapsed documentation" ng-class="{'collapsed':ideView.gameDoc}">
+            <div class="panel-title" >Game Documentation</div>
             <div class="expand-v" ng-bind-html="game.documentation | markdown"></div>
         </div>
-        <div class="panel collapsed documentation">
-            <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Player API Documentation</div>
+        <div class="panel collapsed documentation"  ng-class="{'collapsed':ideView.playerAPI}">
+            <div class="panel-title" >Player API Documentation</div>
             <div class="expand-v" ng-bind-html="doc_player_api | markdown"></div>
         </div>
     </div>
     <div class="panel footer" id="console">
         Console
     </div>
-</div>
 
 </body>
 </html>

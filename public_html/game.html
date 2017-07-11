@@ -80,9 +80,14 @@
       <li>Arena</li>
     </ul>
   </div>
-  <div class="screen-title">{{game.name}}</div>
+  <div class="screen-title-container">
+    <div class="screen-title">{{game.name}}</div>
+  </div>
   <div class="page-actions"></div>
-  <div class="user-actions">Log Out</div>
+  <div class="user-actions">
+    <div ng-if="user.displayName">{{user.displayName}}</div>
+    <div ng-if="!user.displayName">Log In</div>
+  </div>
 </header>
 
 <div class="static-content-wrap">
