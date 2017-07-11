@@ -85,7 +85,7 @@
     </div>
 
     <h3>Write javascript code to play games. </h3>
-    <h3>Beat your friends.</h3>
+    <h3>Defeat your friends.</h3>
     <h3>Conquer your co-workers.</h3>
     <h2>May the best algorithm win.</h2>
   </div>
@@ -102,41 +102,35 @@
   </div>
 
   <div class="instructions">
-    <textarea id="player" class="player-code">
-      // A stupid random-guessing player
-      module.exports = function () {
-        this.move = function (game) {
-          var board = game.board;
-          // Try 50 times to move
-          for (var i = 0; i < 50; i++) {
-            var m = Math.floor(Math.random() * 9);
-            if (board[m] == -1) {
-              return m;
-            }
-          }
-          return 0;
-        }
+      Player Code:<br>
+    <textarea id="player" class="player-code" rows=14>
+// A stupid random-guessing player
+module.exports = function () {
+  this.move = function (game) {
+    var board = game.board;
+    // Try 50 times to move
+    for (var i = 0; i < 50; i++) {
+      var m = Math.floor(Math.random() * 9);
+      if (board[m] == -1) {
+        return m;
       }
+    }
+    return 0;
+  }
+}
     </textarea>
 
 
 
     <ul>
-      <li>You are X's (<span class="inline-code">player 0</span>). </li>
+      <li>You are X (<span class="inline-code">player 0</span>). </li>
       <li>Your <span class="inline-code">move()</span> function will be passed a data structure:<br><code class="inline-code">{ player_number:0, board:[-1,-1,-1,-1,-1,-1,-1,-1,-1] }</code></li>
-      <li>The data structure represents each square on the board, from top left [0] to bottom right [8].</li>
-      <li>The value is either a <span class="inline-code">-1</span> if the space is empty, or the player number if it's taken.</li>
+      <li>The 'board' array represents each square on the board, from top left [0] to bottom right [8]. The value is either a <span class="inline-code">-1</span> if the space is empty, or the player number if it's taken (0 or 1).</li>
       <li>Your player is a constructor that returns an object with a <span class="inline-code">move()</span> method. It must return the square number of your move [0-8].</li>
       <li>Tic-Tac-Toe is a solvable game. If you code your player well, you should never lose!</li>
     </ul>
   </div>
 </div>
-
-    <!--
-    <h3>Play</h3>
-
-    <a href="match.html">Play a game</a>
-    -->
 
 
     <div class="games-container">
@@ -154,18 +148,6 @@
 
     </div>
 
-    <!--
-    <ul>
-        <li ng-repeat="game in games">
-            <a href="game.html?id={{game.$id}}">{{game.name}}</a>
-            <ul>
-                <li ng-repeat="player in players[game.$id]"><a href="player.html?game_id={{game.$id}}&id={{player.$id}}">{{player.name}}</a></li>
-                <li><a href="player.html?game_id={{game.$id}}">+ Create New Player</a>
-            </ul>
-        </li>
-    </ul>
-    <a href="dev-game.html">Add a new game</a>
-    -->
   </section>
 </div>
 

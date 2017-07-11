@@ -21,6 +21,8 @@
     <script type='text/javascript' src='js/Match.js'></script>
     <link rel="stylesheet" href="/css/style.css" />
     <script type='text/javascript' src='js/micromarkdown.js'></script>
+    <script type='text/javascript' src='js/marked.min.js'></script>
+    <link rel="stylesheet" href="/css/github-markdown.css" />
     <script>
       bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$http", "$rootScope", function($scope, $battlescripts, $queryparam, $http, $rootScope) {
         var id = $queryparam.get('id');
@@ -193,11 +195,11 @@
         </div>
         <div class="panel collapsed source" style="position:relative;">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Game Documentation Output</div>
-            <div class="expand-v" ng-bind-html="game.documentation | markdown"></div>
+            <div class="markdown-body expand-v" ng-bind-html="game.documentation | markdown"></div>
         </div>
         <div class="panel collapsed documentation">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Game API</div>
-            <div class="expand-v" ng-bind-html="doc_game_api | markdown"></div>
+            <div class="markdown-body expand-v" ng-bind-html="doc_game_api | markdown"></div>
         </div>
     </div>
     <div class="panel footer" id="console">

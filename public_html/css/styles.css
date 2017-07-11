@@ -270,7 +270,7 @@ header {
 }
 .player-code {
   width: 100%;
-  min-height: 245px;
+  /*min-height: 245px;*/
   margin-bottom: 2rem;
 }
 .example-button-row {
@@ -514,7 +514,7 @@ body.dark-theme {
 .dark-theme .btn {
   background-color: #888;
   border: 1px solid #6f6f6f;
-  color: #ffffff;
+  color: #000000;
 }
 .dark-theme button.primary,
 .dark-theme .btn.primary {
