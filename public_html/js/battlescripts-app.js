@@ -230,12 +230,23 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
           return resolve(user);
         }
         else {
-          return $firebaseAuth().$signInWithPopup("google").then((userCredential)=>{
-            api.user = userCredential.user;
-            return resolve(api.user);
-          }).catch((err)=>{
-            reject(err);
-          });
+          // Prompt the user to sign in using an auth provider
+          if (!$('#auth-dialog').length) {
+            $('<div id="auth-dialog" style="width: 50vw;height: 50vh;position: absolute;left: 25vw;top: 25vh;z-index: 9999;background-color: white;border: 5px solid red;border-radius: 15px;padding: 15px;">Loading...</div>').appendTo( $('body') );
+          }
+          $('#auth-dialog').load("/auth.html",null,function() {
+            // Attach listeners to the buttons
+            $('#auth-dialog .auth-button').click(function() {
+              var provider = $(this).attr('auth-provider');
+              $firebaseAuth().$signInWithPopup(provider).then((userCredential)=>{
+                api.user = userCredential.user;
+                return resolve(api.user);
+              }).catch((err)=>{
+                reject(err);
+              });
+              $('#auth-dialog').remove();
+            })
+          })
         }
       });
     });
