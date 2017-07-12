@@ -3,6 +3,7 @@ var bsapp = angular.module('battlescripts', ['firebase','ngSanitize']);
 // Convert markdown to HTML
 bsapp.filter('markdown', function() {
   return function(md) {
+    if (!md) { return ""; }
     //return (typeof micromarkdown!="undefined") ? micromarkdown.parse(md) : md;
     return (typeof marked!="undefined") ? marked(md) : md;
   };
@@ -326,7 +327,7 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
 
   // A quick shortcut to play a game
   api.play = function(Match, game_source, player_sources, options, error_handler) {
-    var game = new (api.Game(game_source))();
+    var game = new api.Game(game_source);
     var players = [];
     try {
       player_sources.forEach((code) => {
@@ -393,7 +394,7 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
     } catch(e) {
       throw "Game compilation error: "+e.toString();
     }
-    return g;
+    return new g();
   };
 
   // A wrapper to create a Player object from code and enable debugging, etc.
