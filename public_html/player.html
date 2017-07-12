@@ -227,7 +227,7 @@
         <img src="img/battlescripts-icon-med.png" class="bs-icon">
         <div class="bs-nav-container">
             <img src="img/nav-icon.png" class="bs-nav-icon">
-            <ul class="bs-nav">
+            <ul class="bs-nav bs-list">
                 <li><a href="/">Home</a></li>
                 <li>Games</li>
                 <li>Arena</li>
@@ -235,7 +235,7 @@
         </div>
         <div class="screen-title-container">
             <div class="screen-title">{{game.name}}</div>
-            <div class="player-name"></div>
+            <div class="player-name">{{player.name}}</div>
         </div>
         <div class="page-actions">
             <button class="primary page-action">Save & Run</button>
@@ -263,34 +263,155 @@
     </div>
     <div class="main">
         <div class="panel details" ng-class="{'collapsed':ideView.details}">
-            <h3 class="panel-title" >Details</h3>
-
-            <label>Game</label>
-            <div>{{game.name}}</div>
-
-            <label>Player Name</label>
-            <div><input ng-model="player.name"></div>
-
-            <label>Description</label>
-            <div><textarea ng-model="player.description" style="width:90%;height:75px;"></textarea></div>
-
-
-            <div>
-                <div ng-if="!player.published || player.source!=player.published">Your changes will not be visible to others until you publish your new code!</div>
-                <div ng-if="player.published && player.source!=player.published"><button ng-click="publish()">Save &amp; Re-Publish</button></div>
-                <div ng-if="player.published"><button ng-click="unpublish()">Unpublish</button></div>
-                <div><button ng-click="delete_player()">Delete</button></div>
+            <div class="panel-header">
+                <div class="panel-title">Details</div>
+                <div class="panel-actions-container ">
+                    <div class="settings-icon">
+                        <svg class="" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+<path  stroke-width="2" stroke-miterlimit="10" d="M42.76,25.06c0-1.282-0.141-2.529-0.396-3.733
+	l5.918-3.417l-5.482-9.495l-5.936,3.427c-1.844-1.666-4.029-2.958-6.447-3.741V1.267H19.451v6.834
+	c-2.42,0.782-4.604,2.074-6.448,3.74L7.07,8.415L1.587,17.91l5.918,3.417c-0.257,1.204-0.398,2.451-0.398,3.733
+	c0,1.28,0.142,2.528,0.398,3.731l-5.917,3.416l5.482,9.496l5.932-3.426c1.845,1.666,4.028,2.959,6.449,3.74v6.836h10.965v-6.836
+	c2.418-0.781,4.604-2.074,6.449-3.74l5.934,3.426l5.482-9.494l-5.918-3.418C42.619,27.588,42.76,26.34,42.76,25.06z"/>
+<circle  stroke-width="2" stroke-miterlimit="10" cx="24.934" cy="25.06" r="6.635"/>
+</svg></div>
+                    <div class="panel-actions">
+                        <div class="panel-action-icon close" ng-click="toggleView('details')">
+                            <svg version="1.1" id="Layer_1"  x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
+                                <g>
+      <path  d="M10,0C4.477,0,0,4.478,0,10c0,5.522,4.477,10,10,10c5.522,0,10-4.478,10-10C19.999,4.478,15.521,0,10,0z
+         M12.058,10l3.643,3.642L13.643,15.7L10,12.059L6.357,15.7l-2.058-2.057L7.942,10L4.299,6.358L6.357,4.3L10,7.942L13.643,4.3
+        L15.7,6.357L12.058,10z"/>
+    </g>
+                            </svg>
+                        </div>
+                        <div class="panel-action-icon">
+                            <svg version="1.1" id="Layer_1"x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
+                                <path d="M9.865,0.001c-5.521,0.074-9.938,4.61-9.864,10.132c0.074,5.52,4.61,9.936,10.131,9.863
+      c5.521-0.074,9.937-4.611,9.864-10.132C19.923,4.344,15.386-0.073,9.865,0.001z M9.835,16.084L9.78,16.083
+      c-0.851-0.025-1.45-0.651-1.426-1.489c0.024-0.823,0.638-1.421,1.46-1.421l0.049,0.001c0.874,0.025,1.467,0.646,1.442,1.508
+      C11.282,15.508,10.677,16.084,9.835,16.084z M13.412,8.986c-0.199,0.284-0.64,0.637-1.193,1.068l-0.61,0.421
+      c-0.336,0.261-0.537,0.506-0.613,0.746c-0.06,0.19-0.089,0.24-0.094,0.626L10.9,11.945H8.57l0.006-0.196
+      c0.029-0.811,0.049-1.287,0.385-1.681C9.488,9.449,10.65,8.701,10.7,8.669c0.166-0.125,0.306-0.268,0.411-0.42
+      c0.245-0.337,0.354-0.603,0.354-0.863c0-0.362-0.107-0.697-0.319-0.995c-0.204-0.288-0.592-0.433-1.153-0.433
+      c-0.556,0-0.937,0.176-1.165,0.538C8.592,6.868,8.474,7.259,8.474,7.658v0.1H6.072l0.004-0.104c0.062-1.472,0.587-2.531,1.56-3.149
+      c0.612-0.394,1.373-0.593,2.26-0.593c1.162,0,2.143,0.283,2.915,0.839c0.782,0.564,1.18,1.41,1.18,2.512
+      C13.991,7.88,13.796,8.459,13.412,8.986z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div>Player id:<br>{{player.$id}}</div>
+            <div class="row">
+                <label>Game</label>
+                <div>{{game.name}}</div>
+            </div>
+            <div class="row">
+                <label>Player Name</label>
+                <div><input ng-model="player.name"></div>
+            </div>
+            <div class="row">
+                <label>Description</label>
+                <div><textarea ng-model="player.description" style="width:90%;height:75px;"></textarea></div>
+            </div>
+            <p ng-if="!player.published || player.source!=player.published" class="row">Your changes will not be visible to others until you publish your new code!</p>
+            <div class="row">
+                <button ng-if="player.published && player.source!=player.published" ng-click="publish()">Save &amp; Re-Publish</button>
+            </div>
+            <div class="row">
+                <button ng-if="player.published" ng-click="unpublish()">Unpublish</button>
+            </div>
+            <div class="row">
+                <button ng-click="delete_player()">Delete</button>
+            </div>
+            <div class="row">
+                Player id:<br>{{player.$id}}
+            </div>
         </div>
         <div class="panel source" style="position:relative;"  ng-class="{'collapsed':ideView.source}">
-            <div class="panel-title" >Source</div>
+            <div class="panel-header">
+                <div class="panel-title">Source</div>
+                <div class="panel-actions-container ">
+                    <div class="settings-icon">
+                        <svg class="" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+<path  stroke-width="2" stroke-miterlimit="10" d="M42.76,25.06c0-1.282-0.141-2.529-0.396-3.733
+	l5.918-3.417l-5.482-9.495l-5.936,3.427c-1.844-1.666-4.029-2.958-6.447-3.741V1.267H19.451v6.834
+	c-2.42,0.782-4.604,2.074-6.448,3.74L7.07,8.415L1.587,17.91l5.918,3.417c-0.257,1.204-0.398,2.451-0.398,3.733
+	c0,1.28,0.142,2.528,0.398,3.731l-5.917,3.416l5.482,9.496l5.932-3.426c1.845,1.666,4.028,2.959,6.449,3.74v6.836h10.965v-6.836
+	c2.418-0.781,4.604-2.074,6.449-3.74l5.934,3.426l5.482-9.494l-5.918-3.418C42.619,27.588,42.76,26.34,42.76,25.06z"/>
+<circle  stroke-width="2" stroke-miterlimit="10" cx="24.934" cy="25.06" r="6.635"/>
+</svg></div>
+                    <div class="panel-actions">
+                        <div class="panel-action-icon close" ng-click="toggleView('source')">
+                            <svg version="1.1" id="Layer_1"  x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
+                                <g>
+      <path  d="M10,0C4.477,0,0,4.478,0,10c0,5.522,4.477,10,10,10c5.522,0,10-4.478,10-10C19.999,4.478,15.521,0,10,0z
+         M12.058,10l3.643,3.642L13.643,15.7L10,12.059L6.357,15.7l-2.058-2.057L7.942,10L4.299,6.358L6.357,4.3L10,7.942L13.643,4.3
+        L15.7,6.357L12.058,10z"/>
+    </g>
+                            </svg>
+                        </div>
+                        <div class="panel-action-icon">
+                            <svg version="1.1" id="Layer_1"x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
+                                <path d="M9.865,0.001c-5.521,0.074-9.938,4.61-9.864,10.132c0.074,5.52,4.61,9.936,10.131,9.863
+      c5.521-0.074,9.937-4.611,9.864-10.132C19.923,4.344,15.386-0.073,9.865,0.001z M9.835,16.084L9.78,16.083
+      c-0.851-0.025-1.45-0.651-1.426-1.489c0.024-0.823,0.638-1.421,1.46-1.421l0.049,0.001c0.874,0.025,1.467,0.646,1.442,1.508
+      C11.282,15.508,10.677,16.084,9.835,16.084z M13.412,8.986c-0.199,0.284-0.64,0.637-1.193,1.068l-0.61,0.421
+      c-0.336,0.261-0.537,0.506-0.613,0.746c-0.06,0.19-0.089,0.24-0.094,0.626L10.9,11.945H8.57l0.006-0.196
+      c0.029-0.811,0.049-1.287,0.385-1.681C9.488,9.449,10.65,8.701,10.7,8.669c0.166-0.125,0.306-0.268,0.411-0.42
+      c0.245-0.337,0.354-0.603,0.354-0.863c0-0.362-0.107-0.697-0.319-0.995c-0.204-0.288-0.592-0.433-1.153-0.433
+      c-0.556,0-0.937,0.176-1.165,0.538C8.592,6.868,8.474,7.259,8.474,7.658v0.1H6.072l0.004-0.104c0.062-1.472,0.587-2.531,1.56-3.149
+      c0.612-0.394,1.373-0.593,2.26-0.593c1.162,0,2.143,0.283,2.915,0.839c0.782,0.564,1.18,1.41,1.18,2.512
+      C13.991,7.88,13.796,8.459,13.412,8.986z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <textarea codemirror ng-model="player.source"></textarea>
             <div class="status {{status_class}}">{{status}}</div>
         </div>
         <div class="panel test" ng-class="{'collapsed':ideView.tester}">
-            <div class="panel-title" >Tester</div>
+            <div class="panel-header">
+                <div class="panel-title">Tester</div>
+                <div class="panel-actions-container ">
+                    <div class="settings-icon">
+                        <svg class="" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+<path  stroke-width="2" stroke-miterlimit="10" d="M42.76,25.06c0-1.282-0.141-2.529-0.396-3.733
+	l5.918-3.417l-5.482-9.495l-5.936,3.427c-1.844-1.666-4.029-2.958-6.447-3.741V1.267H19.451v6.834
+	c-2.42,0.782-4.604,2.074-6.448,3.74L7.07,8.415L1.587,17.91l5.918,3.417c-0.257,1.204-0.398,2.451-0.398,3.733
+	c0,1.28,0.142,2.528,0.398,3.731l-5.917,3.416l5.482,9.496l5.932-3.426c1.845,1.666,4.028,2.959,6.449,3.74v6.836h10.965v-6.836
+	c2.418-0.781,4.604-2.074,6.449-3.74l5.934,3.426l5.482-9.494l-5.918-3.418C42.619,27.588,42.76,26.34,42.76,25.06z"/>
+<circle  stroke-width="2" stroke-miterlimit="10" cx="24.934" cy="25.06" r="6.635"/>
+</svg></div>
+                    <div class="panel-actions">
+                        <div class="panel-action-icon close" ng-click="toggleView('tester')">
+                            <svg version="1.1" id="Layer_1"  x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
+                                <g>
+      <path  d="M10,0C4.477,0,0,4.478,0,10c0,5.522,4.477,10,10,10c5.522,0,10-4.478,10-10C19.999,4.478,15.521,0,10,0z
+         M12.058,10l3.643,3.642L13.643,15.7L10,12.059L6.357,15.7l-2.058-2.057L7.942,10L4.299,6.358L6.357,4.3L10,7.942L13.643,4.3
+        L15.7,6.357L12.058,10z"/>
+    </g>
+                            </svg>
+                        </div>
+                        <div class="panel-action-icon">
+                            <svg version="1.1" id="Layer_1"x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
+                                <path d="M9.865,0.001c-5.521,0.074-9.938,4.61-9.864,10.132c0.074,5.52,4.61,9.936,10.131,9.863
+      c5.521-0.074,9.937-4.611,9.864-10.132C19.923,4.344,15.386-0.073,9.865,0.001z M9.835,16.084L9.78,16.083
+      c-0.851-0.025-1.45-0.651-1.426-1.489c0.024-0.823,0.638-1.421,1.46-1.421l0.049,0.001c0.874,0.025,1.467,0.646,1.442,1.508
+      C11.282,15.508,10.677,16.084,9.835,16.084z M13.412,8.986c-0.199,0.284-0.64,0.637-1.193,1.068l-0.61,0.421
+      c-0.336,0.261-0.537,0.506-0.613,0.746c-0.06,0.19-0.089,0.24-0.094,0.626L10.9,11.945H8.57l0.006-0.196
+      c0.029-0.811,0.049-1.287,0.385-1.681C9.488,9.449,10.65,8.701,10.7,8.669c0.166-0.125,0.306-0.268,0.411-0.42
+      c0.245-0.337,0.354-0.603,0.354-0.863c0-0.362-0.107-0.697-0.319-0.995c-0.204-0.288-0.592-0.433-1.153-0.433
+      c-0.556,0-0.937,0.176-1.165,0.538C8.592,6.868,8.474,7.259,8.474,7.658v0.1H6.072l0.004-0.104c0.062-1.472,0.587-2.531,1.56-3.149
+      c0.612-0.394,1.373-0.593,2.26-0.593c1.162,0,2.143,0.283,2.915,0.839c0.782,0.564,1.18,1.41,1.18,2.512
+      C13.991,7.88,13.796,8.459,13.412,8.986z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="expand-v">
                 <div>
                     Test Opponent: <select ng-options="p as p.name for p in opponents track by p.$id" ng-model="opponent"></select>
@@ -303,7 +424,45 @@
             </div>
         </div>
         <div class="panel collapsed debugger" ng-class="{'collapsed':ideView.debugger}">
-            <div class="panel-title" >Debugger</div>
+            <div class="panel-header">
+                <div class="panel-title">Debugger</div>
+                <div class="panel-actions-container ">
+                    <div class="settings-icon">
+                        <svg class="" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+<path  stroke-width="2" stroke-miterlimit="10" d="M42.76,25.06c0-1.282-0.141-2.529-0.396-3.733
+	l5.918-3.417l-5.482-9.495l-5.936,3.427c-1.844-1.666-4.029-2.958-6.447-3.741V1.267H19.451v6.834
+	c-2.42,0.782-4.604,2.074-6.448,3.74L7.07,8.415L1.587,17.91l5.918,3.417c-0.257,1.204-0.398,2.451-0.398,3.733
+	c0,1.28,0.142,2.528,0.398,3.731l-5.917,3.416l5.482,9.496l5.932-3.426c1.845,1.666,4.028,2.959,6.449,3.74v6.836h10.965v-6.836
+	c2.418-0.781,4.604-2.074,6.449-3.74l5.934,3.426l5.482-9.494l-5.918-3.418C42.619,27.588,42.76,26.34,42.76,25.06z"/>
+<circle  stroke-width="2" stroke-miterlimit="10" cx="24.934" cy="25.06" r="6.635"/>
+</svg></div>
+                    <div class="panel-actions">
+                        <div class="panel-action-icon close" ng-click="toggleView('debugger')">
+                            <svg version="1.1" id="Layer_1"  x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
+                                <g>
+      <path  d="M10,0C4.477,0,0,4.478,0,10c0,5.522,4.477,10,10,10c5.522,0,10-4.478,10-10C19.999,4.478,15.521,0,10,0z
+         M12.058,10l3.643,3.642L13.643,15.7L10,12.059L6.357,15.7l-2.058-2.057L7.942,10L4.299,6.358L6.357,4.3L10,7.942L13.643,4.3
+        L15.7,6.357L12.058,10z"/>
+    </g>
+                            </svg>
+                        </div>
+                        <div class="panel-action-icon">
+                            <svg version="1.1" id="Layer_1"x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
+                                <path d="M9.865,0.001c-5.521,0.074-9.938,4.61-9.864,10.132c0.074,5.52,4.61,9.936,10.131,9.863
+      c5.521-0.074,9.937-4.611,9.864-10.132C19.923,4.344,15.386-0.073,9.865,0.001z M9.835,16.084L9.78,16.083
+      c-0.851-0.025-1.45-0.651-1.426-1.489c0.024-0.823,0.638-1.421,1.46-1.421l0.049,0.001c0.874,0.025,1.467,0.646,1.442,1.508
+      C11.282,15.508,10.677,16.084,9.835,16.084z M13.412,8.986c-0.199,0.284-0.64,0.637-1.193,1.068l-0.61,0.421
+      c-0.336,0.261-0.537,0.506-0.613,0.746c-0.06,0.19-0.089,0.24-0.094,0.626L10.9,11.945H8.57l0.006-0.196
+      c0.029-0.811,0.049-1.287,0.385-1.681C9.488,9.449,10.65,8.701,10.7,8.669c0.166-0.125,0.306-0.268,0.411-0.42
+      c0.245-0.337,0.354-0.603,0.354-0.863c0-0.362-0.107-0.697-0.319-0.995c-0.204-0.288-0.592-0.433-1.153-0.433
+      c-0.556,0-0.937,0.176-1.165,0.538C8.592,6.868,8.474,7.259,8.474,7.658v0.1H6.072l0.004-0.104c0.062-1.472,0.587-2.531,1.56-3.149
+      c0.612-0.394,1.373-0.593,2.26-0.593c1.162,0,2.143,0.283,2.915,0.839c0.782,0.564,1.18,1.41,1.18,2.512
+      C13.991,7.88,13.796,8.459,13.412,8.986z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div>
                 <input type="checkbox" ng-model="debug"> Enable Debugging
             </div>
@@ -319,11 +478,87 @@
             </div>
         </div>
         <div class="panel collapsed documentation" ng-class="{'collapsed':ideView.gameDoc}">
-            <div class="panel-title" >Game Documentation</div>
+            <div class="panel-header">
+                <div class="panel-title">Game Documentation</div>
+                <div class="panel-actions-container ">
+                    <div class="settings-icon">
+                        <svg class="" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+<path  stroke-width="2" stroke-miterlimit="10" d="M42.76,25.06c0-1.282-0.141-2.529-0.396-3.733
+	l5.918-3.417l-5.482-9.495l-5.936,3.427c-1.844-1.666-4.029-2.958-6.447-3.741V1.267H19.451v6.834
+	c-2.42,0.782-4.604,2.074-6.448,3.74L7.07,8.415L1.587,17.91l5.918,3.417c-0.257,1.204-0.398,2.451-0.398,3.733
+	c0,1.28,0.142,2.528,0.398,3.731l-5.917,3.416l5.482,9.496l5.932-3.426c1.845,1.666,4.028,2.959,6.449,3.74v6.836h10.965v-6.836
+	c2.418-0.781,4.604-2.074,6.449-3.74l5.934,3.426l5.482-9.494l-5.918-3.418C42.619,27.588,42.76,26.34,42.76,25.06z"/>
+<circle  stroke-width="2" stroke-miterlimit="10" cx="24.934" cy="25.06" r="6.635"/>
+</svg></div>
+                    <div class="panel-actions">
+                        <div class="panel-action-icon close" ng-click="toggleView('gameDoc')">
+                            <svg version="1.1" id="Layer_1"  x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
+                                <g>
+      <path  d="M10,0C4.477,0,0,4.478,0,10c0,5.522,4.477,10,10,10c5.522,0,10-4.478,10-10C19.999,4.478,15.521,0,10,0z
+         M12.058,10l3.643,3.642L13.643,15.7L10,12.059L6.357,15.7l-2.058-2.057L7.942,10L4.299,6.358L6.357,4.3L10,7.942L13.643,4.3
+        L15.7,6.357L12.058,10z"/>
+    </g>
+                            </svg>
+                        </div>
+                        <div class="panel-action-icon">
+                            <svg version="1.1" id="Layer_1"x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
+                                <path d="M9.865,0.001c-5.521,0.074-9.938,4.61-9.864,10.132c0.074,5.52,4.61,9.936,10.131,9.863
+      c5.521-0.074,9.937-4.611,9.864-10.132C19.923,4.344,15.386-0.073,9.865,0.001z M9.835,16.084L9.78,16.083
+      c-0.851-0.025-1.45-0.651-1.426-1.489c0.024-0.823,0.638-1.421,1.46-1.421l0.049,0.001c0.874,0.025,1.467,0.646,1.442,1.508
+      C11.282,15.508,10.677,16.084,9.835,16.084z M13.412,8.986c-0.199,0.284-0.64,0.637-1.193,1.068l-0.61,0.421
+      c-0.336,0.261-0.537,0.506-0.613,0.746c-0.06,0.19-0.089,0.24-0.094,0.626L10.9,11.945H8.57l0.006-0.196
+      c0.029-0.811,0.049-1.287,0.385-1.681C9.488,9.449,10.65,8.701,10.7,8.669c0.166-0.125,0.306-0.268,0.411-0.42
+      c0.245-0.337,0.354-0.603,0.354-0.863c0-0.362-0.107-0.697-0.319-0.995c-0.204-0.288-0.592-0.433-1.153-0.433
+      c-0.556,0-0.937,0.176-1.165,0.538C8.592,6.868,8.474,7.259,8.474,7.658v0.1H6.072l0.004-0.104c0.062-1.472,0.587-2.531,1.56-3.149
+      c0.612-0.394,1.373-0.593,2.26-0.593c1.162,0,2.143,0.283,2.915,0.839c0.782,0.564,1.18,1.41,1.18,2.512
+      C13.991,7.88,13.796,8.459,13.412,8.986z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="expand-v markdown-body" ng-bind-html="game.documentation | markdown"></div>
         </div>
         <div class="panel collapsed documentation"  ng-class="{'collapsed':ideView.playerAPI}">
-            <div class="panel-title" >Player API Documentation</div>
+            <div class="panel-header">
+                <div class="panel-title">Player API Documentation</div>
+                <div class="panel-actions-container ">
+                    <div class="settings-icon">
+                        <svg class="" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+<path  stroke-width="2" stroke-miterlimit="10" d="M42.76,25.06c0-1.282-0.141-2.529-0.396-3.733
+	l5.918-3.417l-5.482-9.495l-5.936,3.427c-1.844-1.666-4.029-2.958-6.447-3.741V1.267H19.451v6.834
+	c-2.42,0.782-4.604,2.074-6.448,3.74L7.07,8.415L1.587,17.91l5.918,3.417c-0.257,1.204-0.398,2.451-0.398,3.733
+	c0,1.28,0.142,2.528,0.398,3.731l-5.917,3.416l5.482,9.496l5.932-3.426c1.845,1.666,4.028,2.959,6.449,3.74v6.836h10.965v-6.836
+	c2.418-0.781,4.604-2.074,6.449-3.74l5.934,3.426l5.482-9.494l-5.918-3.418C42.619,27.588,42.76,26.34,42.76,25.06z"/>
+<circle  stroke-width="2" stroke-miterlimit="10" cx="24.934" cy="25.06" r="6.635"/>
+</svg></div>
+                    <div class="panel-actions">
+                        <div class="panel-action-icon close" ng-click="toggleView('playerAPI')">
+                            <svg version="1.1" id="Layer_1"  x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
+                                <g>
+      <path  d="M10,0C4.477,0,0,4.478,0,10c0,5.522,4.477,10,10,10c5.522,0,10-4.478,10-10C19.999,4.478,15.521,0,10,0z
+         M12.058,10l3.643,3.642L13.643,15.7L10,12.059L6.357,15.7l-2.058-2.057L7.942,10L4.299,6.358L6.357,4.3L10,7.942L13.643,4.3
+        L15.7,6.357L12.058,10z"/>
+    </g>
+                            </svg>
+                        </div>
+                        <div class="panel-action-icon">
+                            <svg version="1.1" id="Layer_1"x="0px" y="0px" viewBox="0 0 20 20" enable-background="new 0 0 20 20" xml:space="preserve">
+                                <path d="M9.865,0.001c-5.521,0.074-9.938,4.61-9.864,10.132c0.074,5.52,4.61,9.936,10.131,9.863
+      c5.521-0.074,9.937-4.611,9.864-10.132C19.923,4.344,15.386-0.073,9.865,0.001z M9.835,16.084L9.78,16.083
+      c-0.851-0.025-1.45-0.651-1.426-1.489c0.024-0.823,0.638-1.421,1.46-1.421l0.049,0.001c0.874,0.025,1.467,0.646,1.442,1.508
+      C11.282,15.508,10.677,16.084,9.835,16.084z M13.412,8.986c-0.199,0.284-0.64,0.637-1.193,1.068l-0.61,0.421
+      c-0.336,0.261-0.537,0.506-0.613,0.746c-0.06,0.19-0.089,0.24-0.094,0.626L10.9,11.945H8.57l0.006-0.196
+      c0.029-0.811,0.049-1.287,0.385-1.681C9.488,9.449,10.65,8.701,10.7,8.669c0.166-0.125,0.306-0.268,0.411-0.42
+      c0.245-0.337,0.354-0.603,0.354-0.863c0-0.362-0.107-0.697-0.319-0.995c-0.204-0.288-0.592-0.433-1.153-0.433
+      c-0.556,0-0.937,0.176-1.165,0.538C8.592,6.868,8.474,7.259,8.474,7.658v0.1H6.072l0.004-0.104c0.062-1.472,0.587-2.531,1.56-3.149
+      c0.612-0.394,1.373-0.593,2.26-0.593c1.162,0,2.143,0.283,2.915,0.839c0.782,0.564,1.18,1.41,1.18,2.512
+      C13.991,7.88,13.796,8.459,13.412,8.986z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="expand-v markdown-body" ng-bind-html="doc_player_api | markdown"></div>
         </div>
     </div>
