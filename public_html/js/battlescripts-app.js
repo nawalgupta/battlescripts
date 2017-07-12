@@ -326,8 +326,8 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
   // ------------
 
   // A quick shortcut to play a game
-  api.play = function(Match, game_source, player_sources, options, error_handler) {
-    var game = new api.Game(game_source);
+  api.play = function(Match, game_object, player_sources, options, error_handler) {
+    var game = new api.Game(game_object.source);
     var players = [];
     try {
       player_sources.forEach((code) => {
@@ -345,6 +345,7 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
       error_handler(msg);
     });
     match.start();
+    return match;
   };
 
   // The prototype object for Games, providing useful helper methods
@@ -468,7 +469,14 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
     $rootScope.$broadcast("canvas/render",data);
   };
   api.init_canvas = function(template, css, json) {
-    $rootScope.$broadcast("canvas/init",{"template":template,"css":css,"json":json||null});
+    if (typeof template!=="string" && template && template.source) {
+      // A game object was passed in
+      var game = template;
+      $rootScope.$broadcast("canvas/init",{"template":game.canvas,"css":game.css,"json":css||null});
+    }
+    else {
+      $rootScope.$broadcast("canvas/init",{"template":template,"css":css,"json":json||null});
+    }
   };
 
   return api;
