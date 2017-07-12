@@ -15,39 +15,21 @@
   <script type='text/javascript' src='js/battlescripts-app.js'></script>
   <script type='text/javascript' src='js/Match.js'></script>
   <script>
-    bsapp.controller("ScreenController", ["$scope", "$battlescripts", function ($scope, $battlescripts) {
-      $scope.games = [];
-      $scope.players = {};
-      $scope.example_game = null;
-
-      $scope.play = function () {
-        var code = $('#player').val();
-        var game_source = $scope.example_game.source;
-        $battlescripts.play(Match, $scope.example_game, [code, code], {move_delay: 250}, function (e) {
-          alert(e);
-        });
-      };
-
+    bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$timeout", function ($scope, $battlescripts, $timeout) {
       $battlescripts.get_game('-Kn6geZ8YpA7w5oCoxzo').then((game) => {
-        $scope.example_game = game;
         $battlescripts.init_canvas(game);
+
+        var code = $('#player').val();
+        var match = $battlescripts.play(Match, game, [code, code], {move_delay: 500}, function (e) { });
+
+        match.subscribe("match.end", function() {
+          $timeout(function() {
+            match.start();
+          },1000)
+        });
+
       });
 
-      $battlescripts.get_all_games().then(
-        function (list) {
-          $scope.games = list;
-        }
-      );
-      $battlescripts.get_all_players().then(
-        (players) => {
-          (players || []).forEach(player => {
-            if (!$scope.players[player.game_id]) {
-              $scope.players[player.game_id] = [];
-            }
-            $scope.players[player.game_id].push(player);
-          })
-        }
-      );
     }]);
   </script>
 </head>
@@ -75,19 +57,12 @@
 
 
 <div class="static-content-wrap center" >
-  <div class="theme-toggle"><label>Use Dark Theme<input type="checkbox" ng-model="darkTheme"></label></div>
   <div class="static-header">
     <img src="./img/battlescripts-logo.png" class="hero-image">
     <div class="bs-hr-container">
       <div class="bs-hr-content-container">
         <span class="tag-line">Shall We Play A Game?</span>
       </div>
-    </div>
-    <div class="tag-block">
-      <h3>Write javascript code to play games. </h3>
-      <h3>Defeat your friends.</h3>
-      <h3>Conquer your co-workers.</h3>
-      <h2>May the best algorithm win.</h2>
     </div>
   </div>
   <section class="main-content">
@@ -96,15 +71,11 @@
 <!--    <h3>Try It!</h3>-->
 <div class="example-container">
   <div class="example-game">
-    <div id="canvas" ng-controller="CanvasController" style="height:320px;width:310px;"></div>
-    <div class="example-button-row">
-      <button ng-click="play()" class="primary large">Play!</button>
-    </div>
+    <div id="canvas" ng-controller="CanvasController" style="height:320px;width:320px;"></div>
   </div>
 
   <div class="instructions">
-      Player Code:<br>
-    <textarea id="player" class="player-code" rows=14>
+    <textarea id="player" class="player-code" style="height:300px;width:500px;">
 // A stupid random-guessing player
 module.exports = function () {
   this.move = function (game) {
@@ -116,44 +87,22 @@ module.exports = function () {
         return m;
       }
     }
-    return 0;
+    // Take the first available square
+    for (var i=0; i<9; i++) {
+      if (board[i]==-1) {
+        return i;
+      }
+    }
   }
 }
     </textarea>
-
-
-
-    <ul>
-      <li>You are X (<span class="inline-code">player 0</span>). </li>
-      <li>Your <span class="inline-code">move()</span> function will be passed a data structure:<br><code class="inline-code">{ player_number:0, board:[-1,-1,-1,-1,-1,-1,-1,-1,-1] }</code></li>
-      <li>The 'board' array represents each square on the board, from top left [0] to bottom right [8]. The value is either a <span class="inline-code">-1</span> if the space is empty, or the player number if it's taken (0 or 1).</li>
-      <li>Your player is a constructor that returns an object with a <span class="inline-code">move()</span> method. It must return the square number of your move [0-8].</li>
-      <li>Tic-Tac-Toe is a solvable game. If you code your player well, you should never lose!</li>
-    </ul>
   </div>
 </div>
-
-
-    <div class="games-container">
-      <h2 class="games-header">Games</h2>
-      <div class="game" ng-repeat="game in games">
-        <a href="game.html?game_id={{game.$id}}">
-          <div class="game-logo"></div>
-          <div class="body">
-            <div class="game-title">{{game.name}}</div>
-            <div class="game-description">{{game.description}}</div>
-          </div>
-          <div class="game-footer"></div>
-        </a>
-      </div>
-
-    </div>
 
   </section>
 </div>
 
 </body>
-</div>
 
 </html>
 
