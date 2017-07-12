@@ -19,7 +19,9 @@
     <script type='text/javascript' src='js/battlescripts-app.js'></script>
     <script type='text/javascript' src='js/Match.js'></script>
 
-    <script type='text/javascript' src='js/micromarkdown.js'></script>
+    <script type='text/javascript' src='/js/micromarkdown.js'></script>
+    <script type='text/javascript' src='/js/marked.min.js'></script>
+    <link rel="stylesheet" type="text/css" href="css/github-markdown.css">
 
     <script>
       bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$compile", "$rootScope", "$http", "$timeout", function($scope, $battlescripts, $queryparam, $compile, $rootScope, $http, $timeout) {
@@ -318,11 +320,11 @@
         </div>
         <div class="panel collapsed documentation" ng-class="{'collapsed':ideView.gameDoc}">
             <div class="panel-title" >Game Documentation</div>
-            <div class="expand-v" ng-bind-html="game.documentation | markdown"></div>
+            <div class="expand-v markdown-body" ng-bind-html="game.documentation | markdown"></div>
         </div>
         <div class="panel collapsed documentation"  ng-class="{'collapsed':ideView.playerAPI}">
             <div class="panel-title" >Player API Documentation</div>
-            <div class="expand-v" ng-bind-html="doc_player_api | markdown"></div>
+            <div class="expand-v markdown-body" ng-bind-html="doc_player_api | markdown"></div>
         </div>
     </div>
     <div class="panel footer" id="console">
