@@ -221,10 +221,25 @@
 </head>
 
 <body class="no-bg" ng-app="battlescripts" ng-controller="ScreenController">
-<div ng-show="!game || (id && !player.$id)" style="height:100%;">Loading...</div>
+<div ng-show="!game || (id && !player.$id)" class="loading">
+
+    <div class="spinner">
+        <span class="loading-message">Loading...</span>
+        <div class="spin-container">
+            <svg class="arrow blue" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+                <polygon  points="73.518,13.853 59.891,0 0,50.008 59.891,100 73.518,86.25 29.722,49.856 "/>
+            </svg>
+        </div>
+        <div class="spin-container opposite">
+            <svg class="arrow red" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+                <polygon  points="73.518,13.853 59.891,0 0,50.008 59.891,100 73.518,86.25 29.722,49.856 "/>
+            </svg>
+        </div>
+    </div>
+</div>
 <div ng-show="game && (!id || player.$id)" class="ide">
     <header>
-        <img src="img/battlescripts-icon-med.png" class="bs-icon">
+        <a href="/"><img src="img/battlescripts-icon-med.png" class="bs-icon"></a>
         <div class="bs-nav-container">
             <img src="img/nav-icon.png" class="bs-nav-icon">
             <ul class="bs-nav bs-list">

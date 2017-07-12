@@ -130,6 +130,7 @@ table {
 }
 a {
   text-decoration: none;
+  color: inherit;
 }
 a:visited {
   color: inherit;
@@ -183,6 +184,65 @@ h2 {
 h3 {
   font-size: 1.8rem;
   margin: 0 0 .5rem;
+}
+.loading {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: #FFF;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+}
+.spinner {
+  position: relative;
+}
+.arrow {
+  animation: animationFrames linear 2s;
+  animation-iteration-count: infinite;
+  transform-origin: 50% 50%;
+  width: 50px;
+  height: 50px;
+}
+.arrow.blue polygon {
+  fill: #28c4f1;
+}
+.arrow.red polygon {
+  fill: #e41e2b;
+}
+.opposite {
+  transform: rotate(180deg);
+}
+.loading-message {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-family: 'Inconsolata', monospace;
+  text-transform: uppercase;
+}
+.spin-container {
+  position: absolute;
+  left: 1.752rem;
+  top: 2rem;
+}
+@keyframes animationFrames {
+  0% {
+    transform: translate(0px, 0px) rotate(180deg);
+  }
+  25% {
+    transform: translate(50px, 0px) rotate(180deg);
+  }
+  35% {
+    transform: translate(50px, 0px) rotate(0deg);
+  }
+  65% {
+    transform: translate(0px, 0) rotate(0deg);
+  }
+  70% {
+    transform: translate(0px, 0) rotate(180deg);
+  }
+  100% {
+    transform: translate(0px, 0) rotate(180deg);
+  }
 }
 header {
   padding: .5rem;
@@ -382,6 +442,7 @@ label {
   font-weight: 800;
   text-transform: uppercase;
   margin-bottom: .125rem;
+  display: block;
 }
 /* Oops. This is temp */
 .games-container {
@@ -428,6 +489,7 @@ label {
 }
 .battle-options {
   width: 200px;
+  margin-top: 1rem;
 }
 .battle-arena {
   flex-grow: 4;
@@ -461,6 +523,30 @@ label {
 .tab-toggle.collapsed {
   color: #a2a2a2;
   font-weight: normal;
+}
+.row {
+  margin-bottom: 1rem;
+}
+.small-title {
+  font-weight: bold;
+  font-size: 1.0rem;
+  margin: 2rem 0 .5rem 0;
+  color: #28c4f1;
+  text-transform: uppercase;
+}
+.pl-player {
+  border-bottom: 1px solid #e7e7e7;
+  display: block;
+  padding: .5rem 0;
+  font-size: .8rem;
+}
+.pl-player:hover {
+  color: #e41e2b;
+  border-color: #e41e2b;
+}
+.pl-player:hover:nth-child(odd) {
+  border-color: #28c4f1;
+  color: #28c4f1;
 }
 /* FLEXBOX IDE Layout */
 /* ================== */
@@ -603,13 +689,6 @@ label {
   flex-grow: 1;
   overflow: auto;
 }
-/*.header {
-  height: 30px;
-  .title {
-    font-size: 150%;
-    font-weight: bold;
-  }
-}*/
 .footer {
   height: 150px;
   flex-grow: 0;
@@ -618,9 +697,6 @@ label {
   background-color: rgba(231, 231, 231, 0.6);
   max-width: 12vw;
   min-width: 9vw;
-}
-.details .row {
-  margin-bottom: 1rem;
 }
 .documentation {
   max-width: 400px;
