@@ -3,6 +3,7 @@
 
 @LIGHT_THEME_BACKGROUND_COLOR:#FFF;
 @LIGHT_THEME_COLOR1:#e7e7e7;
+@LIGHT_THEME_COLOR2: #b9b9b9;
 @LIGHT_THEME_TEXT:#555;
 
 @BLUE:#28c4f1;
@@ -11,6 +12,7 @@
 @MONO_FONT: 'Inconsolata',monospace;
 a{
   text-decoration: none;
+  color: inherit;
   &:visited{
     color: inherit;
   }
@@ -24,6 +26,13 @@ body {
   &.no-bg{
     background-image: none;
   }
+}
+p{
+  line-height: 1.1;
+}
+input{
+  color: @LIGHT_THEME_TEXT;
+  font-family: 'Open Sans','Arial',sans-serif;
 }
 .static-content-wrap{
   max-width: 70rem ;
@@ -58,6 +67,77 @@ h3{
   font-size: 1.8rem;
   margin: 0 0 .5rem;
 }
+// ---------------------------- LOADING -------------------------
+.loading{
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: @LIGHT_THEME_BACKGROUND_COLOR;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+}
+.spinner{
+  position: relative;
+}
+.arrow{
+  animation: animationFrames linear 2s;
+  animation-iteration-count: infinite;
+  transform-origin: 50% 50%;
+  width: 50px;
+  height: 50px;
+  &.blue{
+    polygon{
+      fill: @BLUE;
+    }
+  }
+  &.red{
+    polygon{
+      fill: @RED;
+    }
+  }
+}
+.opposite{
+  transform: rotate(180deg);
+}
+.loading-message{
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-family: @MONO_FONT;
+  text-transform: uppercase;
+}
+.spin-container{
+  position: absolute;
+  left: 1.752rem;
+  top: 2rem;
+}
+
+@keyframes animationFrames {
+  0% {
+    transform: translate(0px, 0px) rotate(180deg);
+  }
+  25% {
+    transform: translate(50px, 0px) rotate(180deg);
+  }
+  35%{
+    transform: translate(50px, 0px) rotate(0deg);
+  }
+  65%{
+    transform: translate(0px, 0) rotate(0deg);
+  }
+  70% {
+    transform: translate(0px, 0) rotate(180deg);
+  }
+  100% {
+    transform: translate(0px, 0) rotate(180deg);
+  }
+}
+
+
+
+
+
+
 // ------------------------ HEADER ----------------------------
 header{
   padding: .5rem;
@@ -89,7 +169,6 @@ header{
     box-shadow: 6px 9px 14px rgba(0, 0, 0, 0.25);
     top:0;
     background-color: @LIGHT_THEME_BACKGROUND_COLOR;
-
     li{
       //border-right: 2px solid @RED;//LIGHT_THEME_COLOR1;
      //border-left: 2px solid @BLUE;
@@ -111,6 +190,7 @@ header{
     }
   }
 }
+
 .screen-title-container{
   font-family: @MONO_FONT;
   .screen-title {
@@ -275,6 +355,7 @@ label{
   font-weight: 800;
   text-transform: uppercase;
   margin-bottom: .125rem;
+  display: block;
   //font-family: @MONO_FONT;
 }
 /* Oops. This is temp */
@@ -329,6 +410,7 @@ label{
 }
 .battle-options{
   width: 200px;
+  margin-top: 1rem;
 }
 .battle-arena{
   flex-grow: 4;
@@ -371,7 +453,33 @@ label{
 }
 
 
+.row {
+  margin-bottom: 1rem;
+}
+.small-title{
+  font-weight: bold;
+  font-size: 1.0rem;
+  margin: 2rem 0 .5rem 0;
+  color: @BLUE;
+  text-transform: uppercase;
+}
+.player-list{
 
+}
+.pl-player{
+  border-bottom: 1px solid @LIGHT_THEME_COLOR1;// @LIGHT_THEME_COLOR1;
+  display: block;
+  padding: .5rem 0;
+  font-size: .8rem;
+  &:hover{
+    color: @RED;
+    border-color: @RED;
+    &:nth-child(odd){
+      border-color: @BLUE;
+      color: @BLUE;
+    }
+  }
+}
 
 
 /* FLEXBOX IDE Layout */
@@ -432,41 +540,109 @@ label{
     margin: 0;*/
   }
 }
+.panel-header{
+  vertical-align: top;
+  margin-bottom: .5rem;
+}
 .panel-title{
   font-weight: bold;
   font-size: 1rem;
   color: @BLUE;
-  padding: 0 0 .5rem;
   font-family: @MONO_FONT;
   text-transform: uppercase;
   letter-spacing: 2px;
+  vertical-align: top;
+  display: inline-block;
+}
+.panel-actions-container{
+  display: inline-block;
+  &:hover{
+    .panel-actions{
+      transform: scaleX(1);
+      //transition-delay: 0s;
+    }
+    .panel-action-icon{
+      //transform: translateX(0);
+      opacity:1;
+    }
+    .settings-icon svg{
+      transform: rotate(30deg);// scale(1.5);
+      path{
+        stroke: @LIGHT_THEME_TEXT;
+        fill: lighten(@LIGHT_THEME_TEXT,10%);
+      }
+      circle {
+        stroke: @LIGHT_THEME_TEXT;
+      }
+    }
+  }
+}
+.panel-actions{
+  transform: scaleX(0);
+  transform-origin: 0;
+  //transition-delay: .5s;
+  //transition: .25s;
+  display: inline-block;
+}
+.panel-action-icon{
+  display: inline-block;
+  margin-right: .5rem;
+  cursor: pointer;
+  opacity: .25;
+  //transform: translateX(2rem);
+  transition: .25s;
+  &:nth-child(1){
+    transition-delay: .125s;
+  }
+  &:nth-child(2){
+    transition-delay: .25s;
+  }
+  svg{
+    width: 16px;
+    height: 16px;
+  }
+  path{
+    fill: @LIGHT_THEME_COLOR2;
+    transition: .25s;
+  }
+  &:hover{
+    path{
+      fill:@LIGHT_THEME_TEXT;
+    }
+    &.close{
+      path{
+        fill: @RED;
+      }
+    }
+  }
+}
+.settings-icon{
+  display: inline-block;
+  margin-right: .5rem;
+  cursor: pointer;
+  svg {
+    width: 1rem;
+    height: 1rem;
+    transition: .25s;
+  }
+  path,circle {
+    stroke: @LIGHT_THEME_COLOR2;
+    fill: @LIGHT_THEME_BACKGROUND_COLOR;
+    transition: .25s;
+  }
 }
 .expand-v {
   flex-grow: 1;
   overflow: auto;
 }
-/*.header {
-  height: 30px;
-  .title {
-    font-size: 150%;
-    font-weight: bold;
-  }
-}*/
 .footer {
   height: 150px;
   flex-grow: 0;
 }
-
 .details {
   background-color: fade(@LIGHT_THEME_COLOR1,60%);// fade(@BLUE,20%);
   max-width: 12vw; //200px;
   min-width: 9vw;// 100px;
-  div {
-    margin-bottom: 1rem;
-  }
-  .panel-title{
-
-  }
 }
 .documentation {
   max-width: 400px;
