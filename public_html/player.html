@@ -57,7 +57,7 @@
         // Load game
         $battlescripts.get_game(game_id).then((game)=> {
           $scope.game = game;
-          $battlescripts.init_canvas(game.canvas);
+          $battlescripts.init_canvas(game);
         });
 
         // Load player
