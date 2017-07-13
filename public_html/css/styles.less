@@ -10,6 +10,10 @@
 @RED:#e41e2b;
 
 @MONO_FONT: 'Inconsolata',monospace;
+.u-margin-top{margin-top: 2rem;}
+.u-margin-right{margin-right: 2rem;}
+.u-margin-bottm{margin-bottom: 2rem;}
+.u-margin-left{margin-left: 2rem;}
 a{
   text-decoration: none;
   color: inherit;
@@ -132,6 +136,8 @@ h3{
     transform: translate(0px, 0) rotate(180deg);
   }
 }
+
+
 
 
 
@@ -410,7 +416,7 @@ label{
 }
 .battle-options{
   width: 200px;
-  margin-top: 1rem;
+  //margin-top: 1rem;
 }
 .battle-arena{
   flex-grow: 4;
@@ -459,7 +465,7 @@ label{
 .small-title{
   font-weight: bold;
   font-size: 1.0rem;
-  margin: 2rem 0 .5rem 0;
+  margin: 1rem 0 .5rem 0;
   color: @BLUE;
   text-transform: uppercase;
 }
@@ -707,17 +713,63 @@ label{
   }
 }
 
-
+@TOGGLE_WIDTH: 18px;
+@TOGGLE_HEIGHT: 13px;
 .theme-toggle{
   position: fixed;
   top: .25rem;
   left: .25rem ;
-  padding: .25rem ;
-  background-color: @LIGHT_THEME_BACKGROUND_COLOR;
+  padding: .125rem ;
+  background-color: @LIGHT_THEME_BACKGROUND_COLOR;// darken(@LIGHT_THEME_BACKGROUND_COLOR,5%);
   border: 1px solid @LIGHT_THEME_COLOR1;
-  border-radius: 2px;
+  border-radius: @TOGGLE_HEIGHT;
+  display: flex;
+  //position: relative;
   input{
     vertical-align: middle;
+  }
+}
+.theme-icon{
+  width: @TOGGLE_HEIGHT;
+  height: @TOGGLE_HEIGHT;
+  path{
+    fill: @LIGHT_THEME_COLOR2;
+    transition: .5s;
+  }
+  &.selected > path{
+    fill: @RED;
+  }
+}
+.toggle-indicator-container{
+  width: @TOGGLE_WIDTH;
+  height: @TOGGLE_HEIGHT;
+  border-radius: 6px;
+  border: 1px solid @LIGHT_THEME_COLOR1;
+  background-color: @LIGHT_THEME_BACKGROUND_COLOR;
+  position: relative;
+  margin: 0 1px;
+  .checkbox{
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    width: @TOGGLE_WIDTH;
+    z-index: 1;
+    margin: 0;
+    cursor: pointer;
+  }
+}
+.toggle-indicator {
+  width: @TOGGLE_HEIGHT+1px;
+  height: @TOGGLE_HEIGHT+1px;
+  border-radius: 50%;
+  background-color: @BLUE;
+  position: absolute;
+  top: -1px;
+  left: (@TOGGLE_WIDTH)-(@TOGGLE_HEIGHT)-1px;
+  transition: .5s;
+  &.dark{
+    //right: inherit;
+    left: -1px;
   }
 }
 @import "dark-theme";

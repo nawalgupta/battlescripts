@@ -96,12 +96,12 @@
   <div class="arena-container">
     <div class="battle-options">
       <div class="row">
-        <a class="btn primary" href="player.html?game_id={{game.$id}}">Create A Player</a>
+        <button class="primary" ng-click="start()">Start</button>
       </div>
       <div class="row">
         <label>Players:</label>
         <div ng-repeat="p in players track by $index">
-          <div class="">
+          <div style="margin-bottom: .5rem">
           {{$index+1}}. <select ng-options="p as p.name for p in player_list track by p.$id"
                                 ng-model="players[$index]"></select>
           </div>
@@ -117,10 +117,10 @@
         <label>Move delay</label>
         <input ng-model="options.move_delay" size="5">
       </div>
-      <div class="row">
-        <button ng-click="start()">Start</button>
-      </div>
 
+      <div class="row u-margin-top">
+        <a class="btn xprimary" href="player.html?game_id={{game.$id}}">Create A Player</a>
+      </div>
       <div class="row">
         <label>My Players</label>
         <!--<div  class="player-list">-->
