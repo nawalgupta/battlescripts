@@ -40,6 +40,10 @@ body.dark-theme {
   border: 1px solid #888;
 }
 .dark-theme .theme-toggle {
-  background-color: #555;
+  background-color: #6f6f6f;
   border: 1px solid #888;
+}
+.dark-theme .toggle-indicator-container {
+  background-color: #a2a2a2;
+  border-color: #888;
 }

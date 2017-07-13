@@ -1,5 +1,6 @@
 @DARK_THEME_BACKGROUND_COLOR:#555;
 @DARK_THEME_COLOR1:#888;
+@DARK_THEME_COLOR2: #474747;
 @DARK_THEME_TEXT:#eee;
 @BLUE:#28c4f1;
 @RED:#e41e2b;
@@ -60,8 +61,12 @@ body.dark-theme{
   .battle-arena {
     border: 1px solid @DARK_THEME_COLOR1;
   }
-  .theme-toggle{
-    background-color: @DARK_THEME_BACKGROUND_COLOR;
+  .theme-toggle {
+    background-color: lighten(@DARK_THEME_BACKGROUND_COLOR, 10%);
     border: 1px solid @DARK_THEME_COLOR1;
+  }
+  .toggle-indicator-container{
+    background-color: lighten(@DARK_THEME_COLOR1,10%);
+    border-color: @DARK_THEME_COLOR1;
   }
 }
