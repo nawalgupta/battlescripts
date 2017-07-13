@@ -35,7 +35,7 @@
     );
     $scope.$watch('game', function() {
       if($scope.game) {
-        $battlescripts.init_canvas($scope.game.canvas);
+        $battlescripts.init_canvas($scope.game);
 
         // Initialize the players array
         $scope.players = new Array($scope.game.max_players).fill(null);
@@ -71,7 +71,7 @@
   }]);
 </script>
 <header>
-  <img src="img/battlescripts-icon-med.png" class="bs-icon">
+  <a href="/"><img src="img/battlescripts-icon-med.png" class="bs-icon"></a>
   <div class="bs-nav-container">
     <img src="img/nav-icon.png" class="bs-nav-icon">
     <ul class="bs-nav">
@@ -85,7 +85,9 @@
   </div>
   <div class="page-actions"></div>
   <div class="user-actions">
-    <div ng-if="user.displayName">{{user.displayName}}</div>
+    <div ng-if="user.displayName">
+      <div class="user-name">{{user.displayName}}</div>
+    </div>
     <div ng-if="!user.displayName">Log In</div>
   </div>
 </header>
@@ -93,25 +95,39 @@
 <div class="static-content-wrap">
   <div class="arena-container">
     <div class="battle-options">
-      <a class="btn primary" href="player.html?game_id={{game.$id}}">Create A Player</a>
-      <div style="margin:10px;">
-        <div>Players:</div>
+      <div class="row">
+        <a class="btn primary" href="player.html?game_id={{game.$id}}">Create A Player</a>
+      </div>
+      <div class="row">
+        <label>Players:</label>
         <div ng-repeat="p in players track by $index">
+          <div class="">
           {{$index+1}}. <select ng-options="p as p.name for p in player_list track by p.$id"
                                 ng-model="players[$index]"></select>
+          </div>
         </div>
       </div>
-      <div style="margin:10px;">
-        <div>Options:</div>
-        Number of games: <input ng-model="options.total_games" size="4"><br>
-        Move delay: <input ng-model="options.move_delay" size="5"><br>
-        <button ng-click="start()">Start</button>
 
-        <div>My Players:</div>
-        <div ng-repeat="p in my_player_list">
-          <a href="player.html?game_id={{game.$id}}&id={{p.$id}}">{{p.name}}</a>
-        </div>
+      <div class="small-title">Options</div>
+      <div class="row">
+        <label>Number of games</label>
+        <input ng-model="options.total_games" size="4">
       </div>
+      <div class="row">
+        <label>Move delay</label>
+        <input ng-model="options.move_delay" size="5">
+      </div>
+      <div class="row">
+        <button ng-click="start()">Start</button>
+      </div>
+
+      <div class="row">
+        <label>My Players</label>
+        <!--<div  class="player-list">-->
+        <a ng-repeat="p in my_player_list" class="pl-player" href="player.html?game_id={{game.$id}}&id={{p.$id}}"><span ng-if="!p.name">(No Name)</span>{{p.name}}</a>
+        <!--</div>-->
+      </div>
+
     </div>
     <div class="battle-arena">
       <div>
