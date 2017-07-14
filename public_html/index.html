@@ -175,6 +175,10 @@ module.exports = function () {
           <div class="body">
             <div class="game-title">{{game.name}}</div>
             <div class="game-description">{{game.description}}</div>
+            <div style="margin-top:20px;">
+              <a class="btn xprimary" href="game.html?game_id={{game.$id}}">Play A Match</a>
+              <a class="btn xprimary" href="player.html?game_id={{game.$id}}">Create A Player</a>
+            </div>
           </div>
           <div class="game-footer"></div>
         </a>

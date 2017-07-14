@@ -485,6 +485,9 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
 // A general-purpose Canvas Controller for painting games
 bsapp.controller("CanvasController", ["$scope", "$battlescripts", "$queryparam", "$compile", "$rootScope", "$element", "$timeout", function($scope, $battlescripts, $queryparam, $compile, $rootScope, $element, $timeout) {
   $scope.game={};
+  if ($element.html().length===0) {
+    $element.html("Loading...");
+  }
   $rootScope.$on("canvas/render",function(msg,data) {
     $scope.game = data;
     $timeout(function() { $scope.$apply(); });
