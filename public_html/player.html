@@ -58,16 +58,22 @@
         $battlescripts.get_game(game_id).then((game)=> {
           $scope.game = game;
           $battlescripts.init_canvas(game);
+          // Load player
+          if (!!id) {
+            $battlescripts.login().then((user)=>$battlescripts.get_player(id))
+              .then( player => {
+                  $scope.player = player;
+                  $scope.$digest();
+              })
+          }
+          else {
+              // New player, load default player template
+              $scope.player.source = game.player_template;
+              // Show the game docs by default
+              $scope.ideView.gameDoc = false;
+              $scope.$digest();
+          }
         });
-
-        // Load player
-        if (!!id) {
-          $battlescripts.login().then((user)=>$battlescripts.get_player(id))
-            .then( player => {
-              $scope.player=player;
-              $scope.$apply();
-            } )
-        }
 
         // Load opponents
         $battlescripts.search_players({"game_id":game_id})
@@ -159,8 +165,9 @@
         $scope.test = function() {
           // START THE MATCH!!!
           var game = new $battlescripts.Game($scope.game.source);
+          var p1, p2;
           try {
-            var p1 = new $battlescripts.Player($scope.player.source, {
+            p1 = new $battlescripts.Player($scope.player.source, {
               "before_move": function (data) {
                 // Hook into the debugger panel
                 $scope.debugger_data = JSON.stringify(data);
@@ -179,7 +186,12 @@
             $scope.console.log("<span>[Compile Error]</span>"+e.toString(), "compile_error");
             return;
           }
-          var p2 = new $battlescripts.Player($scope.opponent.source, {prevent_logging:true});
+          if ($scope.opponent && $scope.opponent.source) {
+            p2 = new $battlescripts.Player($scope.opponent.source, {prevent_logging: true});
+          }
+          else {
+            p2 = new $battlescripts.Player($scope.player.source, {prevent_logging: true});
+          }
           var players = [ p1, p2 ];
 
           var match = new Match(game, players,{
@@ -429,7 +441,7 @@
 
             <div class="expand-v">
                 <div>
-                    Test Opponent: <select ng-options="p as p.name for p in opponents track by p.$id" ng-model="opponent"></select>
+                    Test Opponent: <select ng-options="p as p.name for p in opponents track by p.$id" ng-model="opponent"><option value="">This Player</option></select>
                     <input type="checkbox" ng-model="autoplay"> Auto play when saved
                 </div>
                 <div>
