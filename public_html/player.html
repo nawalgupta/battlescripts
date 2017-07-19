@@ -224,6 +224,9 @@
             var $console = $('#console');
             $console.append(`<div class="entry ${className}">${msg}</div>`);
             $console.prop('scrollTop',9999);
+          },
+          clear:function() {
+            $('#console .entry').remove();
           }
         };
         $rootScope.$on('log/player',function(data,msg) {
@@ -273,8 +276,7 @@
             <div class="player-name">{{player.name}}</div>
         </div>
         <div class="page-actions">
-            <button class="primary page-action">Save & Run</button>
-            <div class="page-action" ng-click="save()">Save</div>
+            <button class="primary page-action" ng-click="save()">Save{{(autoplay?' & Run':'')}}</button>
             <div class="page-action" ng-click="publish()">Save &amp; Publish</div>
         </div>
         <div class="user-actions">
@@ -609,9 +611,9 @@
             <div class="expand-v markdown-body" ng-bind-html="doc_player_api | markdown"></div>
         </div>
     </div>
-    <div class="panel footer" id="console">
-        Console
+    <div class="panel footer" id="console" style="position:relative;padding-top:15px;">
+        <span style="position:absolute;top:0;left:0;background-color:#ddd;">Console [<span style="text-decoration:underline;cursor:pointer;" ng-click="console.clear()")>clear</span>]</span>
     </div>
-
+</div>
 </body>
 </html>
