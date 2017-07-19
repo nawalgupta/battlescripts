@@ -236,9 +236,11 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
         else {
           // Prompt the user to sign in using an auth provider
           if (!$('#auth-dialog').length) {
-            $('<div id="auth-dialog" style="width: 50vw;height: 50vh;position: absolute;left: 25vw;top: 25vh;z-index: 9999;background-color: white;border: 5px solid red;border-radius: 15px;padding: 15px;">Loading...</div>').appendTo( $('body') );
+            $('<div id="auth-dialog" >Loading...</div>').appendTo( $('body') );
           }
           $('#auth-dialog').load("/auth.html",null,function() {
+            // Animate Entrance
+            setTimeout(function(){$('#auth-dialog').addClass('loaded');},100);
             // Attach listeners to the buttons
             $('#auth-dialog .auth-button').click(function() {
               var provider = $(this).attr('auth-provider');
