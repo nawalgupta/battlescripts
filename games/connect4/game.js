@@ -1,38 +1,12 @@
-var GameUtil = {
-  // Build an array of objects
-  fill_array: function (num, o) {
-    var a = [];
-    for (var i = 0; i < num; i++) {
-      if (typeof o == "object") {
-        a[i] = JSON.parse(JSON.stringify(o));
-      }
-      else {
-        a[i] = o;
-      }
-    }
-    return a;
-  }
-
-  , random: function (min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  , clone: function(obj) {
-    return JSON.parse(JSON.stringify(obj));
-  }
-
-};
-
-const Connect4 = function () {
+module.exports = function () {
   // A 7x6 array to represent the board
-  this.state = [ [],[],[],[],[],[],[] ];
-  this.winning_moves = [ [],[],[],[],[],[],[] ];
+  this.state = null;
+  this.winning_moves = null;
   this.current_player = 0;
   this.first_player = 0;
   this.last_move = null;
   this.last_player = null;
+  this.invalid_move = false;
 
   // Called at the start of each multi-game match.
   this.start_match = function (players, config, scenario) {
@@ -43,7 +17,10 @@ const Connect4 = function () {
 
   // Called at the start of each game
   this.start_game = function () {
+    this.state = [ [],[],[],[],[],[],[] ];
+    this.winning_moves = [ [],[],[],[],[],[],[] ];
     this.current_player = this.first_player;
+    this.invalid_move = false;
     // Return data per player that will be passed to the player's start_game() method
     return {"player_data": []};
   };
@@ -56,13 +33,19 @@ const Connect4 = function () {
     // Tell Match who should move and what data they should be sent
     return {
       player_number: this.current_player
-      , data: GameUtil.clone(this.state)
+      , data: this.clone(this.state)
     };
   };
 
   // Check if the game is over
   this.is_game_over = function () {
     if (this.last_move===null) { return false; }
+    // If last move was invalid
+    if (this.invalid_move!==false) {
+      return {
+        winner: 1-this.invalid_move
+      }
+    }
     // A game can only become over from the last move, so only check outward from that point
     let player = this.last_player;
     let col = this.state[this.last_move];
@@ -78,7 +61,7 @@ const Connect4 = function () {
     // winning lines need to be next to each other in any direction
     // Search outward from the last move
     let checks = [
-       [ [-1, 0],[1, 0] ]
+      [ [-1, 0],[1, 0] ]
       ,[ [ 0,-1],[0, 1] ]
       ,[ [-1,-1],[1, 1] ]
       ,[ [-1, 1],[1,-1] ]
@@ -124,6 +107,7 @@ const Connect4 = function () {
   this.move = function (player_number, move) {
     let col = this.state[move];
     if (col.length===6) {
+      this.invalid_move = player_number;
       throw "Invalid move, column is already full!";
     }
     col.push(player_number);
@@ -134,14 +118,17 @@ const Connect4 = function () {
   // Paint the game
   this.render = function (mime_type) {
     if ("text/plain"!==mime_type) {
-      return this.state;
+      return {
+        board:this.state,
+        winning_moves:this.winning_moves
+      };
     }
 
     let board = "";
     for (let i=5; i>=0; i--) {
       let row=[];
       for (let col=0; col<7; col++) {
-        if (typeof this.state[col][i]=="undefined") {
+        if (typeof this.state[col][i]==="undefined") {
           row.push(" ");
         }
         else {
@@ -171,4 +158,3 @@ const Connect4 = function () {
     // Typically do nothing
   };
 };
-module.exports = Connect4;
