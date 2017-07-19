@@ -68,36 +68,44 @@
 
       match.start({});
     };
+
+    $scope.gameRequirementsMet = function(){
+      var reqMet = true;
+      angular.forEach($scope.players, function(val) {
+        if(val=== null){reqMet = false}
+      });
+      return reqMet
+    }
   }]);
 </script>
 <header>
-  <a href="/"><img src="img/battlescripts-icon-med.png" class="bs-icon"></a>
-  <div class="bs-nav-container">
-    <img src="img/nav-icon.png" class="bs-nav-icon">
-    <ul class="bs-nav">
-      <li><a href="/">Home</a></li>
-      <li>Games</li>
-      <li>Arena</li>
-    </ul>
-  </div>
-  <div class="screen-title-container">
-    <div class="screen-title">{{game.name}}</div>
-  </div>
-  <div class="page-actions"></div>
-  <div class="user-actions">
-    <div ng-if="user.displayName">
-      <div class="user-name">{{user.displayName}}</div>
+  <div class="header-container width-wrapper">
+    <a href="/"><img src="img/battlescripts-icon-med.png" class="bs-icon"></a>
+    <div class="bs-nav-container">
+      <img src="img/nav-icon.png" class="bs-nav-icon">
+      <ul class="bs-nav">
+        <li><a href="/">Home</a></li>
+        <li>Games</li>
+        <li>Arena</li>
+      </ul>
     </div>
-    <div ng-if="!user.displayName">Log In</div>
+    <div class="screen-title-container">
+      <div class="screen-title">{{game.name}}</div>
+    </div>
+    <div class="page-actions"></div>
+    <div class="user-actions">
+      <div ng-if="user.displayName">
+        <div class="user-name">{{user.displayName}}</div>
+      </div>
+      <div class="btn primary" ng-if="!user.displayName">Log In</div>
+    </div>
   </div>
 </header>
 
-<div class="static-content-wrap">
+<div class="static-content-wrap width-wrapper">
   <div class="arena-container">
     <div class="battle-options">
-      <div class="row">
-        <button class="primary" ng-click="start()">Start</button>
-      </div>
+
       <div class="row">
         <label>Players:</label>
         <div ng-repeat="p in players track by $index">
@@ -107,6 +115,8 @@
           </div>
         </div>
       </div>
+
+
 
       <div class="small-title">Options</div>
       <div class="row">
@@ -118,14 +128,19 @@
           <input type="range" ng-model="options.move_delay" min="0" max="2000">
       </div>
 
-      <div class="row u-margin-top">
-        <a class="btn xprimary" href="player.html?game_id={{game.$id}}">Create A Player</a>
+      <div class="row makes-the-world-go-round">
+        <button class="primary" ng-class="{'disabled':!gameRequirementsMet()}" ng-click="start()">Start</button>
+        <div class="additional-info" ng-if="!gameRequirementsMet()">Players Required to Start</div>
       </div>
+
       <div class="row">
         <label>My Players</label>
         <!--<div  class="player-list">-->
         <a ng-repeat="p in my_player_list" class="pl-player" href="player.html?game_id={{game.$id}}&id={{p.$id}}"><span ng-if="!p.name">(No Name)</span>{{p.name}}</a>
         <!--</div>-->
+      </div>
+      <div class="row u-margin-top">
+        <a class="btn xprimary" href="player.html?game_id={{game.$id}}">Create A Player</a>
       </div>
 
     </div>
@@ -153,6 +168,7 @@
     <div style="float:left;width:800px;height:600px;border:1px solid black;margin:10px;">
 
     </div>-->
+  <div class="footer-spacer"></div>
 </div>
 </body>
 </html>

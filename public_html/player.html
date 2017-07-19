@@ -262,29 +262,31 @@
 </div>
 <div ng-show="game && (!id || player.$id)" class="ide">
     <header>
+      <div class="header-container">
         <a href="/"><img src="img/battlescripts-icon-med.png" class="bs-icon"></a>
-        <div class="bs-nav-container">
-            <img src="img/nav-icon.png" class="bs-nav-icon">
-            <ul class="bs-nav bs-list">
-                <li><a href="/">Home</a></li>
-                <li>Games</li>
-                <li>Arena</li>
-            </ul>
-        </div>
-        <div class="screen-title-container">
-            <div class="screen-title">{{game.name}}</div>
-            <div class="player-name">{{player.name}}</div>
-        </div>
-        <div class="page-actions">
-            <button class="primary page-action" ng-click="save()">Save{{(autoplay?' & Run':'')}}</button>
-            <div class="page-action" ng-click="publish()">Save &amp; Publish</div>
-        </div>
-        <div class="user-actions">
-          <div ng-if="user.displayName">
-            <div class="user-name">{{user.displayName}}</div>
+          <div class="bs-nav-container">
+              <img src="img/nav-icon.png" class="bs-nav-icon">
+              <ul class="bs-nav bs-list">
+                  <li><a href="/">Home</a></li>
+                  <li>Games</li>
+                  <li>Arena</li>
+              </ul>
           </div>
-          <div ng-if="!user.displayName">Log In</div>
-        </div>
+          <div class="screen-title-container">
+              <div class="screen-title">{{game.name}}</div>
+              <div class="player-name">{{player.name}}</div>
+          </div>
+          <div class="page-actions">
+              <button class="primary page-action" ng-click="save()">Save{{(autoplay?' & Run':'')}}</button>
+              <div class="page-action" ng-click="publish()">Save &amp; Publish</div>
+          </div>
+          <div class="user-actions">
+            <div ng-if="user.displayName">
+              <div class="user-name">{{user.displayName}}</div>
+            </div>
+            <div class="btn primary" ng-if="!user.displayName">Log In</div>
+          </div>
+      </div>
     </header>
     <div class="bs-hr-container">
         <div class="bs-hr-content-container">
@@ -345,11 +347,11 @@
             </div>
             <div class="row">
                 <label>Player Name</label>
-                <div><input ng-model="player.name"></div>
+                <input class="wide-input" ng-model="player.name">
             </div>
             <div class="row">
                 <label>Description</label>
-                <div><textarea ng-model="player.description" style="width:90%;height:75px;"></textarea></div>
+                <textarea class="wide-input" ng-model="player.description" style="height:75px;"></textarea>
             </div>
             <p ng-if="!player.published || player.source!=player.published" class="row">Your changes will not be visible to others until you publish your new code!</p>
             <div class="row">
@@ -451,13 +453,13 @@
 
             <div class="expand-v">
                 <div>
-                    <div>
+                    <div class="row">
                         Test Opponent: <select ng-options="p as p.name for p in opponents track by p.$id" ng-model="opponent"><option value="">This Player</option></select>
                     </div>
-                    <div>
+                    <div class="row">
                         My player should go <input type="radio" ng-model="play_order" ng-value="0"> First <input type="radio" ng-model="play_order" ng-value="1"> Second
                     </div>
-                    <div>
+                    <div class="row">
                         Delay Between Moves: <input type="range" ng-model="play_speed" min="0" max="2000">
                     </div>
                 </div>
