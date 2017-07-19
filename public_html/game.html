@@ -114,8 +114,8 @@
         <input ng-model="options.total_games" size="4">
       </div>
       <div class="row">
-        <label>Move delay</label>
-        <input ng-model="options.move_delay" size="5">
+          <label>Delay Between Moves</label>
+          <input type="range" ng-model="options.move_delay" min="0" max="2000">
       </div>
 
       <div class="row u-margin-top">
@@ -130,10 +130,11 @@
 
     </div>
     <div class="battle-arena">
-      <div>
+      <div style="visibility:{{results?'auto':'hidden'}}">
+          <b><u>Scoreboard</u></b><br>
         Game #{{results.games_played}} of {{results.total_games}}<br>
-        Player 1 (X) Wins: {{results.player_wins[0]}}<br>
-        Player 2 (O) Wins: {{results.player_wins[1]}}<br>
+        Player 1 Wins: {{results.player_wins[0]}}<br>
+        Player 2 Wins: {{results.player_wins[1]}}<br>
         Draws: {{results.draws}}<br>
       </div>
       <div ng-controller="CanvasController"></div>

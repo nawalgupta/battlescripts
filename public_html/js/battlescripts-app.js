@@ -201,6 +201,9 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
     // This is a hack for convenience. Don't do this. Or do.
     // It injects the auth user into the scope of every controller on the page.
     if (user) {
+      firebase.database().ref("users/"+user.uid).update({
+        displayName:user.displayName
+      })
       var inject = function(el) {
         //console.log(el, el.scope);
         if (el && el.scope) {
@@ -485,6 +488,9 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
 // A general-purpose Canvas Controller for painting games
 bsapp.controller("CanvasController", ["$scope", "$battlescripts", "$queryparam", "$compile", "$rootScope", "$element", "$timeout", function($scope, $battlescripts, $queryparam, $compile, $rootScope, $element, $timeout) {
   $scope.game={};
+  if ($element.html().length===0) {
+    $element.html("Loading...");
+  }
   $rootScope.$on("canvas/render",function(msg,data) {
     $scope.game = data;
     $timeout(function() { $scope.$apply(); });

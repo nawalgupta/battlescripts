@@ -8,20 +8,25 @@ exports.publish_player = functions.database.ref('/users/{uid}/players/{playerId}
   if (!event.data || !event.data.val()){
     return admin.database().ref('/players').child(event.params.playerId).remove();
   } else {
-    return admin.database().ref('/users/'+event.params.uid+'/players/'+event.params.playerId)
-            .once("value")
-            .then((snapshot)=>{
-              var player={};
+    return admin.database().ref('/users/'+event.params.uid+'/displayName')
+    .once("value")
+    .then((displayName)=>{
+      return admin.database().ref('/users/'+event.params.uid+'/players/'+event.params.playerId)
+              .once("value")
+              .then((snapshot)=>{
+                var player={};
+                var src = snapshot.val().source;
+                var obfuscated = obfuscator.obfuscate(src,{compact:true,selfDefending:true}).toString();
+                player.source=obfuscated;
 
-              var src = snapshot.val().source;
-              var obfuscated = obfuscator.obfuscate(src,{compact:true,selfDefending:true}).toString();
-              player.source=obfuscated;
-//              player.source = src;
+                player.game_id=snapshot.val().game_id;
+                player.name=snapshot.val().name;
+                player.uid=event.params.uid;
+                player.displayName=displayName.val();
+                admin.database().ref('/players').child(event.params.playerId).set(player);
+              })
+    })
 
-              player.game_id=snapshot.val().game_id;
-              player.name=snapshot.val().name;
-              admin.database().ref('/players').child(event.params.playerId).set(player);
-            })
   }
 
 });

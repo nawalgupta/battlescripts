@@ -3,6 +3,10 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>Battle Scripts</title>
+  <meta name="og:title" content="BattleScripts: Write Javascript Code To Play Games" />
+  <meta name="og:description" content="Write logic in javascript and then watch it play a game against others. Defeat your friends. Conquer your co-workers. May the best algorithm win!" />
+  <meta name="og:image" content="https://BattleScripts.io/img/share-1200-630.png"/>
+
   <link rel="stylesheet" type="text/css" href="css/styles.css">
   <link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans:400,400i,800" rel="stylesheet">
   <script>var module = {}; // To allow module.exports not to fail</script>
@@ -175,6 +179,10 @@ module.exports = function () {
           <div class="body">
             <div class="game-title">{{game.name}}</div>
             <div class="game-description">{{game.description}}</div>
+            <div style="margin-top:20px;">
+              <a class="btn xprimary" href="game.html?game_id={{game.$id}}">Play A Match</a>
+              <a class="btn xprimary" href="player.html?game_id={{game.$id}}">Create A Player</a>
+            </div>
           </div>
           <div class="game-footer"></div>
         </a>

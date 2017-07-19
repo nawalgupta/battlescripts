@@ -36,6 +36,9 @@
         $scope.opponents = [];
         $scope.opponent = null;
         $scope.autoplay = true;
+        $scope.play_speed=100;
+        $scope.play_order=0;
+        $scope.results = null;
         $scope.user = null;
         $scope.ideView = {
           'details':false,
@@ -58,16 +61,22 @@
         $battlescripts.get_game(game_id).then((game)=> {
           $scope.game = game;
           $battlescripts.init_canvas(game);
+          // Load player
+          if (!!id) {
+            $battlescripts.login().then((user)=>$battlescripts.get_player(id))
+              .then( player => {
+                  $scope.player = player;
+                  $scope.$digest();
+              })
+          }
+          else {
+              // New player, load default player template
+              $scope.player.source = game.player_template;
+              // Show the game docs by default
+              $scope.ideView.gameDoc = false;
+              $scope.$digest();
+          }
         });
-
-        // Load player
-        if (!!id) {
-          $battlescripts.login().then((user)=>$battlescripts.get_player(id))
-            .then( player => {
-              $scope.player=player;
-              $scope.$apply();
-            } )
-        }
 
         // Load opponents
         $battlescripts.search_players({"game_id":game_id})
@@ -94,7 +103,7 @@
             .then( user => $battlescripts.save_player($scope.player) )
             .then( updated_player => $scope.player=updated_player )
             .then( () => $scope.console.log("<span>[Save]</span> Successful","success") )
-            .then( () => { if($scope.autoplay && $scope.opponent) { $scope.test(); } })
+            .then( () => { if($scope.autoplay) { $scope.test(); } })
             .catch( (err) => $scope.console.log("<span>[Save]</span> Error with Save: "+err.toString(),"error") )
         };
         // ctrl+s to save
@@ -158,9 +167,11 @@
         // -----------
         $scope.test = function() {
           // START THE MATCH!!!
+          $scope.results=null;
           var game = new $battlescripts.Game($scope.game.source);
+          var p1, p2;
           try {
-            var p1 = new $battlescripts.Player($scope.player.source, {
+            p1 = new $battlescripts.Player($scope.player.source, {
               "before_move": function (data) {
                 // Hook into the debugger panel
                 $scope.debugger_data = JSON.stringify(data);
@@ -179,12 +190,17 @@
             $scope.console.log("<span>[Compile Error]</span>"+e.toString(), "compile_error");
             return;
           }
-          var p2 = new $battlescripts.Player($scope.opponent.source, {prevent_logging:true});
-          var players = [ p1, p2 ];
+          if ($scope.opponent && $scope.opponent.source) {
+            p2 = new $battlescripts.Player($scope.opponent.source, {prevent_logging: true});
+          }
+          else {
+            p2 = new $battlescripts.Player($scope.player.source, {prevent_logging: true});
+          }
+          var players = $scope.play_order==1 ? [p2,p1] : [p1,p2];
 
           var match = new Match(game, players,{
             total_games: 1,
-            move_delay: 100,
+            move_delay: $scope.play_speed,
             time_limit: 9999,
             render_history:true
           });
@@ -194,6 +210,10 @@
           match.subscribe("game.render", function(data) {
             $battlescripts.render(data);
           });
+          match.subscribe("game.end", function(results) {
+            $scope.results = results;
+          });
+
           match.start({});
         };
 
@@ -204,6 +224,9 @@
             var $console = $('#console');
             $console.append(`<div class="entry ${className}">${msg}</div>`);
             $console.prop('scrollTop',9999);
+          },
+          clear:function() {
+            $('#console .entry').remove();
           }
         };
         $rootScope.$on('log/player',function(data,msg) {
@@ -253,8 +276,7 @@
             <div class="player-name">{{player.name}}</div>
         </div>
         <div class="page-actions">
-            <button class="primary page-action">Save & Run</button>
-            <div class="page-action" ng-click="save()">Save</div>
+            <button class="primary page-action" ng-click="save()">Save{{(autoplay?' & Run':'')}}</button>
             <div class="page-action" ng-click="publish()">Save &amp; Publish</div>
         </div>
         <div class="user-actions">
@@ -429,13 +451,25 @@
 
             <div class="expand-v">
                 <div>
-                    Test Opponent: <select ng-options="p as p.name for p in opponents track by p.$id" ng-model="opponent"></select>
-                    <input type="checkbox" ng-model="autoplay"> Auto play when saved
+                    <div>
+                        Test Opponent: <select ng-options="p as p.name for p in opponents track by p.$id" ng-model="opponent"><option value="">This Player</option></select>
+                    </div>
+                    <div>
+                        My player should go <input type="radio" ng-model="play_order" ng-value="0"> First <input type="radio" ng-model="play_order" ng-value="1"> Second
+                    </div>
+                    <div>
+                        Delay Between Moves: <input type="range" ng-model="play_speed" min="0" max="2000">
+                    </div>
                 </div>
                 <div>
-                    <button ng-click="test()">Play A Test Game</button>
+                    <button ng-click="test()">Play A Test Game</button> <input type="checkbox" ng-model="autoplay"> Auto play when saved
                 </div>
-                <div id="canvas" ng-controller="CanvasController" style="box-sizing:content-box;"></div>
+                <div id="canvas" ng-controller="CanvasController" style="margin-top:10px;box-sizing:content-box;"></div>
+                <div ng-if="results" style="font-size:24px;font-weight:bold;">
+                    <span ng-if="play_order==results.winner">You WON!</span>
+                    <span ng-if="play_order!=results.winner && !results.draw">You LOST</span>
+                    <span ng-if="results.draw">DRAW</span>
+                </div>
             </div>
         </div>
         <div class="panel collapsed debugger" ng-class="{'collapsed':ideView.debugger}">
@@ -577,9 +611,9 @@
             <div class="expand-v markdown-body" ng-bind-html="doc_player_api | markdown"></div>
         </div>
     </div>
-    <div class="panel footer" id="console">
-        Console
+    <div class="panel footer" id="console" style="position:relative;padding-top:15px;">
+        <span style="position:absolute;top:0;left:0;background-color:#ddd;">Console [<span style="text-decoration:underline;cursor:pointer;" ng-click="console.clear()")>clear</span>]</span>
     </div>
-
+</div>
 </body>
 </html>
