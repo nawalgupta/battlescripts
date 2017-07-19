@@ -494,13 +494,13 @@ button.disabled:focus,
 input[type=range] {
   -webkit-appearance: none;
   margin: 10px 0;
-  width: auto;
+  width: 150px;
 }
 input[type=range]:focus {
   outline: none;
 }
 input[type=range]::-webkit-slider-runnable-track {
-  width: auto;
+  width: 150px;
   height: 10px;
   cursor: pointer;
   animate: 0.2s;
@@ -524,7 +524,7 @@ input[type=range]:focus::-webkit-slider-runnable-track {
   background: #ffffff;
 }
 input[type=range]::-moz-range-track {
-  width: auto;
+  width: 150px;
   height: 10px;
   cursor: pointer;
   animate: 0.2s;
@@ -543,7 +543,7 @@ input[type=range]::-moz-range-thumb {
   cursor: pointer;
 }
 input[type=range]::-ms-track {
-  width: auto;
+  width: 150px;
   height: 10px;
   cursor: pointer;
   animate: 0.2s;
