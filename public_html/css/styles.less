@@ -39,19 +39,20 @@ input{
   font-family: 'Open Sans','Arial',sans-serif;
 }
 .static-content-wrap{
-  max-width: 70rem ;
   margin: 0;
+  .width-wrapper();
   background-color: @LIGHT_THEME_BACKGROUND_COLOR;
   border-left: 8px solid @BLUE;
   border-right: 8px solid @RED;
-  &.center{
+/*  &.center{
     margin: 0 auto;
-  }
+  }*/
 }
-.static-header{
-  font-size: 1.5rem;
-  text-align: center;
+.width-wrapper{
+  max-width: 70rem ;
+  margin: 0 auto;
 }
+
 .hero-image{
   max-width: 550px;
   margin: 2rem 0 0.5rem;
@@ -70,6 +71,27 @@ h2{
 h3{
   font-size: 1.8rem;
   margin: 0 0 .5rem;
+}
+.additional-info{
+  font-size: .65rem;
+  opacity: .8;
+  margin-top: .25rem;
+}
+.footer-spacer{
+  min-height: 5rem;
+  position: relative;
+  &:after {
+    //background: -moz-linear-gradient(left, @BLUE 0%, #ffffff 50%, @RED 100%); /* FF3.6-15 */
+    //background: -webkit-linear-gradient(left, @BLUE 0%, #ffffff 50%, @RED 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to right, @BLUE 40%, #ffffff 50%, @RED 60%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 8px;
+  }
 }
 // ---------------------------- LOADING -------------------------
 .loading{
@@ -147,11 +169,23 @@ h3{
 // ------------------------ HEADER ----------------------------
 header{
   padding: .5rem;
-  display: flex;
+  //display: flex;
   background-color: @LIGHT_THEME_BACKGROUND_COLOR;
   //margin-bottom: 1rem;
   border-bottom: 1px solid @LIGHT_THEME_COLOR1;
-  flex-shrink: 0;
+  //flex-shrink: 0;
+}
+.header-container{
+  //padding: .5rem;
+  display: flex;
+  background-color: @LIGHT_THEME_BACKGROUND_COLOR;
+  //margin-bottom: 1rem;
+  //border-bottom: 1px solid @LIGHT_THEME_COLOR1;
+  //flex-shrink: 0;
+}
+.static-header{
+  font-size: 1.5rem;
+  text-align: center;
 }
 .bs-icon{
   max-height: 40px;
@@ -344,6 +378,7 @@ button, .btn{
   font-family: @MONO_FONT;
   text-decoration: none;
   font-size: 1.0rem;
+  cursor: pointer;
   &.primary{
     background-color: @RED;
     border: 1px solid darken(@RED,10%);
@@ -353,8 +388,143 @@ button, .btn{
     font-size: 1.5rem;
     padding:.75rem 1.5rem;
   }
+  &.disabled{
+    background-color: lighten(@LIGHT_THEME_COLOR1,5%);
+    border: 1px solid @LIGHT_THEME_COLOR1;
+    color: @LIGHT_THEME_COLOR2;
+    &:focus{
+      outline:none;
+    }
+  }
+}
+@track-color:#FFF;
+@thumb-color: @BLUE;
+
+@thumb-radius: 10px;
+@thumb-height: 20px;
+@thumb-width: 20px;
+@thumb-shadow-size: 2px;
+@thumb-shadow-blur: 2px;
+@thumb-shadow-color: fade(@BLUE,30%);
+@thumb-border-width: 0;
+@thumb-border-color: white;
+
+@track-width: auto;
+@track-height: 10px;
+@track-shadow-size: 0;
+@track-shadow-blur: 0;
+@track-shadow-color: #000;
+@track-border-width: 1px;
+@track-border-color: @RED;
+
+@track-radius: 5px;
+@contrast: 5%;
+
+.shadow(@shadow-size,@shadow-blur,@shadow-color) {
+  box-shadow: @shadow-size @shadow-size @shadow-blur @shadow-color, 0px 0px @shadow-size lighten(@shadow-color,5%);
 }
 
+.track() {
+  width: @track-width;
+  height: @track-height;
+  cursor: pointer;
+  animate: 0.2s;
+}
+
+.thumb() {
+  .shadow(@thumb-shadow-size,@thumb-shadow-blur,@thumb-shadow-color);
+  border: @thumb-border-width solid @thumb-border-color;
+  height: @thumb-height;
+  width: @thumb-width;
+  border-radius: @thumb-radius;
+  background: @thumb-color;
+  cursor: pointer;
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  margin: @thumb-height/2 0;
+  width: @track-width;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::-webkit-slider-runnable-track {
+    .track();
+    .shadow(@track-shadow-size,@track-shadow-blur,@track-shadow-color);
+    background: @track-color;
+    border-radius: @track-radius;
+    border: @track-border-width solid @track-border-color;
+  }
+
+  &::-webkit-slider-thumb {
+    .thumb();
+    -webkit-appearance: none;
+    margin-top: ((-@track-border-width * 2 + @track-height) / 2) - (@thumb-height / 2);
+  }
+
+  &:focus::-webkit-slider-runnable-track {
+    background: lighten(@track-color, @contrast);
+  }
+
+  &::-moz-range-track {
+    .track();
+    .shadow(@track-shadow-size,@track-shadow-blur,@track-shadow-color);
+    background: @track-color;
+    border-radius: @track-radius;
+    border: @track-border-width solid @track-border-color;
+  }
+  &::-moz-range-thumb {
+    .thumb();
+  }
+
+  &::-ms-track {
+    .track();
+    background: transparent;
+    border-color: transparent;
+    border-width: @thumb-width 0;
+    color: transparent;
+  }
+
+  &::-ms-fill-lower {
+    background: darken(@track-color, @contrast);
+    border: @track-border-width solid @track-border-color;
+    border-radius: @track-radius*2;
+    .shadow(@track-shadow-size,@track-shadow-blur,@track-shadow-color);
+  }
+  &::-ms-fill-upper {
+    background: @track-color;
+    border: @track-border-width solid @track-border-color;
+    border-radius: @track-radius*2;
+    .shadow(@track-shadow-size,@track-shadow-blur,@track-shadow-color);
+  }
+  &::-ms-thumb {
+    .thumb();
+  }
+  &:focus::-ms-fill-lower {
+    background: @track-color;
+  }
+  &:focus::-ms-fill-upper {
+    background: lighten(@track-color, @contrast);
+  }
+}
+
+/*input[type=range]::-webkit-slider-thumb{.THUMB_MIXIN();}
+input[type=range]::-moz-range-thumb{    .THUMB_MIXIN();}
+input[type=range]::-ms-thumb {          .THUMB_MIXIN();}
+.THUMB_MIXIN{
+  -webkit-appearance: none;
+  //border: 1px solid #000000;
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  background: @RED;
+  cursor: pointer;
+  margin-top: -14px; !* You need to specify a margin in Chrome, but in Firefox and IE it is automatic *!
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; !* Add cool effects to your sliders! *!
+
+}*/
 //--------------------  LABELS -------------------------------
 label{
   font-size: .65rem;
@@ -461,7 +631,11 @@ label{
 
 .row {
   margin-bottom: 1rem;
+  &.makes-the-world-go-round {
+    margin-bottom: 3rem;
+  }
 }
+
 .small-title{
   font-weight: bold;
   font-size: 1.0rem;
@@ -592,7 +766,7 @@ label{
 }
 .panel-action-icon{
   display: inline-block;
-  margin-right: .5rem;
+  margin-right: .25rem;
   cursor: pointer;
   opacity: .25;
   //transform: translateX(2rem);
@@ -621,10 +795,13 @@ label{
       }
     }
   }
+  &:last-child{
+    margin-right: 0;
+  }
 }
 .settings-icon{
   display: inline-block;
-  margin-right: .5rem;
+  margin-right: .25rem;
   cursor: pointer;
   svg {
     width: 1rem;
@@ -648,7 +825,10 @@ label{
 .details {
   background-color: fade(@LIGHT_THEME_COLOR1,60%);// fade(@BLUE,20%);
   max-width: 12vw; //200px;
-  min-width: 9vw;// 100px;
+  min-width: 160px;
+  .wide-input{
+    width: 100%;
+  }
 }
 .documentation {
   max-width: 400px;
@@ -713,46 +893,58 @@ label{
   }
 }
 
-@TOGGLE_WIDTH: 18px;
-@TOGGLE_HEIGHT: 13px;
+@TOGGLE_WIDTH: 28px;
+@TOGGLE_HEIGHT: 18px;
+@TOGGLE_SPACER: 2px;
 .theme-toggle{
   position: fixed;
-  top: .25rem;
-  left: .25rem ;
-  padding: .125rem ;
+  top: .5rem;
+  left: .5rem ;
+  padding: .25rem ;
   background-color: @LIGHT_THEME_BACKGROUND_COLOR;// darken(@LIGHT_THEME_BACKGROUND_COLOR,5%);
   border: 1px solid @LIGHT_THEME_COLOR1;
   border-radius: @TOGGLE_HEIGHT;
   display: flex;
-  //position: relative;
+  box-shadow: -1rem 0 1rem fade(@BLUE,20%), 1rem 0 1rem fade(@RED,80%);
+  transition: .35s;
+  transition-delay: .15s;
+  &.selected{
+    box-shadow: -1rem 0 1rem fade(@BLUE,80%),1rem 0 1rem fade(@RED,20%);
+  }
+  &:hover {
+    box-shadow: -1rem 0 1rem fade(@BLUE, 80%), 1rem 0 1rem fade(@RED, 80%);
+  }
+
   input{
     vertical-align: middle;
   }
 }
 .theme-icon{
-  width: @TOGGLE_HEIGHT;
-  height: @TOGGLE_HEIGHT;
+  width: @TOGGLE_HEIGHT * 1.25;
+  height: @TOGGLE_HEIGHT * 1.25;
   path{
     fill: @LIGHT_THEME_COLOR2;
     transition: .5s;
   }
-  &.selected > path{
-    fill: @RED;
+  &.selected{
+    &.moon > path{ fill:@BLUE}
+    &.sun > path{fill: @RED}
   }
 }
 .toggle-indicator-container{
   width: @TOGGLE_WIDTH;
   height: @TOGGLE_HEIGHT;
-  border-radius: 6px;
+  border-radius:  @TOGGLE_HEIGHT/2;
   border: 1px solid @LIGHT_THEME_COLOR1;
   background-color: @LIGHT_THEME_BACKGROUND_COLOR;
   position: relative;
-  margin: 0 1px;
+  margin: @TOGGLE_SPACER @TOGGLE_SPACER;
   .checkbox{
     opacity: 0;
     position: absolute;
     top: 0;
     width: @TOGGLE_WIDTH;
+    height: @TOGGLE_HEIGHT;
     z-index: 1;
     margin: 0;
     cursor: pointer;
@@ -762,14 +954,17 @@ label{
   width: @TOGGLE_HEIGHT+1px;
   height: @TOGGLE_HEIGHT+1px;
   border-radius: 50%;
-  background-color: @BLUE;
+  background-color: @RED;
   position: absolute;
   top: -1px;
-  left: (@TOGGLE_WIDTH)-(@TOGGLE_HEIGHT)-1px;
+  left: (@TOGGLE_WIDTH)-(@TOGGLE_HEIGHT)- @TOGGLE_SPACER;
   transition: .5s;
+  transition-delay: .35s;
   &.dark{
     //right: inherit;
     left: -1px;
+    background-color: @BLUE;
   }
 }
+
 @import "dark-theme";
