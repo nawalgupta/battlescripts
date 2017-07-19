@@ -372,7 +372,10 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
       min = Math.ceil(min);
       max = Math.floor(max);
       return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+    };
+    this.clone = function(o) {
+      return JSON.parse(JSON.stringify(o));
+    };
   };
 
   // A wrapper to create a Game object from code and give it a prototype with useful functions
