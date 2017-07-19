@@ -613,15 +613,15 @@ label {
   font-size: 3.8rem;
   margin: 0 0 2rem;
 }
-.game {
+.game-item {
   border: 1px solid #28c4f1;
   padding: 2rem;
   margin: 0 0 4rem 0;
 }
-.game:nth-child(odd) {
+.game-item:nth-child(odd) {
   border-color: #e41e2b;
 }
-.game a {
+.game-item a {
   text-decoration: none;
   color: #555;
 }
