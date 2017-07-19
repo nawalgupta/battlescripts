@@ -35,7 +35,7 @@
     );
     $scope.$watch('game', function() {
       if($scope.game) {
-        $battlescripts.init_canvas($scope.game.canvas);
+        $battlescripts.init_canvas($scope.game);
 
         // Initialize the players array
         $scope.players = new Array($scope.game.max_players).fill(null);
