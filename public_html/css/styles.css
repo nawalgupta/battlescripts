@@ -373,13 +373,53 @@ header {
 }
 .user-actions {
   margin-left: 1rem;
+  position: relative;
 }
-.user-name {
+.actions-logged-in {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.actions-logged-in:hover .player-container {
+  transform: scaleY(1);
+}
+.action-item {
   color: #555;
   font-family: 'Inconsolata', monospace;
   text-decoration: none;
+  font-size: 1rem;
+  margin-right: 1rem;
+}
+.user-name {
   font-size: 1.0rem;
   font-weight: 800;
+}
+.my-players {
+  cursor: default;
+}
+.my-players .pl-player {
+  padding: .5rem;
+  border-color: #e41e2b;
+}
+.my-players .pl-player:nth-child(odd) {
+  border-color: #28c4f1;
+}
+.my-players:before {
+  content: '';
+  background: url('../img/red-arrow-50.png') no-repeat center;
+  background-size: contain;
+  width: 12px;
+  height: 12px;
+  transform: rotate(90deg);
+  display: inline-block;
+}
+.player-container {
+  position: absolute;
+  transform: scaleY(0);
+  transform-origin: 0 0;
+  left: 0;
+  transition: .5s;
+  top: 20px;
+  background-color: #FFF;
 }
 .bs-hr-container {
   background-color: #e7e7e7;
