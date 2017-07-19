@@ -39,6 +39,7 @@
         $scope.play_speed=100;
         $scope.play_order=0;
         $scope.results = null;
+        $scope.my_player_list = [];
         $scope.user = null;
         $scope.ideView = {
           'details':false,
@@ -67,6 +68,10 @@
               .then( player => {
                   $scope.player = player;
                   $scope.$digest();
+                  // Load My Players
+                  $battlescripts.get_my_players($scope.game.$id).then(
+                    myplayers => $scope.my_player_list = myplayers
+                  );
               })
           }
           else {
@@ -76,6 +81,7 @@
               $scope.ideView.gameDoc = false;
               $scope.$digest();
           }
+
         });
 
         // Load opponents
@@ -281,8 +287,14 @@
               <div class="page-action" ng-click="publish()">Save &amp; Publish</div>
           </div>
           <div class="user-actions">
-            <div ng-if="user.displayName">
-              <div class="user-name">{{user.displayName}}</div>
+            <div class="actions-logged-in" ng-if="user.displayName">
+              <div class="user-name action-item">{{user.displayName}}</div>
+              <div class="my-players action-item">
+                My Players
+                <div class="player-container">
+                  <a ng-repeat="p in my_player_list" class="pl-player" href="player.html?game_id={{game.$id}}&id={{p.$id}}"><span ng-if="!p.name">(No Name)</span>{{p.name}}</a>
+                </div>
+              </div>
             </div>
             <div class="btn primary" ng-if="!user.displayName">Log In</div>
           </div>

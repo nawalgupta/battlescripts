@@ -270,16 +270,59 @@ header{
     }
   }
 }
-.user-actions{
+.user-actions {
   margin-left: 1rem;
   //background-color: red;
+  position: relative;
 }
-.user-name{
+.actions-logged-in{
+  display: flex;
+  flex-direction: row-reverse;
+  &:hover{
+    .player-container{
+      transform: scaleY(1);
+    }
+  }
+}
+.action-item{
   color: @LIGHT_THEME_TEXT;
   font-family: @MONO_FONT;
   text-decoration: none;
+  font-size: 1rem;
+  margin-right: 1rem;
+  //display: inline-block;
+}
+.user-name{
   font-size: 1.0rem;
   font-weight: 800;
+}
+.my-players{
+  cursor: default;
+  .pl-player{
+    padding: .5rem;
+    border-color: @RED;
+    &:nth-child(odd){
+      border-color: @BLUE
+    }
+  }
+  &:before{
+    content: '';
+    background: url('../img/red-arrow-50.png') no-repeat center;
+    background-size: contain;
+    width: 12px;
+    height: 12px;
+    transform: rotate(90deg);
+    display: inline-block;
+  }
+}
+.player-container{
+  position: absolute;
+  transform: scaleY(0);
+  transform-origin: 0 0;
+  left:0;
+  transition: .5s;
+  top:20px;
+  background-color: @LIGHT_THEME_BACKGROUND_COLOR;
 }
 // ------------------------------------------- BS Horizontal Rule ------------
 .bs-hr-container{
