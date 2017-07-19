@@ -155,7 +155,7 @@ module.exports = function () {
       <h2 class="games-header">Games</h2>
       <div class="game" ng-repeat="game in games">
         <a href="game.html?game_id={{game.$id}}">
-          <div class="game-logo"></div>
+          <div class="game-logo"><img src="/img/games/{{game.$id}}.png"></div>
           <div class="body">
             <div class="game-title">{{game.name}}</div>
             <div class="game-description">{{game.description}}</div>
