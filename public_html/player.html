@@ -116,7 +116,14 @@
         $scope.save = function() {
           $battlescripts.login()
             .then( user => $battlescripts.save_player($scope.player) )
-            .then( updated_player => $scope.player=updated_player )
+            .then( (updated_player) => {
+              if (!$scope.player.$id && window.history && window.history.pushState && updated_player.$id) {
+alert(updated_player.$id);
+                // Update the url so reload works to get to this player
+                history.pushState({}, null, location.href+"&id="+updated_player.$id);
+              }
+              $scope.player=updated_player;
+            })
             .then( () => $scope.console.log("<span>[Save]</span> Successful","success") )
             .then( () => { if($scope.autoplay) { $scope.test(); } })
             .catch( (err) => $scope.console.log("<span>[Save]</span> Error with Save: "+err.toString(),"error") )
