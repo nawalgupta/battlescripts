@@ -29,12 +29,14 @@
     $scope.i=0;
     $scope.j=1;
     $scope.ready_to_start = false;
+    $scope.match_over = false;
+    $scope.tournament_over = false;
     $scope.match = null;
 
     $scope.options = {
       total_games: 10,
       move_delay: 100,
-      render_history: true
+      render_history: false
     };
 
     $battlescripts.get_game($scope.game_id).then(
@@ -51,19 +53,39 @@
         $battlescripts.search_players({"game_id": $scope.game.$id}).then(
           (players) => {
             $scope.player_list = players;
-            $scope.player_list.forEach( p=>p.selected=true );
+            $scope.player_list.forEach( (p)=>{
+              p.selected=true;
+              p.wins=0;
+              p.losses=0;
+              p.draws=0;
+            } );
           }
         );
       }
     });
 
     $scope.start = function() {
+      $scope.tournament_over = false;
       var game = new $battlescripts.Game($scope.game.source);
       $scope.match = new Match(game, [], $scope.options);
+
       $scope.match.subscribe("game.render", $battlescripts.render);
       $scope.match.subscribe("match.results", function(results) {
         $scope.$apply(function() {
           $scope.results = results;
+        });
+      });
+      $scope.match.subscribe("match.end", function(results) {
+        // Store the results in the players
+        $scope.$apply(function() {
+          $scope.players[0].wins += results.player_wins[0];
+          $scope.players[0].losses += results.player_wins[1];
+          $scope.players[0].draws += results.draws;
+          $scope.players[1].wins += results.player_wins[1];
+          $scope.players[1].losses += results.player_wins[0];
+          $scope.players[1].draws += results.draws;
+          $scope.ready_to_start = false;
+          $scope.match_over = true;
         });
       });
 
@@ -73,9 +95,21 @@
       // Build up a list of selected players
       $scope.selected_players = [];
       $scope.player_list.forEach(p => {
-        $scope.selected_players.push(p);
+        if (p.selected) {
+          $scope.selected_players.push(p);
+          p.wins=0;
+          p.losses=0;
+          p.draws=0;
+        }
       });
 
+      $scope.get_next_players();
+    };
+
+    $scope.next_match = function() {
+      $scope.match_over = false;
+      $scope.ready_to_start = true;
+      $scope.results = null;
       $scope.get_next_players();
     };
 
@@ -92,7 +126,8 @@
         }
         if ($scope.j>=$scope.selected_players.length) {
           $scope.ready_to_start = false;
-          $scope.end_match();
+          $scope.end_tournament();
+          return;
         }
       }
       $scope.players = [ $scope.selected_players[$scope.i] , $scope.selected_players[$scope.j] ];
@@ -103,6 +138,10 @@
     $scope.next_game = function() {
       $scope.match.players = [ new $battlescripts.Player($scope.players[0].source) , new $battlescripts.Player($scope.players[1].source) ];
       $scope.match.start();
+    };
+
+    $scope.end_tournament = function() {
+      $scope.tournament_over = true;
     };
 
     $scope.gameRequirementsMet = function(){
@@ -176,7 +215,7 @@
         <label>Select Players:</label>
         <div class="arena-player-list" style="max-height:500px;overflow:auto;border:1px solid #ccc;">
           <div class="arena-player" ng-class="{'selected':p.selected}" ng-click="p.selected=!p.selected" style="cursor:pointer;margin:4px;padding:3px;padding-left:20px;border:1px solid #ddd;" ng-repeat="p in player_list track by p.$id">
-            <span ng-show="p.selected" style="float:right;font-style:italic;color:#aaa;font-size:80%;">( 0 / 0 / 0 )</span>
+            <span ng-show="p.selected" style="float:right;font-style:italic;color:#aaa;font-size:80%;">( {{p.wins}} / {{p.losses}} / {{p.draws}} )</span>
             <div style="font-weight:bold;">{{p.name}}</div>
             <div>{{p.displayName}}</div>
           </div>
@@ -189,9 +228,49 @@
       </div>
 
     </div>
+    <style>
+      table.arena-results { border:1px solid black; }
+      table.arena-results td { border:1px solid black; padding:5px; }
+    </style>
     <div class="battle-arena">
-      <div ng-if="ready_to_start">{{players[0].name}} vs {{players[1].name}} <button class="button-primary" ng-click="next_game()">Start</button></div>
-      <div ng-controller="CanvasController"></div>
+      <table class="arena-results" ng-if="ready_to_start || match_over">
+        <tr>
+          <td>{{players[0].name}}</td>
+          <td>vs</td>
+          <td>{{players[1].name}}</td>
+          <td rowspan="3">
+            <button ng-if="ready_to_start" class="button-primary" ng-click="next_game()">Start</button>
+            <button ng-if="match_over" class="button-primary" ng-click="next_match()">OK</button>
+          </td>
+        </tr>
+        <tr>
+          <td>WINS</td>
+          <td>DRAWS</td>
+          <td>WINS</td>
+        </tr>
+        <tr>
+          <td>{{results.player_wins[0]}}</td>
+          <td>{{results.draws}}</td>
+          <td>{{results.player_wins[1]}}</td>
+        </tr>
+      </table>
+      <div ng-show="tournament_over">
+        <div>Results</div>
+        <table>
+          <thead>
+          <tr><td>Player</td><td>Wins</td><td>Losses</td><td>Draws</td></tr>
+          </thead>
+          <tbody>
+          <tr ng-repeat="p in selected_players | orderBy:'wins':true">
+            <td>{{p.name}}</td>
+            <td>{{p.wins}}</td>
+            <td>{{p.losses}}</td>
+            <td>{{p.draws}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div ng-show="!tournament_over" ng-controller="CanvasController"></div>
     </div>
   </div>
   <div class="footer-spacer"></div>
