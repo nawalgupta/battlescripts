@@ -6,14 +6,24 @@
 @RED:#e41e2b;
 
 
-body.dark-theme{
-  background-color: @DARK_THEME_BACKGROUND_COLOR;
-  color: @DARK_THEME_TEXT;
-}
 
-.dark-theme {
+body.dark-theme {
 
+
+    background-color: @DARK_THEME_BACKGROUND_COLOR;
+    color: @DARK_THEME_TEXT;
+
+
+  input[type='text'],textarea,select {
+    color: @DARK_THEME_TEXT;
+    background-color: @DARK_THEME_BACKGROUND_COLOR;
+  }
   .static-content-wrap {
+    background-color: @DARK_THEME_BACKGROUND_COLOR;
+  }
+
+  // ---------------------------- LOADING -------------------------
+  .loading {
     background-color: @DARK_THEME_BACKGROUND_COLOR;
   }
 
@@ -21,6 +31,42 @@ body.dark-theme{
   header {
     background-color: @DARK_THEME_BACKGROUND_COLOR;
     border-bottom: 1px solid @DARK_THEME_COLOR1;
+  }
+  .header-container {
+
+    background-color: @DARK_THEME_BACKGROUND_COLOR;
+  }
+
+  .bs-nav-container {
+    .bs-nav {
+      background-color: @DARK_THEME_BACKGROUND_COLOR;
+      li {
+        &:hover {
+          background-color: lighten(@DARK_THEME_BACKGROUND_COLOR, 10%);
+        }
+      }
+    }
+  }
+.screen-title-container{
+  .screen-title {
+    color: @BLUE;
+  }
+  .player-name{
+    color: @DARK_THEME_TEXT;
+  }
+}
+  .page-action {
+    color: @DARK_THEME_TEXT;
+    &:hover {
+      background-color: @DARK_THEME_COLOR1;
+    }
+  }
+  .action-item {
+    color: @DARK_THEME_TEXT;
+  }
+
+  .action-menu {
+    background-color: @DARK_THEME_BACKGROUND_COLOR;
   }
   // ------------------------------------------- BS Horizontal Rule ------------
   .bs-hr-container {
@@ -38,16 +84,24 @@ body.dark-theme{
     background-color: @DARK_THEME_COLOR1;
     border: 1px solid darken(@DARK_THEME_COLOR1, 10%);
     color: contrast(@DARK_THEME_COLOR1);
-
-    &.primary {
+    &.primary{
       background-color: @RED;
-      border: 1px solid darken(@RED, 10%);
+      border: 1px solid darken(@RED,10%);
       color: contrast(@RED);
     }
-
+    &.disabled {
+      background-color: darken(@DARK_THEME_COLOR1, 10%);
+      border: 1px solid @DARK_THEME_COLOR1;
+      color: darken(@DARK_THEME_COLOR2,10%);
+      &:focus {
+        outline: none;
+      }
+    }
   }
 
-  .game {
+  //--------------------  LABELS -------------------------------
+
+  .game-item {
     a {
       color: @DARK_THEME_TEXT;
     }
@@ -57,16 +111,148 @@ body.dark-theme{
   }
 
   // --------------------------- BATTLE ARENA --------------------
-
   .battle-arena {
     border: 1px solid @DARK_THEME_COLOR1;
   }
-  .theme-toggle {
-    background-color: lighten(@DARK_THEME_BACKGROUND_COLOR, 10%);
+
+  //============================== PLAYER DEV SCREEN =========================
+
+  .tab-toggle {
+    color: @DARK_THEME_TEXT;
+    &.collapsed {
+      color: lighten(@DARK_THEME_TEXT, 30%);
+    }
+  }
+input[type=range] {
+  background-color: @DARK_THEME_BACKGROUND_COLOR;
+}
+
+  .pl-player {
+    border-bottom: 1px solid @DARK_THEME_COLOR1;
+  }
+
+  /* FLEXBOX IDE Layout */
+  /* ================== */
+
+  .ide {
+    background-color: @DARK_THEME_BACKGROUND_COLOR;
+  }
+
+  .panel {
     border: 1px solid @DARK_THEME_COLOR1;
   }
-  .toggle-indicator-container{
-    background-color: lighten(@DARK_THEME_COLOR1,10%);
-    border-color: @DARK_THEME_COLOR1;
+
+  .panel-actions-container {
+    &:hover {
+      .settings-icon svg {
+        path {
+          stroke: @DARK_THEME_TEXT;
+          fill: lighten(@DARK_THEME_TEXT, 5%);
+        }
+        circle {
+          stroke: @DARK_THEME_TEXT;
+        }
+      }
+    }
+  }
+
+  .panel-action-icon {
+    path {
+      fill: @DARK_THEME_COLOR2;
+    }
+    &:hover {
+      path {
+        fill: darken(@DARK_THEME_TEXT,20%);
+      }
+      &.close{
+        path{
+          fill: @RED;
+        }
+      }
+    }
+  }
+  .settings-icon {
+    path, circle {
+      stroke: @DARK_THEME_COLOR2;
+      fill: darken(@DARK_THEME_TEXT,20%);
+    }
+  }
+
+  .details {
+    background-color: fade(@DARK_THEME_COLOR1, 60%); // fade(@BLUE,20%);
+  }
+  .entry {
+    color: contrast(@DARK_THEME_COLOR1);
+    border-bottom: 1px solid @DARK_THEME_COLOR1;
+  }
+
+  @TOGGLE_WIDTH: 28px;
+  @TOGGLE_HEIGHT: 18px;
+  @TOGGLE_SPACER: 2px;
+  .theme-toggle{
+    &.fixed{
+      box-shadow: -1rem 0 1rem fade(@BLUE,20%), 1rem 0 1rem fade(@RED,80%);
+      background-color: @DARK_THEME_BACKGROUND_COLOR;// darken(@LIGHT_THEME_BACKGROUND_COLOR,5%);
+      border: 1px solid @DARK_THEME_COLOR1;
+      border-radius: @TOGGLE_HEIGHT;
+      &:hover {
+        box-shadow: -1rem 0 1rem fade(@BLUE, 80%), 1rem 0 1rem fade(@RED, 80%);
+      }
+      &.selected{
+        box-shadow: -1rem 0 1rem fade(@BLUE,80%),1rem 0 1rem fade(@RED,20%);
+      }
+    }
+  }
+  .theme-icon {
+    &.selected {
+      &.moon > path {
+        fill: @BLUE
+      }
+      &.sun > path {
+        fill: @RED
+      }
+    }
+  }
+  .toggle-indicator-container {
+    border: 1px solid @DARK_THEME_COLOR1;
+    background-color: @DARK_THEME_BACKGROUND_COLOR;
+  }
+  .toggle-indicator {
+    width: @TOGGLE_HEIGHT+1px;
+    height: @TOGGLE_HEIGHT+1px;
+    background-color: @RED;
+    left: (@TOGGLE_WIDTH)-(@TOGGLE_HEIGHT)- @TOGGLE_SPACER;
+    &.dark {
+      left: -1px;
+      background-color: @BLUE;
+    }
+  }
+
+  //===================================== Auth Modal ======================
+  .modal-overlay {
+    background: fade(@RED, 10%);
+    background: fade(@DARK_THEME_BACKGROUND_COLOR, 85%);
+  }
+  .auth-dialog {
+    background-color: @DARK_THEME_BACKGROUND_COLOR;
+    color: @DARK_THEME_TEXT;
+    box-shadow: -1rem 0 1rem fade(@BLUE, 40%), 1rem 0 1rem fade(@RED, 40%);
+  }
+  //===================================== CODE MIRROR =========================
+  .CodeMirror {
+    background-color: darken(@DARK_THEME_BACKGROUND_COLOR,10%);
+    color: darken(@DARK_THEME_TEXT, 10%);
+  }
+  .CodeMirror-gutters{
+    background-color: lighten(@DARK_THEME_BACKGROUND_COLOR,10%);
+  }
+  .cm-s-default .cm-keyword{
+    color: #bd40bd;
+  }
+  .cm-s-default .cm-def {
+    color: #7474cc;
+  }
+  .cm-s-default .cm-variable-2 {
+    color: #2f76bd;
   }
 }
