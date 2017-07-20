@@ -252,16 +252,18 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
               });
               $('#auth-dialog').remove();
             })
+            $('#auth-dialog .auth-cancel').click(function() {
+              $('#auth-dialog').remove();
+              reject("Login canceled by user");
+            });
           })
         }
       });
     });
   };
   api.logout = function() {
-    return $firebaseAuth().$signOut().then(()=>{
-      alert('signed out');
-    });
-  }
+    return $firebaseAuth().$signOut();
+  };
 
   // GAME methods
   // ------------
