@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Battle Scripts</title>
+  <script>var module = {}; // To allow module.exports not to fail</script>
+  <link rel="stylesheet" type="text/css" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css?family=Inconsolata|Open+Sans:400,400i,800" rel="stylesheet">
+  <script type="text/javascript" src="js/jquery.js"></script>
+  <script type='text/javascript' src='js/angular.js'></script>
+  <script type='text/javascript' src='js/firebase.js'></script>
+  <script type='text/javascript' src='js/angularfire.js'></script>
+  <script type='text/javascript' src='js/angular-sanitize.js'></script>
+  <script type='text/javascript' src='js/battlescripts-app.js'></script>
+  <script type='text/javascript' src='js/Match.js'></script>
+</head>
+<body ng-app="battlescripts" ng-controller="ScreenController">
+
+<script>
+  bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$compile", function($scope, $battlescripts, $queryparam, $compile) {
+    $scope.game_id = $queryparam.get('game_id');
+    $scope.players = [];
+    $scope.player_list = [];
+    $scope.selected_players = [];
+    $scope.game = null;
+    $scope.results = null;
+    $scope.pause = true;
+    // i and j to iterate through selected players for games
+    $scope.i=0;
+    $scope.j=1;
+    $scope.ready_to_start = false;
+    $scope.match = null;
+
+    $scope.options = {
+      total_games: 10,
+      move_delay: 100,
+      render_history: true
+    };
+
+    $battlescripts.get_game($scope.game_id).then(
+      game => $scope.game = game
+    );
+    $scope.$watch('game', function() {
+      if($scope.game) {
+        $battlescripts.init_canvas($scope.game);
+
+        // Initialize the players array
+        $scope.players = new Array($scope.game.max_players).fill(null);
+
+        // Retrieve a list of available players for this game
+        $battlescripts.search_players({"game_id": $scope.game.$id}).then(
+          (players) => {
+            $scope.player_list = players;
+            $scope.player_list.forEach( p=>p.selected=true );
+          }
+        );
+      }
+    });
+
+    $scope.start = function() {
+      var game = new $battlescripts.Game($scope.game.source);
+      $scope.match = new Match(game, [], $scope.options);
+      $scope.match.subscribe("game.render", $battlescripts.render);
+      $scope.match.subscribe("match.results", function(results) {
+        $scope.$apply(function() {
+          $scope.results = results;
+        });
+      });
+
+      $scope.i=null;
+      $scope.j=null;
+
+      // Build up a list of selected players
+      $scope.selected_players = [];
+      $scope.player_list.forEach(p => {
+        $scope.selected_players.push(p);
+      });
+
+      $scope.get_next_players();
+    };
+
+    $scope.get_next_players = function() {
+      if ($scope.i===null) {
+        $scope.i=0;
+        $scope.j=1;
+      }
+      else {
+        $scope.j++;
+        if ($scope.j>=$scope.selected_players.length) {
+          $scope.i++;
+          $scope.j=$scope.i+1;
+        }
+        if ($scope.j>=$scope.selected_players.length) {
+          $scope.ready_to_start = false;
+          $scope.end_match();
+        }
+      }
+      $scope.players = [ $scope.selected_players[$scope.i] , $scope.selected_players[$scope.j] ];
+      $scope.ready_to_start = true;
+    };
+
+    // Start the next game
+    $scope.next_game = function() {
+      $scope.match.players = [ new $battlescripts.Player($scope.players[0].source) , new $battlescripts.Player($scope.players[1].source) ];
+      $scope.match.start();
+    };
+
+    $scope.gameRequirementsMet = function(){
+      var reqMet = true;
+      //angular.forEach($scope.players, function(val) {
+      //  if(val=== null){reqMet = false}
+      //});
+      return reqMet
+    }
+  }]);
+</script>
+<header>
+  <div class="header-container width-wrapper">
+    <a href="/"><img src="img/battlescripts-icon-med.png" class="bs-icon"></a>
+    <div class="bs-nav-container">
+      <img src="img/nav-icon.png" class="bs-nav-icon">
+      <ul class="bs-nav">
+        <li><a href="/">Home</a></li>
+        <li>Games</li>
+        <li>Arena</li>
+      </ul>
+    </div>
+    <div class="screen-title-container">
+      <div class="screen-title" ng-show="game">{{game.name}} Tournament!</div>
+    </div>
+    <div class="page-actions"></div>
+    <div class="user-actions">
+      <div ng-if="user.displayName">
+        <div class="user-name">{{user.displayName}}</div>
+      </div>
+      <div class="btn primary" ng-if="!user.displayName">Log In</div>
+    </div>
+  </div>
+</header>
+
+<div class="static-content-wrap width-wrapper">
+  <div class="arena-container">
+    <div class="battle-options">
+
+      <div class="small-title">Options</div>
+
+      <div class="row">
+        <label>Number of games per match</label>
+        <input ng-model="options.total_games" size="4">
+      </div>
+      <div class="row">
+        <label>Delay Between Moves</label>
+        <input type="range" ng-model="options.move_delay" min="0" max="2000">
+      </div>
+      <div class="row">
+        <label><input type="checkbox" ng-model="pause"> Pause Between Matches</label>
+      </div>
+
+      <style>
+        .arena-player.selected {
+          background-color:#cfc;
+          position:relative;
+        }
+        .arena-player.selected:before {
+          content:"\2713 ";
+          color:green;
+          position:absolute;
+          font-size:15px;
+          font-weight:bold;
+          left:2px;
+          top:0;
+        }
+      </style>
+      <div class="row">
+        <span style="float:right;font-style:italic;">(Win/Lose/Draw)</span>
+        <label>Select Players:</label>
+        <div class="arena-player-list" style="max-height:500px;overflow:auto;border:1px solid #ccc;">
+          <div class="arena-player" ng-class="{'selected':p.selected}" ng-click="p.selected=!p.selected" style="cursor:pointer;margin:4px;padding:3px;padding-left:20px;border:1px solid #ddd;" ng-repeat="p in player_list track by p.$id">
+            <span ng-show="p.selected" style="float:right;font-style:italic;color:#aaa;font-size:80%;">( 0 / 0 / 0 )</span>
+            <div style="font-weight:bold;">{{p.name}}</div>
+            <div>{{p.displayName}}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row makes-the-world-go-round">
+        <button class="primary" ng-class="{'disabled':!gameRequirementsMet()}" ng-click="start()">Start</button>
+        <div class="additional-info" ng-if="!gameRequirementsMet()">Players Required to Start</div>
+      </div>
+
+    </div>
+    <div class="battle-arena">
+      <div ng-if="ready_to_start">{{players[0].name}} vs {{players[1].name}} <button class="button-primary" ng-click="next_game()">Start</button></div>
+      <div ng-controller="CanvasController"></div>
+    </div>
+  </div>
+  <div class="footer-spacer"></div>
+</div>
+</body>
+</html>
+
