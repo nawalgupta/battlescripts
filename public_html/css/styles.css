@@ -350,6 +350,7 @@ header {
 .page-actions {
   flex-grow: 99;
   margin-left: 1rem;
+  position: relative;
 }
 .page-action {
   cursor: pointer;
@@ -362,6 +363,7 @@ header {
   font-weight: 800;
   transition: .25s;
   padding: .25rem .5rem;
+  position: relative;
 }
 .page-action:hover {
   background-color: #e7e7e7;
@@ -371,6 +373,38 @@ header {
 }
 .page-action.primary:hover {
   background-color: #b91621;
+}
+.warning-message {
+  position: absolute;
+  color: #e41e2b;
+  padding: .5rem;
+  width: 300px;
+  z-index: 100;
+  background-color: #FFF;
+  border: 2px solid #e41e2b;
+  display: flex;
+  left: 74px;
+  top: 42px;
+  animation: pulse linear 2s;
+  animation-iteration-count: 3;
+  font-family: 'Inconsolata', monospace;
+  text-decoration: none;
+  font-size: 1.0rem;
+  font-weight: bold;
+}
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 10px rgba(228, 30, 43, 0.3);
+  }
+  25% {
+    box-shadow: 0 0 10px rgba(228, 30, 43, 0.3), 0 0 20px rgba(228, 30, 43, 0.8);
+  }
+  45% {
+    box-shadow: 0 0 10px rgba(228, 30, 43, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(228, 30, 43, 0.3);
+  }
 }
 .user-actions {
   margin-left: 1rem;
@@ -753,14 +787,6 @@ label {
 }
 /* FLEXBOX IDE Layout */
 /* ================== */
-/* Main editor content (center row) */
-/*.ide .status.success {
-    background:transparent url(/img/success.png) no-repeat left center;
-}
-.ide .status.error {
-    background:transparent url(/img/error.png) no-repeat left center;
-}*/
-/* Console */
 .ide {
   width: 100%;
   height: 100vh;
@@ -769,16 +795,6 @@ label {
   flex-direction: column;
   box-sizing: border-box;
   background-color: #FFF;
-  /*  width: 100%;
-  height: ~"calc(100% - 118px)";
-  max-height: 100vh !important;
-  display: flex;
-  flex-direction: column;
-  margin-top: 110px;
-  position: absolute;
-  top: 0;
-  box-sizing: border-box;
-  background-color: @LIGHT_THEME_BACKGROUND_COLOR;*/
 }
 .main {
   display: flex;
