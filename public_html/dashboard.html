@@ -32,6 +32,13 @@
           $scope.$apply();
         })
         .catch((err) => $scope.console.log("<span>[Error]</span> Unable to retrieve players: "+err.toString(),"error"))
+
+        $scope.logout = function() {
+          $battlescripts.logout().then(()=>{
+            alert('done');
+          });
+        };
+
       }]);
 
     </script>
@@ -55,6 +62,9 @@
 <body class="vbox" ng-app="battlescripts" ng-controller="ScreenController">
 <div class=" header">
     <div class="title"><a href="/">BattleScripts</a> / Dashboard</div>
+</div>
+<div style="margin:10px;">
+    <a href="#" ng-click="logout()">Logout</a>
 </div>
 <div style="margin:10px;">
     <div>My Players:</div>

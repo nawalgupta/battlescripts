@@ -257,6 +257,11 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
       });
     });
   };
+  api.logout = function() {
+    return $firebaseAuth().$signOut().then(()=>{
+      alert('signed out');
+    });
+  }
 
   // GAME methods
   // ------------
