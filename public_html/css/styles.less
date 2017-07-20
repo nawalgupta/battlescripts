@@ -34,9 +34,10 @@ body {
 p{
   line-height: 1.1;
 }
-input{
+input[type='text']{
   color: @LIGHT_THEME_TEXT;
   font-family: 'Open Sans','Arial',sans-serif;
+  border: 1px solid @LIGHT_THEME_COLOR1;
 }
 .static-content-wrap{
   margin: 0;
@@ -77,6 +78,7 @@ h3{
   opacity: .8;
   margin-top: .25rem;
 }
+
 .footer-spacer{
   min-height: 5rem;
   position: relative;
@@ -238,7 +240,7 @@ header{
     font-size: 2.0rem;
   }
   .player-name{
-    color: #000000;
+    color: @LIGHT_THEME_TEXT;
     font-family: @MONO_FONT;
     text-decoration: none;
     font-size: 1.0rem;
@@ -272,17 +274,12 @@ header{
 }
 .user-actions {
   margin-left: 1rem;
-  //background-color: red;
   position: relative;
 }
 .actions-logged-in{
   display: flex;
   flex-direction: row-reverse;
-  &:hover{
-    .player-container{
-      transform: scaleY(1);
-    }
-  }
+
 }
 .action-item{
   color: @LIGHT_THEME_TEXT;
@@ -290,7 +287,23 @@ header{
   text-decoration: none;
   font-size: 1rem;
   margin-right: 1rem;
-  //display: inline-block;
+  position: relative;
+  &:hover{
+    .action-menu{
+      transform: scaleY(1);
+    }
+  }
+  &.has-menu{
+    &:after{
+      content: '';
+      background: url('../img/red-arrow-50.png') no-repeat center;
+      background-size: contain;
+      width: 8px;
+      height: 8px;
+      transform: rotate(90deg);
+      display: inline-block;
+    }
+  }
 }
 .user-name{
   font-size: 1.0rem;
@@ -305,24 +318,18 @@ header{
       border-color: @BLUE
     }
   }
-  &:before{
-    content: '';
-    background: url('../img/red-arrow-50.png') no-repeat center;
-    background-size: contain;
-    width: 12px;
-    height: 12px;
-    transform: rotate(90deg);
-    display: inline-block;
-  }
+
 }
-.player-container{
+.action-menu{
   position: absolute;
   transform: scaleY(0);
   transform-origin: 0 0;
   left:0;
   transition: .5s;
-  top:20px;
+  //top:20px;
   background-color: @LIGHT_THEME_BACKGROUND_COLOR;
+  min-width: 100%;
+  box-shadow: 0 2px 3px @LIGHT_THEME_COLOR1;
 }
 // ------------------------------------------- BS Horizontal Rule ------------
 .bs-hr-container{
@@ -440,7 +447,7 @@ button, .btn{
     }
   }
 }
-@track-color:#FFF;
+@track-color: @LIGHT_THEME_BACKGROUND_COLOR;
 @thumb-color: @BLUE;
 
 @thumb-radius: 10px;
@@ -488,6 +495,7 @@ input[type=range] {
   -webkit-appearance: none;
   margin: @thumb-height/2 0;
   width: @track-width;
+  background-color: @track-color;
 
   &:focus {
     outline: none;
@@ -724,7 +732,7 @@ label{
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  background-color: #FFF;
+  background-color: @LIGHT_THEME_BACKGROUND_COLOR;
   /*  width: 100%;
   height: ~"calc(100% - 118px)";
   max-height: 100vh !important;
@@ -928,7 +936,7 @@ label{
     &:before{
       content: ' \26A0 ';
       font-weight: bold;
-      color: #e22424;
+      color: @RED;
       display: inline-block;
       padding: 0 .25rem;
     }
@@ -940,22 +948,30 @@ label{
 @TOGGLE_HEIGHT: 18px;
 @TOGGLE_SPACER: 2px;
 .theme-toggle{
-  position: fixed;
-  top: .5rem;
-  left: .5rem ;
-  padding: .25rem ;
-  background-color: @LIGHT_THEME_BACKGROUND_COLOR;// darken(@LIGHT_THEME_BACKGROUND_COLOR,5%);
-  border: 1px solid @LIGHT_THEME_COLOR1;
-  border-radius: @TOGGLE_HEIGHT;
   display: flex;
-  box-shadow: -1rem 0 1rem fade(@BLUE,20%), 1rem 0 1rem fade(@RED,80%);
   transition: .35s;
   transition-delay: .15s;
-  &.selected{
-    box-shadow: -1rem 0 1rem fade(@BLUE,80%),1rem 0 1rem fade(@RED,20%);
+  &.action-menu{
+    width: 100%;
+    justify-content: center;
+    padding: .25rem;
   }
-  &:hover {
-    box-shadow: -1rem 0 1rem fade(@BLUE, 80%), 1rem 0 1rem fade(@RED, 80%);
+  &.fixed{
+    position: fixed;
+    top: .5rem;
+    left: .5rem ;
+    box-shadow: -1rem 0 1rem fade(@BLUE,20%), 1rem 0 1rem fade(@RED,80%);
+    z-index:100;
+    background-color: @LIGHT_THEME_BACKGROUND_COLOR;// darken(@LIGHT_THEME_BACKGROUND_COLOR,5%);
+    border: 1px solid @LIGHT_THEME_COLOR1;
+    border-radius: @TOGGLE_HEIGHT;
+    padding: .25rem ;
+    &:hover {
+      box-shadow: -1rem 0 1rem fade(@BLUE, 80%), 1rem 0 1rem fade(@RED, 80%);
+    }
+    &.selected{
+      box-shadow: -1rem 0 1rem fade(@BLUE,80%),1rem 0 1rem fade(@RED,20%);
+    }
   }
 
   input{
@@ -1063,4 +1079,87 @@ label{
   width: 80px;
   margin-bottom: 1rem;
 }
+// ================================= ARENA =============================
+
+.arena-player-list{
+  max-height:500px;
+  overflow:auto;
+  border:1px solid #ccc;
+}
+.arena-player {
+  cursor: pointer;
+  margin: .25rem;
+  padding: .25rem;
+  //padding-left: 1.25rem;
+  //border:1px solid #ddd;
+  background-color: fade(@BLUE, 10%);
+  overflow: hidden;
+  transition: .25s;
+  position: relative;
+  color: fade(@LIGHT_THEME_TEXT,50%);
+  &:before {
+    content: ">";
+    color: @RED;
+    position: absolute;
+    font-size: 32px;
+    font-weight: bold;
+    left: 0px;
+    top: -3px;
+    font-family: monospace;
+    transform: translateX(-40px);
+    transition: .5s;
+  }
+  &:nth-child(odd){
+    &:before{
+      color: @BLUE;
+      transform: rotate(180deg) translateX(40px);
+      top: -1px;
+    }
+    &.selected:before {
+      transform: rotate(180deg) translateX(0);
+    }
+  }
+  &.selected {
+    background-color: fade(@BLUE, 20%);
+    position: relative;
+    padding-left: 1.25rem;
+    color: @LIGHT_THEME_TEXT;
+    &:before{
+      transform: translateX(0);
+    }
+  }
+}
+.wl-count{
+  float:right;
+  font-style:italic;
+  color:#aaa;
+  font-size:80%;
+}
+.arena-results {
+  border: 1px solid @LIGHT_THEME_COLOR2;
+  width: 100%;
+  td {
+    border-bottom:1px solid @BLUE;
+    border-right:1px solid @RED;
+    padding: 4px 8px;
+  }
+}
+.arena-header{
+  background-color: @LIGHT_THEME_COLOR1;
+  td,th{
+    font-weight: bold;
+    border-color: darken(@LIGHT_THEME_COLOR1,10%);
+  }
+}
+.split-container{
+  display: flex;
+  justify-content: space-between;
+  .split{
+    margin: .25rem;
+  }
+}
+.hidden-spacer{
+  visibility: hidden;
+}
+
 @import "dark-theme";
