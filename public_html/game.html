@@ -127,7 +127,7 @@
     <div class="user-actions">
       <div ng-if="user.displayName">
         <div class="user-name action-item has-menu">
-          <span class="action-text">{{user.displayName}}</span>
+          <a class="action-text" href="dashboard.html" title="Go To Player Dashboard">{{user.displayName}}</a>
           <div class="player-container action-menu">
             <div class="theme-toggle action-menu" ng-class="{'dark':darkTheme, 'selected':darkTheme}">
               <svg version="1.1" id="Layer_1" x="0px" y="0px" class="theme-icon moon" ng-class="{'selected':darkTheme}" viewBox="0 0 100 100">

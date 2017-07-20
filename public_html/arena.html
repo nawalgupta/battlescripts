@@ -86,6 +86,9 @@
           $scope.players[1].draws += results.draws;
           $scope.ready_to_start = false;
           $scope.match_over = true;
+          if (!$scope.pause) {
+            $scope.next_match();
+          }
         });
       });
 
@@ -132,6 +135,9 @@
       }
       $scope.players = [ $scope.selected_players[$scope.i] , $scope.selected_players[$scope.j] ];
       $scope.ready_to_start = true;
+      if (!$scope.pause) {
+        $scope.next_game();
+      }
     };
 
     // Start the next game
@@ -170,7 +176,7 @@
     <div class="page-actions"></div>
     <div class="user-actions">
       <div ng-if="user.displayName">
-        <div class="user-name">{{user.displayName}}</div>
+        <a class="user-name" href="dashboard.html" title="Go To Player Dashboard">{{user.displayName}}</a>
       </div>
       <div class="btn primary" ng-if="!user.displayName">Log In</div>
     </div>
@@ -196,11 +202,9 @@
       </div>
 
       <div class="row">
-        <span style="float:right;font-style:italic;">(Win/Lose/Draw)</span>
-        <label>Select Players:</label>
+        <label>Select Players</label>
         <div class="arena-player-list" >
           <div class="arena-player" ng-class="{'selected':p.selected}" ng-click="p.selected=!p.selected" ng-repeat="p in player_list track by p.$id">
-            <span class="wl-count" ng-show="p.selected">( {{p.wins}} / {{p.losses}} / {{p.draws}} )</span>
             <div style="font-weight:bold;">{{p.name}}</div>
             <div>{{p.displayName.length > 1 ? p.displayName : "Default Player"}}</div>
           </div>

@@ -56,6 +56,10 @@
           $scope.doc_player_api = response.data;
         });
 
+        $scope.login = function() {
+          $battlescripts.login();
+        };
+
         // Initial Load
         // ------------
 
@@ -80,6 +84,10 @@
               $scope.player.source = game.player_template;
               // Show the game docs by default
               $scope.ideView.gameDoc = false;
+                // Load My Players
+                $battlescripts.get_my_players($scope.game.$id).then(
+                  myplayers => $scope.my_player_list = myplayers
+                );
               $scope.$digest();
           }
 
@@ -298,7 +306,7 @@
           <div class="user-actions">
             <div class="actions-logged-in" ng-if="user.displayName">
               <div class="user-name action-item has-menu">
-                <span class="action-text">{{user.displayName}}</span>
+                <a class="action-text" href="dashboard.html" title="Go To Player Dashboard">{{user.displayName}}</a>
                 <div class="player-container action-menu">
                   <div class="theme-toggle action-menu" ng-class="{'dark':darkTheme, 'selected':darkTheme}">
                     <svg version="1.1" id="Layer_1" x="0px" y="0px" class="theme-icon moon" ng-class="{'selected':darkTheme}" viewBox="0 0 100 100">
@@ -340,7 +348,7 @@
                 </div>
               </div>
             </div>
-            <div class="btn primary" ng-if="!user.displayName">Log In</div>
+            <div class="btn primary" ng-if="!user.displayName" ng-click="login()">Log In</div>
           </div>
       </div>
     </header>
