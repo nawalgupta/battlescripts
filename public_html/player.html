@@ -40,6 +40,7 @@
         $scope.play_order=0;
         $scope.results = null;
         $scope.my_player_list = [];
+        $scope.show_message = true;
         $scope.user = null;
         $scope.ideView = {
           'details':false,
@@ -129,6 +130,10 @@
               .then( ()=>{ window.location.href="/"; } )
               .catch( (err) => $scope.console.log("<span>[Save]</span> Error with Delete: "+err.toString(),"error") )
           }
+        };
+        // hide publish warning
+        $scope.hide_message = function(){
+          $scope.show_message = false;
         };
 
         // Debugging
@@ -285,6 +290,10 @@
           <div class="page-actions">
               <button class="primary page-action" ng-click="save()">Save{{(autoplay?' & Run':'')}}</button>
               <div class="page-action" ng-click="publish()">Save &amp; Publish</div>
+              <div class="warning-message" ng-if="!player.published  && show_message">
+                <div>Your changes will not be visible to others until you publish your new code!</div>
+                <button class="primary" style="white-space: nowrap;" ng-click="hide_message()">Got It</button>
+              </div>
           </div>
           <div class="user-actions">
             <div class="actions-logged-in" ng-if="user.displayName">
