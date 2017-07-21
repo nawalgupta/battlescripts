@@ -457,6 +457,27 @@ header {
   background-color: #FFF;
   min-width: 100%;
   box-shadow: 0 2px 3px #e7e7e7;
+  border: 1px solid #e41e2b;
+  border-radius: 3px;
+  /*  &:before{
+    content: '>';
+    color: @BLUE;
+    position: absolute;
+    top: -5px;
+    left: 98%;
+  }*/
+}
+.action-menu-item {
+  padding: .5rem;
+  border-bottom: 1px solid #ccc;
+  font-size: .8rem;
+  white-space: nowrap;
+  font-family: 'Open Sans', 'Arial', sans-serif;
+  font-weight: normal;
+  transition: .25s;
+}
+.action-menu-item:hover {
+  background-color: #e7e7e7;
 }
 .bs-hr-container {
   background-color: #e7e7e7;
@@ -988,10 +1009,9 @@ label {
   transition: .35s;
   transition-delay: .15s;
 }
-.theme-toggle.action-menu {
+.theme-toggle.in-action-menu {
   width: 100%;
   justify-content: center;
-  padding: .25rem;
 }
 .theme-toggle.fixed {
   position: fixed;
