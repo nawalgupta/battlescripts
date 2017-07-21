@@ -5,7 +5,7 @@ Simple Player Template
 
 ```
 module.exports = function() {
-  this.move = function(game_data_json) {
+  this.move = function(game_data_json,player_number) {
     return my_move;
   }
 }
@@ -17,7 +17,7 @@ Players are not allowed to require() any modules, and must expose their Construc
 
 Players are written specifically for a single Game and contain the logic required to play only that game.
 
-## move ( data )
+## move ( data, player_number )
 
 This is the core of the Player - a method that decides which move to make next.
 
@@ -30,6 +30,8 @@ The format and content of the player's "move" is specific to the game being play
 ### Parameters
 
 data: A data structure describing the current state of the game. Simple players will be able to make their next move entirely based on this data. If a player wishes to be more advanced and track previous moves to determine their opponent's strategy, or to vary strategy across multiple games in a match, for example, they may wish to implement the other methods below. It is the responsibility of the code in the Player to do whatever necessary.
+
+player_number: The number of what player you are. For example, this would be 0 if you are the first player. The game data will use player numbers to represent who has moved where.
 
 ## start_match( data )
 

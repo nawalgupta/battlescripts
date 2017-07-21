@@ -457,12 +457,12 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
     if (typeof this.player.move!=="function") {
       throw "Player does not have a required move() function";
     }
-    this.move = function(data) {
+    this.move = function(data, player_number) {
       var player_move = null;
       // Debugger functions (if defined) can return promises (async) or values (sync)
       return Promise.resolve( options.before_move ? options.before_move(data) : null)
         .then((changed_data)=>{
-          player_move = this.player.move(changed_data || data);
+          player_move = this.player.move(changed_data || data, player_number);
           return options.after_move ? options.after_move(player_move) : player_move;
         }).then((changed_player_move)=>{
           return (typeof changed_player_move!=="undefined")?changed_player_move:player_move;

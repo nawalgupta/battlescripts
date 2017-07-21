@@ -176,7 +176,7 @@
         <label>Players:</label>
         <div ng-repeat="p in players track by $index">
           <div style="margin-bottom: .5rem">
-          {{$index+1}}. <select ng-options="p as p.name for p in player_list track by p.$id"
+          {{$index+1}}. <select ng-options="p as p.name+(p.displayName?' ('+p.displayName+')':'') for p in player_list track by p.$id"
                                 ng-model="players[$index]"></select>
           </div>
         </div>

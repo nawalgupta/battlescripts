@@ -112,7 +112,7 @@ Match.prototype.get_next_move = function() {
 
     // Ask the player to move
     let p = this.players[move_request.player_number];
-    let player_move = p.move(move_request.data || {});
+    let player_move = p.move(move_request.data || {}, move_request.player_number);
     // player might have returned a Promise, so only continue when resolved
     Promise.resolve(player_move).then((move)=>{
       // Tell the game about this player's move

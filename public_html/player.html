@@ -118,7 +118,6 @@
             .then( user => $battlescripts.save_player($scope.player) )
             .then( (updated_player) => {
               if (!$scope.player.$id && window.history && window.history.pushState && updated_player.$id) {
-alert(updated_player.$id);
                 // Update the url so reload works to get to this player
                 history.pushState({}, null, location.href+"&id="+updated_player.$id);
               }
@@ -305,7 +304,7 @@ alert(updated_player.$id);
           <div class="page-actions">
               <button class="primary page-action" ng-click="save()">Save{{(autoplay?' & Run':'')}}</button>
               <div class="page-action" ng-click="publish()">Save &amp; Publish</div>
-              <div class="warning-message" ng-if="!player.published  && show_message">
+              <div class="warning-message" ng-if="!player.published && show_message">
                 <div>Your changes will not be visible to others until you publish your new code!</div>
                 <button class="primary" style="white-space: nowrap;" ng-click="hide_message()">Got It</button>
               </div>
