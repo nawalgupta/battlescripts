@@ -23,12 +23,16 @@
       $scope.games = [];
       $scope.players = {};
       $scope.example_game = null;
+      $scope.error_message = null;
 
       $scope.play = function () {
+        $scope.error_message = null;
         var code = $('#player').val();
         var game_source = $scope.example_game.source;
-        $battlescripts.play(Match, $scope.example_game, [code, code], {move_delay: 250}, function (e) {
-          alert(e);
+        $battlescripts.play(Match, $scope.example_game, [code, code], {move_delay: 250}, function(results) {
+         
+        }, function (err) {
+            $scope.error_message = err;
         });
       };
 
@@ -121,7 +125,7 @@
 
   <div class="instructions">
       Player Code:<br>
-    <textarea id="player" class="player-code" rows=14>
+    <textarea id="player" class="player-code" style="margin-bottom:0;" rows=14>
 // A stupid random-guessing player
 module.exports = function () {
   this.move = function (game) {
@@ -137,10 +141,10 @@ module.exports = function () {
   }
 }
     </textarea>
+    <div ng-show="error_message" class="status error" style="background-color:#fdd;">{{error_message}}</div>
 
 
-
-    <ul>
+    <ul style="margin-top:20px;">
       <li>You are X (<span class="inline-code">player 0</span>). </li>
       <li>Your <span class="inline-code">move()</span> function will be passed a data structure:<br><code class="inline-code">{ player_number:0, board:[-1,-1,-1,-1,-1,-1,-1,-1,-1] }</code></li>
       <li>The 'board' array represents each square on the board, from top left [0] to bottom right [8]. The value is either a <span class="inline-code">-1</span> if the space is empty, or the player number if it's taken (0 or 1).</li>

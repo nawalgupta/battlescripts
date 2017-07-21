@@ -338,7 +338,7 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
   // ------------
 
   // A quick shortcut to play a game
-  api.play = function(Match, game_object, player_sources, options, error_handler) {
+  api.play = function(Match, game_object, player_sources, options, match_end_handler, error_handler) {
     var game = new api.Game(game_object.source);
     var players = [];
     try {
@@ -353,6 +353,9 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
     var match = new Match(game, players, options);
     // Render
     match.subscribe("game.render", api.render);
+    if (match_end_handler) {
+      match.subscribe("match.end", match_end_handler);
+    }
     $rootScope.$on('error/player',function(data,msg) {
       error_handler(msg);
     });
