@@ -356,6 +356,29 @@ header{
   background-color: @LIGHT_THEME_BACKGROUND_COLOR;
   min-width: 100%;
   box-shadow: 0 2px 3px @LIGHT_THEME_COLOR1;
+  //padding-top: .5rem;
+  border: 1px solid @RED;
+  border-radius: 3px;
+/*  &:before{
+    content: '>';
+    color: @BLUE;
+    position: absolute;
+    top: -5px;
+    left: 98%;
+  }*/
+}
+.action-menu-item {
+  padding: .5rem;
+  border-bottom: 1px solid #ccc;
+  font-size: .8rem;
+  white-space: nowrap;
+  font-family: 'Open Sans','Arial',sans-serif;
+  font-weight: normal;
+  transition: .25s;
+  //min-height: 27px;
+  &:hover{
+    background-color: @LIGHT_THEME_COLOR1;
+  }
 }
 // ------------------------------------------- BS Horizontal Rule ------------
 .bs-hr-container{
@@ -958,10 +981,10 @@ label{
   display: flex;
   transition: .35s;
   transition-delay: .15s;
-  &.action-menu{
+  &.in-action-menu{
     width: 100%;
     justify-content: center;
-    padding: .25rem;
+    //padding: .25rem;
   }
   &.fixed{
     position: fixed;
