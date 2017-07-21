@@ -56,6 +56,7 @@
           $scope.doc_player_api = response.data;
         });
 
+        // Login
         $scope.login = function() {
           $battlescripts.login();
         };
@@ -74,9 +75,11 @@
                   $scope.player = player;
                   $scope.$digest();
                   // Load My Players
-                  $battlescripts.get_my_players($scope.game.$id).then(
-                    myplayers => $scope.my_player_list = myplayers
-                  );
+                  if ($scope.user) {
+                    $battlescripts.get_my_players($scope.game.$id).then(
+                      myplayers => $scope.my_player_list = myplayers
+                    );
+                  }
               })
           }
           else {
@@ -85,9 +88,11 @@
               // Show the game docs by default
               $scope.ideView.gameDoc = false;
                 // Load My Players
-                $battlescripts.get_my_players($scope.game.$id).then(
-                  myplayers => $scope.my_player_list = myplayers
-                );
+                if ($scope.user) {
+                  $battlescripts.get_my_players($scope.game.$id).then(
+                    myplayers => $scope.my_player_list = myplayers
+                  );
+                }
               $scope.$digest();
           }
 

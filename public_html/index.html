@@ -30,7 +30,7 @@
         var code = $('#player').val();
         var game_source = $scope.example_game.source;
         $battlescripts.play(Match, $scope.example_game, [code, code], {move_delay: 250}, function(results) {
-         
+
         }, function (err) {
             $scope.error_message = err;
         });
