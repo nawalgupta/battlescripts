@@ -463,8 +463,13 @@ header{
   margin: .5rem 0 0 0;
   text-align: center;
 }
-
-
+.player-select-container{
+  margin-bottom: .5rem;
+  select{
+    //hacky to keep player number on left and not go to top
+    max-width: 94%;
+  }
+}
 //-------------------- BUTTONS ------------------------------
 button, .btn{
   display: inline-block;
@@ -496,6 +501,7 @@ button, .btn{
     }
   }
 }
+
 @track-color: @LIGHT_THEME_BACKGROUND_COLOR;
 @thumb-color: @BLUE;
 
@@ -933,6 +939,15 @@ label{
 .console {
   font-family: @MONO_FONT;
   //font-size: 90%;
+}
+.console-action{
+  //text-decoration:underline;
+  cursor:pointer;
+  margin-right: .25rem;
+  background-color: @LIGHT_THEME_COLOR1;
+  border-radius: 3px;
+  padding: .125rem .25rem;
+  font-size: .75rem;
 }
 .entry {
   color: contrast(@LIGHT_THEME_COLOR1);

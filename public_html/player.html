@@ -257,6 +257,10 @@
           },
           clear:function() {
             $('#console .entry').remove();
+          },
+          bottom:function(){
+            var $console = $('#console');
+            $console.prop('scrollTop',9999);
           }
         };
         $rootScope.$on('log/player',function(data,msg) {
@@ -693,8 +697,11 @@
             <div class="expand-v markdown-body" ng-bind-html="doc_player_api | markdown"></div>
         </div>
     </div>
-    <div class="panel footer" id="console" style="position:relative;padding-top:15px;">
-        <span style="position:absolute;top:0;left:0">Console [<span style="text-decoration:underline;cursor:pointer;" ng-click="console.clear()")>clear</span>]</span>
+    <div class="panel footer"  style="position:relative;padding-top:15px;">
+        <span style="position:absolute;top:3px;left:3px">Console: <span class="console-action" ng-click="console.clear()")>clear</span><span class="console-action" ng-click="console.bottom()">bottom</span></span>
+      <div id="console" style="height: 120px;overflow: auto;">
+
+      </div>
     </div>
 </div>
 </body>
