@@ -134,7 +134,7 @@
         };
         // ctrl+s to save
         $(document).bind('keydown', function(e) {
-          if(e.ctrlKey && (e.which == 83)) {
+          if((e.ctrlKey||e.metaKey) && (e.which == 83)) {
             e.preventDefault();
             if ($scope.player && $scope.player.$id) {
               $scope.save();

@@ -80,16 +80,20 @@
         }
 
         $scope.save = function() {
-          $battlescripts.save_game($scope.game).then(
-            updated_game => $scope.game=updated_game
-          )
+          $battlescripts.save_game($scope.game).then((updated_game)=> {
+            if (!$scope.game.$id && window.history && window.history.pushState && updated_player.$id) {
+              // Update the url so reload works to get to this game
+              history.pushState({}, null, location.href+"&id="+updated_game.$id);
+            }
+            $scope.game = updated_game;
+          })
           .then( () => $scope.console.log("<span>[Save]</span> Successful","success") )
           .then( () => { if($scope.autoplay) { $scope.test(); } })
           .catch( (err) => $scope.console.log("<span>[Save]</span> Error with Save: "+err.toString(),"error") )
         };
         // ctrl+s to save
         $(document).bind('keydown', function(e) {
-          if(e.ctrlKey && (e.which == 83)) {
+          if((e.ctrlKey||e.metaKey) && (e.which == 83)) {
             e.preventDefault();
             if ($scope.game && $scope.game.$id) {
               $scope.save();
