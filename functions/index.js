@@ -23,6 +23,7 @@ exports.publish_player = functions.database.ref('/users/{uid}/players/{playerId}
                 player.name=snapshot.val().name;
                 player.uid=event.params.uid;
                 player.displayName=displayName.val();
+                player.publishedOn=admin.database.ServerValue.TIMESTAMP;
                 admin.database().ref('/players').child(event.params.playerId).set(player);
               })
     })

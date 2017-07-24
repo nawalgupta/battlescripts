@@ -235,9 +235,9 @@
       <div class="row">
         <label>Select Players <a href="#" style="text-decoration:underline;color:#28C4F1;" onclick="return false;" ng-click="select_all()">all</a> <a href="#" style="text-decoration:underline;color:#28C4F1;" onclick="return false;" ng-click="select_none()">none</a></label>
         <div class="arena-player-list" >
-          <div class="arena-player" ng-class="{'selected':p.selected}" ng-click="p.selected=!p.selected" ng-repeat="p in player_list track by p.$id">
+          <div class="arena-player" ng-class="{'selected':p.selected}" ng-click="p.selected=!p.selected" ng-repeat="p in player_list | orderBy:'publishedOn' track by p.$id">
             <div style="font-weight:bold;">{{p.name}}</div>
-            <div>{{p.displayName.length > 1 ? p.displayName : "Default Player"}}</div>
+            <div>{{p.displayName.length > 1 ? p.displayName : "Default Player"}}<span ng-if="p.publishedOn"> ({{p.publishedOn | date:'short'}})</span></div>
           </div>
         </div>
       </div>
