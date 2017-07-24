@@ -223,6 +223,15 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
       });
     }
   });
+  api.if_logged_in = function() {
+    return new Promise((resolve,reject)=>{
+      $firebaseAuth().$waitForSignIn().then((user)=>{
+        if (user) {
+          return resolve(user);
+        }
+      });
+    });
+  };
   api.login = function() {
     return new Promise((resolve,reject)=>{
       if (api.user) {

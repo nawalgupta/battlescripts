@@ -21,7 +21,7 @@
   <script>
     bsapp.controller("ScreenController", ["$scope", "$battlescripts", function ($scope, $battlescripts) {
       $scope.games = [];
-      $scope.players = {};
+      $scope.my_players = {};
       $scope.example_game = null;
       $scope.error_message = null;
 
@@ -46,16 +46,18 @@
           $scope.games = list;
         }
       );
-      $battlescripts.get_all_players().then(
-        (players) => {
-          (players || []).forEach(player => {
-            if (!$scope.players[player.game_id]) {
-              $scope.players[player.game_id] = [];
-            }
-            $scope.players[player.game_id].push(player);
-          })
-        }
-      );
+      $battlescripts.if_logged_in().then(()=>{
+        $battlescripts.get_my_players().then(
+          (players) => {
+            (players || []).forEach(player => {
+              if (!$scope.my_players[player.game_id]) {
+                $scope.my_players[player.game_id] = [];
+              }
+              $scope.my_players[player.game_id].push(player);
+            })
+          }
+        );
+      });
     }]);
   </script>
 </head>
@@ -168,6 +170,11 @@ module.exports = function () {
               <a class="btn xprimary" href="player.html?game_id={{game.$id}}">Create A Player</a>
               <a class="btn xprimary" href="arena.html?game_id={{game.$id}}">Run A Tournament</a>
             </div>
+            <div style="margin-top:20px;" ng-if="user && my_players[game.$id]" class="row">
+              <label>My Players</label>
+              <a ng-repeat="p in my_players[game.$id]" class="pl-player" href="player.html?game_id={{game.$id}}&id={{p.$id}}"><span ng-if="!p.name">(No Name)</span>{{p.name}}</a>
+            </div>
+
           </div>
           <div class="game-footer"></div>
         </a>
