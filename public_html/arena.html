@@ -40,6 +40,18 @@
       render_history: false
     };
 
+    $scope.select_all = function() {
+      $scope.select_players(true);
+    };
+    $scope.select_none = function() {
+      $scope.select_players(false);
+    };
+    $scope.select_players = function(toggle) {
+      $scope.player_list.forEach((p)=>{
+        p.selected=toggle;
+      })
+    };
+
     $battlescripts.get_game($scope.game_id).then(
       game => $scope.game = game
     );
@@ -55,7 +67,7 @@
           (players) => {
             $scope.player_list = players;
             $scope.player_list.forEach( (p)=>{
-              p.selected=true;
+              p.selected=false;
               p.wins=0;
               p.losses=0;
               p.draws=0;
@@ -221,7 +233,7 @@
       </div>
 
       <div class="row">
-        <label>Select Players</label>
+        <label>Select Players <a href="#" style="text-decoration:underline;color:#28C4F1;" onclick="return false;" ng-click="select_all()">all</a> <a href="#" style="text-decoration:underline;color:#28C4F1;" onclick="return false;" ng-click="select_none()">none</a></label>
         <div class="arena-player-list" >
           <div class="arena-player" ng-class="{'selected':p.selected}" ng-click="p.selected=!p.selected" ng-repeat="p in player_list track by p.$id">
             <div style="font-weight:bold;">{{p.name}}</div>
