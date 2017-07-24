@@ -84,7 +84,6 @@ Match.prototype.start = function (scenario) {
 Match.prototype.start_game = function () {
   // Tell the world a game is starting
   this.publish("game.start", this.results);
-
   // Tell the Game to start a new game
   // It can optionally return data to tell each player when they start
   let game_data = this.game.start_game(this.results) || [];
@@ -109,15 +108,26 @@ Match.prototype.get_next_move = function() {
   if (!game_results) {
     // Tell the game to do something
     let move_request = this.game.get_next_move();
-
     // Ask the player to move
     let p = this.players[move_request.player_number];
     let player_move = null;
     if (p && typeof p.move=="function") {
-      player_move = p.move(move_request.data || {}, move_request.player_number);
+      try {
+        player_move = p.move(move_request.data || {}, move_request.player_number);
+      }
+      catch(e) {
+        alert(e);
+      }
     }
     // player might have returned a Promise, so only continue when resolved
-    Promise.resolve(player_move).then((move)=>{
+    Promise.resolve(player_move).catch((err)=>{
+      if (typeof p.error === "function") {
+        p.error(err);
+      }
+      this.publish("game.error",err);
+      // Convert the failed player move to null for the game to handle
+      return null;
+    }).then((move)=>{
       // Tell the game about this player's move
       try {
         this.game.move(move_request.player_number, move);
@@ -133,11 +143,6 @@ Match.prototype.get_next_move = function() {
       this.render();
       // Do it in a loop until the game is over
       setTimeout(()=>{ this.get_next_move(); },this.config.move_delay);
-    }).catch((err)=>{
-      if (typeof p.error === "function") {
-        p.error(err);
-      }
-      this.publish("game.error",err);
     });
 
     /*
