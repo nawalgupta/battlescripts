@@ -96,9 +96,11 @@
           $scope.players[0].wins += results.player_wins[0];
           $scope.players[0].losses += results.player_wins[1];
           $scope.players[0].draws += results.draws;
+          $scope.players[0].running = false;
           $scope.players[1].wins += results.player_wins[1];
           $scope.players[1].losses += results.player_wins[0];
           $scope.players[1].draws += results.draws;
+          $scope.players[1].running = false;
           $scope.ready_to_start = false;
           $scope.match_over = true;
           if (!$scope.pause) {
@@ -149,6 +151,9 @@
         }
       }
       $scope.players = [ $scope.selected_players[$scope.i] , $scope.selected_players[$scope.j] ];
+      $scope.players[0].running = true;
+      $scope.players[1].running = true;
+
       $scope.ready_to_start = true;
       if (!$scope.pause) {
         $scope.next_game();
@@ -222,20 +227,20 @@
         <input ng-model="options.total_games" size="4">
       </div>
       <div class="row">
-        <label>Delay Between Moves</label>
+        <label>Delay Between Moves: {{options.move_delay}}</label>
         <input type="range" ng-model="options.move_delay" min="0" max="2000">
       </div>
       <div class="row">
         <label><input type="checkbox" ng-model="pause"> Pause Between Matches</label>
       </div>
       <div class="row">
-        <label><input type="checkbox" ng-model="render"> Render Games While Playing</label>
+        <label><input type="checkbox" ng-model="render"> Render Games</label>
       </div>
 
       <div class="row">
         <label>Select Players <a href="#" style="text-decoration:underline;color:#28C4F1;" onclick="return false;" ng-click="select_all()">all</a> <a href="#" style="text-decoration:underline;color:#28C4F1;" onclick="return false;" ng-click="select_none()">none</a></label>
         <div class="arena-player-list" >
-          <div class="arena-player" ng-class="{'selected':p.selected}" ng-click="p.selected=!p.selected" ng-repeat="p in player_list | orderBy:'publishedOn' track by p.$id">
+          <div class="arena-player" ng-class="{'selected':p.selected,'running':p.running}" ng-click="p.selected=!p.selected" ng-repeat="p in player_list | orderBy:'publishedOn' track by p.$id">
             <div style="font-weight:bold;">{{p.name}}</div>
             <div>{{p.displayName.length > 1 ? p.displayName : "Default Player"}}<span ng-if="p.publishedOn"> ({{p.publishedOn | date:'short'}})</span></div>
           </div>

@@ -1185,6 +1185,9 @@ label {
 .arena-player.selected:before {
   transform: translateX(0);
 }
+.arena-player.selected.running {
+  background-color: rgba(40, 196, 241, 0.5);
+}
 .wl-count {
   float: right;
   font-style: italic;
