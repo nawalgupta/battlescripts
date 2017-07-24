@@ -25,6 +25,7 @@
     $scope.game = null;
     $scope.results = null;
     $scope.pause = true;
+    $scope.render = true;
     // i and j to iterate through selected players for games
     $scope.i=0;
     $scope.j=1;
@@ -69,7 +70,9 @@
       var game = new $battlescripts.Game($scope.game.source);
       $scope.match = new Match(game, [], $scope.options);
 
-      $scope.match.subscribe("game.render", $battlescripts.render);
+      if ($scope.render) {
+        $scope.match.subscribe("game.render", $battlescripts.render);
+      }
       $scope.match.subscribe("match.results", function(results) {
         $scope.$apply(function() {
           $scope.results = results;
@@ -142,7 +145,20 @@
 
     // Start the next game
     $scope.next_game = function() {
-      $scope.match.players = [ new $battlescripts.Player($scope.players[0].source) , new $battlescripts.Player($scope.players[1].source) ];
+      var p1,p2;
+      try {
+        p1 = new $battlescripts.Player($scope.players[0].source);
+      }
+      catch (e) {
+        p1 = null;
+      }
+      try {
+        p2 = new $battlescripts.Player($scope.players[1].source);
+      }
+      catch (e) {
+        p2 = null;
+      }
+      $scope.match.players = [ p1 , p2 ];
       $scope.match.start();
     };
 
@@ -199,6 +215,9 @@
       </div>
       <div class="row">
         <label><input type="checkbox" ng-model="pause"> Pause Between Matches</label>
+      </div>
+      <div class="row">
+        <label><input type="checkbox" ng-model="render"> Render Games While Playing</label>
       </div>
 
       <div class="row">
@@ -259,7 +278,7 @@
               </thead>
               <tbody>
               <tr ng-repeat="p in selected_players | orderBy:'wins':true">
-                <td>{{p.name}}</td>
+                <td>{{p.name}} <span style="font-size:80%;">({{p.displayName}})</span></td>
                 <td>{{p.wins}}</td>
                 <td>{{p.losses}}</td>
                 <td>{{p.draws}}</td>

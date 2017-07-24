@@ -66,7 +66,7 @@ Match.prototype.start = function (scenario) {
   // It can return a json object to pass to Players to start
   this.match_data = this.game.start_match(this.players, this.config, this.scenario);
   this.players.forEach((p, i) => {
-    if (typeof p.start_match !== "function") {
+    if (!p || typeof p.start_match !== "function") {
       return;
     }
     p.start_match({
@@ -90,7 +90,7 @@ Match.prototype.start_game = function () {
   let game_data = this.game.start_game(this.results) || [];
   this.publish("game.setup", game_data.player_data);
   this.players.forEach(function (p, i) {
-    if (typeof p.start_game !== "function") {
+    if (!p || typeof p.start_game !== "function") {
       return;
     }
     p.start_game(game_data.player_data[i] || {});
@@ -112,7 +112,10 @@ Match.prototype.get_next_move = function() {
 
     // Ask the player to move
     let p = this.players[move_request.player_number];
-    let player_move = p.move(move_request.data || {}, move_request.player_number);
+    let player_move = null;
+    if (p && typeof p.move=="function") {
+      player_move = p.move(move_request.data || {}, move_request.player_number);
+    }
     // player might have returned a Promise, so only continue when resolved
     Promise.resolve(player_move).then((move)=>{
       // Tell the game about this player's move
