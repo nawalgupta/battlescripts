@@ -270,6 +270,7 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
   api.get_all_games = ()=>$firebaseArray(gameRef).$loaded().catch(()=>{});
 
   api.get_game = (id) => $firebaseObject(gameRef.child(id)).$loaded().catch(()=>{});
+  api.get_dev_game = (id) => $firebaseObject(firebase.database().ref("users/"+api.user.uid+"/games").child(id)).$loaded().catch(()=>{});
 
   api.search_games = function(params) {
     var param=Object.keys(params)[0];
@@ -277,14 +278,15 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
     var query = gameRef.orderByChild(param).equalTo(val);
     return $firebaseArray(query).$loaded();
 
-  }
+  };
   api.save_game = function( game ) {
     if (game && game.$id) {
       return game.$save().then(ref=>$firebaseObject(ref).$loaded());
     }
     else {
       // Create
-      return $firebaseArray(gameRef).$add(game).then(ref=>$firebaseObject(ref).$loaded());
+      var userGameRef=firebase.database().ref("users/"+api.user.uid+"/games");
+      return $firebaseArray(userGameRef).$add( game ).then(ref=>$firebaseObject(ref).$loaded());
     }
   };
   api.delete_game = function( game ) {

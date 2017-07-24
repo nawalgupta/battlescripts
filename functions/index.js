@@ -27,9 +27,32 @@ exports.publish_player = functions.database.ref('/users/{uid}/players/{playerId}
                 admin.database().ref('/players').child(event.params.playerId).set(player);
               })
     })
-
   }
+});
 
+exports.publish_game = functions.database.ref('/users/{uid}/games/{gameId}/published').onWrite(event => {
+  if (!event.data || !event.data.val()){
+    return admin.database().ref('/games').child(event.params.gameId).remove();
+  } else {
+    return admin.database().ref('/users/'+event.params.uid+'/displayName')
+      .once("value")
+      .then((displayName)=>{
+        return admin.database().ref('/users/'+event.params.uid+'/games/'+event.params.gameId)
+          .once("value")
+          .then((snapshot)=>{
+            var game= JSON.parse(JSON.stringify(snapshot.val()));
+            game.uid=event.params.uid;
+            game.displayName=displayName.val();
+            game.publishedOn=admin.database.ServerValue.TIMESTAMP;
+
+            // Delete attributes we don't want published
+            delete game.test_json;
+
+            // Write to published game list
+            admin.database().ref('/games').child(event.params.gameId).set(game);
+          })
+      })
+  }
 });
 
 /*

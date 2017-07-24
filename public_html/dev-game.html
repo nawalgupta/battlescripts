@@ -62,7 +62,7 @@
 
         // Loading an existing game
         if (!!id) {
-          $battlescripts.get_game(id).then((game)=>{
+          $battlescripts.login().then(()=>$battlescripts.get_dev_game(id)).then((game)=>{
             $scope.game = game;
             $battlescripts.init_canvas($scope.game.canvas);
           });
@@ -79,9 +79,17 @@
           });
         }
 
+        $scope.publish = function() {
+          $scope.game.published=$scope.game.source;
+          $scope.save();
+        };
+        $scope.unpublish = function() {
+          $scope.game.published=null;
+          $scope.save();
+        };
         $scope.save = function() {
           $battlescripts.save_game($scope.game).then((updated_game)=> {
-            if (!$scope.game.$id && window.history && window.history.pushState && updated_player.$id) {
+            if (!$scope.game.$id && window.history && window.history.pushState && updated_game.$id) {
               // Update the url so reload works to get to this game
               history.pushState({}, null, location.href+"&id="+updated_game.$id);
             }
