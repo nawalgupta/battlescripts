@@ -23,6 +23,7 @@
     <script>
       bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$compile", "$rootScope", function($scope, $battlescripts, $queryparam, $compile, $rootScope) {
         $scope.players=[];
+        $scope.games=[];
         $scope.gameNames = {
           '-Kn6geZ8YpA7w5oCoxzo' : 'Tic Tac Toe',
           '-Ko9PwKhkEczoDZGfNRA' : 'Ultimate Tic Tac Toe',
@@ -32,12 +33,20 @@
         // Initial Load
         // ------------
 
-        $battlescripts.login().then((user)=>$battlescripts.get_my_players())
-        .then((players)=>{
-          $scope.players=players;
-          $scope.$apply();
-        })
-        .catch((err) => $scope.console.log("<span>[Error]</span> Unable to retrieve players: "+err.toString(),"error"))
+        $battlescripts.login().then((user)=>{
+          // Get my players
+          $battlescripts.get_my_players().then((players)=>{
+            $scope.players=players;
+            $scope.$apply();
+          })
+          .catch((err) => $scope.console.log("<span>[Error]</span> Unable to retrieve players: "+err.toString(),"error"))
+          // Get my games
+          $battlescripts.get_my_games().then((games)=>{
+            $scope.games=games;
+            $scope.$apply();
+          })
+          .catch((err) => $scope.console.log("<span>[Error]</span> Unable to retrieve games: "+err.toString(),"error"))
+        });
 
         $scope.logout = function() {
           $battlescripts.logout().then(()=>{
@@ -140,6 +149,12 @@
       <div class="small-title">My Players:</div>
       <div ng-repeat="p in players">
         <a class="pl-player" href="player.html?game_id={{p.game_id}}&id={{p.$id}}"><span style="font-weight: bold">{{p.name || 'No Name'}}</span> ({{gameNames[p.game_id] || p.game_id}})</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="small-title">My Games:</div>
+      <div ng-repeat="g in games">
+        <a class="pl-player" href="dev-game.html?id={{g.$id}}"><span style="font-weight: bold">{{g.name || 'No Name'}}</span></a>
       </div>
     </div>
   </div>
