@@ -138,11 +138,29 @@ textarea {
 .u-margin-right {
   margin-right: 2rem;
 }
-.u-margin-bottm {
+.u-margin-bottom {
   margin-bottom: 2rem;
 }
 .u-margin-left {
   margin-left: 2rem;
+}
+.u-margin-all {
+  margin: 2rem;
+}
+.u-padding-top {
+  padding-top: 2rem;
+}
+.u-padding-right {
+  padding-right: 2rem;
+}
+.u-padding-bottom {
+  padding-bottom: 2rem;
+}
+.u-padding-left {
+  padding-left: 2rem;
+}
+.u-padding-all {
+  padding: 2rem;
 }
 a {
   text-decoration: none;
@@ -568,7 +586,7 @@ button,
   border-radius: 2px;
   background-color: #e7e7e7;
   border: 1px solid #cecece;
-  color: #000000;
+  color: #555;
   font-family: 'Inconsolata', monospace;
   text-decoration: none;
   font-size: 1.0rem;
@@ -722,17 +740,35 @@ label {
   border: 1px solid #28c4f1;
   padding: 2rem;
   margin: 0 0 4rem 0;
+  display: flex;
 }
 .game-item:nth-child(odd) {
   border-color: #e41e2b;
 }
 .game-item a {
-  text-decoration: none;
-  color: #555;
+  /*text-decoration: none;
+    color: @LIGHT_THEME_TEXT;*/
+  margin-bottom: .25rem;
+}
+.game-actions-container {
+  display: flex;
+  padding-top: 1rem;
+  justify-content: space-around;
+}
+.game-actions {
+  display: flex;
+  flex-direction: column;
+}
+.game-players {
+  margin-left: .25rem;
+  min-width: 8rem;
+}
+.game-players .primary-link {
+  color: #e41e2b;
+  font-size: .8rem;
 }
 .game-logo {
   border: 1px solid #e7e7e7;
-  float: left;
   width: 256px;
   height: 256px;
   margin-right: 25px;

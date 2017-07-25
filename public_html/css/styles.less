@@ -12,8 +12,14 @@
 @MONO_FONT: 'Inconsolata',monospace;
 .u-margin-top{margin-top: 2rem;}
 .u-margin-right{margin-right: 2rem;}
-.u-margin-bottm{margin-bottom: 2rem;}
+.u-margin-bottom{margin-bottom: 2rem;}
 .u-margin-left{margin-left: 2rem;}
+.u-margin-all{margin: 2rem;}
+.u-padding-top{padding-top: 2rem;}
+.u-padding-right{padding-right: 2rem;}
+.u-padding-bottom{padding-bottom: 2rem;}
+.u-padding-left{padding-left: 2rem;}
+.u-padding-all{padding: 2rem;}
 a{
   text-decoration: none;
   color: inherit;
@@ -478,7 +484,7 @@ button, .btn{
   border-radius: 2px;
   background-color: @LIGHT_THEME_COLOR1;
   border: 1px solid darken(@LIGHT_THEME_COLOR1,10%);
-  color: contrast(@LIGHT_THEME_COLOR1);
+  color: @LIGHT_THEME_TEXT;
   font-family: @MONO_FONT;
   text-decoration: none;
   font-size: 1.0rem;
@@ -661,17 +667,41 @@ label{
   padding: 2rem;
   //width: 50%;
   margin: 0 0 4rem 0;
+  display: flex;
   &:nth-child(odd) {
     border-color: @RED;
   }
   a {
-    text-decoration: none;
-    color: @LIGHT_THEME_TEXT;
+    /*text-decoration: none;
+    color: @LIGHT_THEME_TEXT;*/
+    margin-bottom: .25rem;
+  }
+}
+.game-body{
+
+}
+
+.game-actions-container{
+  display: flex;
+  padding-top: 1rem;
+  justify-content: space-around;
+}
+.game-actions{
+  display: flex;
+  flex-direction: column;
+}
+.game-players{
+  //flex-grow:2;
+  margin-left: .25rem;
+  min-width: 8rem;
+  .primary-link{
+    color: @RED;
+    font-size: .8rem;
   }
 }
 .game-logo{
   border: 1px solid @LIGHT_THEME_COLOR1;
-  float: left;
+  //float: left;
   width: 256px;
   height: 256px;
   margin-right: 25px;
