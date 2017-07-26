@@ -488,6 +488,7 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
         });
     };
     this.error = function(err) {
+      console.log(err);
       $rootScope.$broadcast("error/player",err);
       if (typeof this.player.error==="function") {
         return this.player.error(err);

@@ -146,6 +146,14 @@
     </div>
     <div class="row">&nbsp;</div>
     <div class="row">
+      <div class="small-title">User Details:</div>
+      <div><label>Name: </label> {{user.displayName}}</div>
+      <div><label>Email: </label> {{user.email}}</div>
+      <div><label>Provider: </label> {{user.providerData[0].providerId}}</div>
+      <div><label>UID: </label> {{user.uid}}</div>
+      <div><label>Photo: </label> <img src="{{user.photoURL}}"></div>
+    </div>
+    <div class="row">
       <div class="small-title">My Players:</div>
       <div ng-repeat="p in players">
         <a class="pl-player" href="player.html?game_id={{p.game_id}}&id={{p.$id}}"><span style="font-weight: bold">{{p.name || 'No Name'}}</span> ({{gameNames[p.game_id] || p.game_id}})</a>
