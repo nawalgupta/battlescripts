@@ -99,6 +99,22 @@
     Use Dark Theme<input type="checkbox" ng-model="darkTheme"></label>
 -->
   </div>
+
+    <div ng-if="user" style="float:right;width:150px;margin-top:10px;">
+        <div ng-if="user.displayName">
+            <div class="user-name action-item has-menu">
+                <a class="action-text" href="dashboard.html">{{user.displayName}}</a>
+                <div class="player-container action-menu">
+                    <div class="action-menu-item">
+                        <a class="action-text" href="dashboard.html" title="Go To Player Dashboard">Dashboard</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="btn primary" ng-if="!user.displayName" ng-click="login()">Log In</div>
+    </div>
+
   <div class="static-header">
     <img src="./img/battlescripts-logo-beta.png" class="hero-image">
     <div class="bs-hr-container">

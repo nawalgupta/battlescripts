@@ -207,7 +207,7 @@
       <div class="screen-title" ng-show="game">{{game.name}} Tournament!</div>
     </div>
     <div class="page-actions"></div>
-    <div class="user-actions">
+    <div ng-if="user" class="user-actions">
       <div ng-if="user.displayName">
         <a class="user-name" href="dashboard.html" title="Go To Player Dashboard">{{user.displayName}}</a>
       </div>

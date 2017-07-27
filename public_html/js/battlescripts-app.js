@@ -201,9 +201,13 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
     // This is a hack for convenience. Don't do this. Or do.
     // It injects the auth user into the scope of every controller on the page.
     if (user) {
-      firebase.database().ref("users/"+user.uid).update({
-        displayName:user.displayName
-      })
+      firebase.database().ref("users/" + user.uid).update({
+        displayName: user.displayName
+      });
+    }
+    else {
+      user = {};
+    }
       var inject = function(el) {
         //console.log(el, el.scope);
         if (el && el.scope) {
@@ -221,7 +225,6 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
       angular.element('*[ng-controller]').each((i, el) => {
         inject(angular.element(el));
       });
-    }
   });
   api.if_logged_in = function() {
     return new Promise((resolve,reject)=>{

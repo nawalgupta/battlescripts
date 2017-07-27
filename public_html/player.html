@@ -318,7 +318,7 @@
                 <button class="primary" style="white-space: nowrap;" ng-click="hide_message()">Got It</button>
               </div>
           </div>
-          <div class="user-actions">
+          <div ng-if="user" class="user-actions">
             <div class="actions-logged-in" ng-if="user.displayName">
               <div class="user-name action-item has-menu">
                 <a class="action-text" href="dashboard.html">{{user.displayName}}</a>

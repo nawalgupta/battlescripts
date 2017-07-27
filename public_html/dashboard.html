@@ -90,7 +90,7 @@
       <div class="screen-title">{{game.name}}</div>
     </div>
     <div class="page-actions"></div>
-    <div class="user-actions">
+    <div ng-if="user" class="user-actions">
       <div ng-if="user.displayName">
         <div class="user-name action-item has-menu">
           <a class="action-text" href="dashboard.html">{{user.displayName}}</a>
