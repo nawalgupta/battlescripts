@@ -29,6 +29,7 @@
         var game_id = $queryparam.get('game_id');
         $scope.id=id;
         $scope.game_id = game_id;
+        $scope.dev_game=false;
         $scope.player = {
           game_id:game_id
         };
@@ -66,12 +67,18 @@
 
         // Load game
         $battlescripts.get_game(game_id).then((game)=> {
-          $scope.game = game;
-          $battlescripts.init_canvas(game);
-          // Load player
-          if (!!id) {
-            $battlescripts.login().then((user)=>$battlescripts.get_player(id))
-              .then( player => {
+          if (!game.id) {
+            $scope.dev_game = true;
+            return $battlescripts.get_dev_game(game_id);
+          }
+          return game;
+        }).then((game)=>{
+            $scope.game = game;
+            $battlescripts.init_canvas(game);
+            // Load player
+            if (!!id) {
+              $battlescripts.login().then((user)=>$battlescripts.get_player(id))
+                .then( player => {
                   $scope.player = player;
                   $scope.$digest();
                   // Load My Players
@@ -80,23 +87,23 @@
                       myplayers => $scope.my_player_list = myplayers
                     );
                   }
-              })
-          }
-          else {
+                })
+            }
+            else {
               // New player, load default player template
               $scope.player.source = game.player_template;
               // Show the game docs by default
               $scope.ideView.gameDoc = false;
-                // Load My Players
-                if ($scope.user) {
-                  $battlescripts.get_my_players($scope.game.$id).then(
-                    myplayers => $scope.my_player_list = myplayers
-                  );
-                }
+              // Load My Players
+              if ($scope.user) {
+                $battlescripts.get_my_players($scope.game.$id).then(
+                  myplayers => $scope.my_player_list = myplayers
+                );
+              }
               $scope.$digest();
-          }
+            }
 
-        });
+          });
 
         // Load opponents
         $battlescripts.search_players({"game_id":game_id})
@@ -307,7 +314,7 @@
               </ul>
           </div>
           <div class="screen-title-container">
-              <div class="screen-title">{{game.name}}</div>
+              <div class="screen-title">{{game.name}}<span ng-if="dev_game"> (UNPUBLISHED!)</span></div>
               <div class="player-name">{{player.name}}</div>
           </div>
           <div class="page-actions">

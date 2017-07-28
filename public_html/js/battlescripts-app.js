@@ -88,7 +88,7 @@ bsapp.directive("codemirror", function($timeout) {
           electricChars: true,
           lineWrapping: false,
           lineNumbers: true,
-          undoDepth: 10,
+          undoDepth: 30,
           historyEventDelay: 200,
           viewportMargin:Infinity
         };
