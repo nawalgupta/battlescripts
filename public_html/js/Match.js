@@ -18,9 +18,12 @@ const Match = function (game, players, config) {
     return id;
   };
   this.publish = function(topic,data) {
-    if (!pubsub[topic]) { return false; }
+    if (!pubsub[topic] && !pubsub['*']) { return false; }
     setTimeout(()=>{
       (pubsub[topic] || []).forEach((subscriber)=>{
+        subscriber.func(data,topic);
+      });
+      (pubsub['*'] || []).forEach((subscriber)=>{
         subscriber.func(data,topic);
       });
     },0);

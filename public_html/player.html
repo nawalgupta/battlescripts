@@ -69,7 +69,8 @@
         $battlescripts.get_game(game_id).then((game)=> {
           if (!game.id) {
             $scope.dev_game = true;
-            return $battlescripts.get_dev_game(game_id);
+            var user_id = $queryparam.get('developer_id');
+            return $battlescripts.get_dev_game(game_id,user_id);
           }
           return game;
         }).then((game)=>{
@@ -103,11 +104,17 @@
               $scope.$digest();
             }
 
-          });
+          // Load opponents
+          if ($scope.dev_game) {
+            $battlescripts.get_my_players($scope.game.$id)
+              .then((players) => $scope.opponents = players);
+          }
+          else {
+            $battlescripts.search_players({"game_id": game_id})
+              .then((players) => $scope.opponents = players);
+          }
 
-        // Load opponents
-        $battlescripts.search_players({"game_id":game_id})
-          .then( (players)=> $scope.opponents = players );
+        });
 
         // View Toggle
         // ------------------

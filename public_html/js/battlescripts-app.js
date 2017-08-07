@@ -287,7 +287,7 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
   };
 
   api.get_game = (id) => $firebaseObject(gameRef.child(id)).$loaded().catch(()=>{});
-  api.get_dev_game = (id) => $firebaseObject(firebase.database().ref("users/"+api.user.uid+"/games").child(id)).$loaded().catch(()=>{});
+  api.get_dev_game = (id,user_id) => $firebaseObject(firebase.database().ref("users/"+(user_id||api.user.uid)+"/games").child(id)).$loaded().catch(()=>{});
 
   api.search_games = function(params) {
     var param=Object.keys(params)[0];
