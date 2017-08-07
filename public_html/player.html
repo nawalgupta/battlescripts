@@ -105,14 +105,14 @@
             }
 
           // Load opponents
-          if ($scope.dev_game) {
-            $battlescripts.get_my_players($scope.game.$id)
-              .then((players) => $scope.opponents = players);
-          }
-          else {
+//          if ($scope.dev_game) {
+//            $battlescripts.get_my_players($scope.game.$id)
+//              .then((players) => $scope.opponents = players);
+//          }
+//          else {
             $battlescripts.search_players({"game_id": game_id})
               .then((players) => $scope.opponents = players);
-          }
+//          }
 
         });
 
