@@ -34,7 +34,7 @@
           game_id:game_id
         };
         $scope.game = null;
-        $scope.opponents = [];
+        $scope.opponents = {};
         $scope.opponent = null;
         $scope.autoplay = true;
         $scope.play_speed=100;
@@ -81,12 +81,13 @@
               $battlescripts.login().then((user)=>$battlescripts.get_player(id))
                 .then( player => {
                   $scope.player = player;
-                  $scope.$digest();
+                  $scope.$applyAsync();
                   // Load My Players
                   if ($scope.user) {
-                    $battlescripts.get_my_players($scope.game.$id).then(
-                      myplayers => $scope.my_player_list = myplayers
-                    );
+                    $battlescripts.get_my_players($scope.game.$id).then((myplayers)=> {
+                      $scope.my_player_list = myplayers;
+                      $scope.$applyAsync();
+                    });
                   }
                 })
             }
@@ -97,22 +98,22 @@
               $scope.ideView.gameDoc = false;
               // Load My Players
               if ($scope.user) {
-                $battlescripts.get_my_players($scope.game.$id).then(
-                  myplayers => $scope.my_player_list = myplayers
-                );
+                $battlescripts.get_my_players($scope.game.$id).then((myplayers)=> {
+                  $scope.my_player_list = myplayers;
+                  $scope.$applyAsync();
+                });
               }
-              $scope.$digest();
+              $scope.$applyAsync();
             }
 
           // Load opponents
-//          if ($scope.dev_game) {
-//            $battlescripts.get_my_players($scope.game.$id)
-//              .then((players) => $scope.opponents = players);
-//          }
-//          else {
-            $battlescripts.search_players({"game_id": game_id})
-              .then((players) => $scope.opponents = players);
-//          }
+          $battlescripts.search_players({"game_id": game_id})
+            .then((players) => $scope.opponents.published = players);
+
+          if ($scope.dev_game) {
+            $battlescripts.get_my_players($scope.game.$id)
+              .then((players) => $scope.opponents.mine = players);
+          }
 
         });
 
@@ -552,7 +553,15 @@
             <div class="expand-v">
                 <div>
                     <div class="row">
-                        Test Opponent: <select ng-options="p as p.name for p in opponents track by p.$id" ng-model="opponent"><option value="">This Player</option></select>
+                        Test Opponent: <select ng-model="opponent">
+                            <option value="">This Player</option>
+                            <optgroup label="My Players" ng-if="opponents.mine">
+                                <option ng-repeat="p in opponents.mine" ng-value="p">{{p.name}}</option>
+                            </optgroup>
+                            <optgroup label="Published Players" ng-if="opponents.published">
+                                <option ng-repeat="p in opponents.published" ng-value="p">{{p.name}} ({{p.displayName}})</option>
+                            </optgroup>
+                            </select>
                     </div>
                     <div class="row">
                         My player should go <input type="radio" ng-model="play_order" ng-value="0"> First <input type="radio" ng-model="play_order" ng-value="1"> Second

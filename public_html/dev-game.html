@@ -59,12 +59,12 @@
         $scope.$watchGroup(['game.canvas','game.css'], $battlescripts.debounce(function() {
           $battlescripts.init_canvas($scope.game.canvas, $scope.game.css, parse_json() || {});
         },500));
-
         // Loading an existing game
         if (!!id) {
           $battlescripts.login().then(()=>$battlescripts.get_dev_game(id)).then((game)=>{
             $scope.game = game;
             $battlescripts.init_canvas($scope.game.canvas);
+            $scope.$applyAsync();
           });
         }
         // New Game
@@ -146,7 +146,7 @@
     <div class="header">
         <a href="dashboard.html">
             <div style="float:right;height:30px;min-width:100px;border:2px solid black;border-radius:10px;padding:0 10px;line-height:28px;font-size:14px;">
-                <img src="{{user.photoURL}}" style="max-height:24px;"> {{user.displayName}}
+                <img ng-src="{{user.photoURL}}" style="max-height:24px;"> {{user.displayName}}
             </div>
         </a>
         <div class="title"><a href="/">BattleScripts</a> / {{game.name}}</div>
