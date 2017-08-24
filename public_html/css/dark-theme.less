@@ -8,12 +8,8 @@
 
 
 body.dark-theme {
-
-
-    background-color: @DARK_THEME_BACKGROUND_COLOR;
-    color: @DARK_THEME_TEXT;
-
-
+  background-color: @DARK_THEME_BACKGROUND_COLOR;
+  color: @DARK_THEME_TEXT;
   input[type='text'],textarea,select {
     color: @DARK_THEME_TEXT;
     background-color: @DARK_THEME_BACKGROUND_COLOR;
@@ -30,10 +26,8 @@ body.dark-theme {
   // ------------------------ HEADER ----------------------------
   header {
     background-color: @DARK_THEME_BACKGROUND_COLOR;
-    border-bottom: 1px solid @DARK_THEME_COLOR1;
   }
   .header-container {
-
     background-color: @DARK_THEME_BACKGROUND_COLOR;
   }
 
@@ -70,10 +64,10 @@ body.dark-theme {
   }
   // ------------------------------------------- BS Horizontal Rule ------------
   .bs-hr-container {
-    background-color: @DARK_THEME_COLOR1;
+    //background-color: @DARK_THEME_COLOR1;
   }
   .bs-hr-content-container {
-    background-color: @DARK_THEME_BACKGROUND_COLOR;
+    //background-color: @DARK_THEME_BACKGROUND_COLOR;
   }
   .inline-code {
     color: darken(@DARK_THEME_TEXT, 20%);
@@ -118,9 +112,13 @@ body.dark-theme {
   //============================== PLAYER DEV SCREEN =========================
 
   .tab-toggle {
-    color: @DARK_THEME_TEXT;
+    //color: @DARK_THEME_TEXT;
     &.collapsed {
       color: lighten(@DARK_THEME_TEXT, 30%);
+      background-color: lighten(@DARK_THEME_BACKGROUND_COLOR,10%);
+      &:hover{
+        background-color: lighten(@DARK_THEME_BACKGROUND_COLOR,15%);;
+      }
     }
   }
 input[type=range] {
@@ -131,6 +129,9 @@ input[type=range] {
     border-bottom: 1px solid @DARK_THEME_COLOR1;
   }
 
+  .console-action{
+    background-color: @DARK_THEME_COLOR1;
+  }
   /* FLEXBOX IDE Layout */
   /* ================== */
 
@@ -254,5 +255,13 @@ input[type=range] {
   }
   .cm-s-default .cm-variable-2 {
     color: #2f76bd;
+  }
+  //===================================== MARKDOWN =========================
+
+  .markdown-body{
+    color: @DARK_THEME_TEXT;
+  }
+  .markdown-body .highlight pre, .markdown-body pre{
+    background-color: lighten(@DARK_THEME_BACKGROUND_COLOR,5%);
   }
 }
