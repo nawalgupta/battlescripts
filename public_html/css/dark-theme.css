@@ -18,7 +18,6 @@ body.dark-theme .loading {
 }
 body.dark-theme header {
   background-color: #555;
-  border-bottom: 1px solid #888;
 }
 body.dark-theme .header-container {
   background-color: #555;
@@ -45,12 +44,6 @@ body.dark-theme .action-item {
   color: #eee;
 }
 body.dark-theme .action-menu {
-  background-color: #555;
-}
-body.dark-theme .bs-hr-container {
-  background-color: #888;
-}
-body.dark-theme .bs-hr-content-container {
   background-color: #555;
 }
 body.dark-theme .inline-code {
@@ -87,17 +80,21 @@ body.dark-theme .game-logo {
 body.dark-theme .battle-arena {
   border: 1px solid #888;
 }
-body.dark-theme .tab-toggle {
-  color: #eee;
-}
 body.dark-theme .tab-toggle.collapsed {
   color: #ffffff;
+  background-color: #6f6f6f;
+}
+body.dark-theme .tab-toggle.collapsed:hover {
+  background-color: #7b7b7b;
 }
 body.dark-theme input[type=range] {
   background-color: #555;
 }
 body.dark-theme .pl-player {
   border-bottom: 1px solid #888;
+}
+body.dark-theme .console-action {
+  background-color: #888;
 }
 body.dark-theme .ide {
   background-color: #555;
@@ -189,4 +186,11 @@ body.dark-theme .cm-s-default .cm-def {
 }
 body.dark-theme .cm-s-default .cm-variable-2 {
   color: #2f76bd;
+}
+body.dark-theme .markdown-body {
+  color: #eee;
+}
+body.dark-theme .markdown-body .highlight pre,
+body.dark-theme .markdown-body pre {
+  background-color: #626262;
 }
