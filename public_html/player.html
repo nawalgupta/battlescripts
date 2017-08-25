@@ -67,7 +67,7 @@
 
         // Load game
         $battlescripts.get_game(game_id).then((game)=> {
-          if (!game.id) {
+          if (!game.$id) {
             $scope.dev_game = true;
             var user_id = $queryparam.get('developer_id');
             return $battlescripts.get_dev_game(game_id,user_id);
