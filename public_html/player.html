@@ -97,7 +97,7 @@
               // Show the game docs by default
               $scope.ideView.gameDoc = false;
               // Load My Players
-              if ($scope.user) {
+              if ($scope.user && $scope.user.uid) {
                 $battlescripts.get_my_players($scope.game.$id).then((myplayers)=> {
                   $scope.my_player_list = myplayers;
                   $scope.$applyAsync();
@@ -108,7 +108,9 @@
 
           // Load opponents
           $battlescripts.search_players({"game_id": game_id})
-            .then((players) => $scope.opponents.published = players);
+            .then((players) => {
+              $scope.opponents.published = players;
+            });
 
           if ($scope.dev_game) {
             $battlescripts.get_my_players($scope.game.$id)
