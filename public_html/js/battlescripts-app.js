@@ -495,10 +495,10 @@ bsapp.factory('$battlescripts', ["$firebaseArray", "$firebaseObject","$firebaseA
         });
     };
 	var noop = function(){};
-    this.start_game = function(data) { return (this.player.start_game||noop)(data); };
-    this.end_game = function(data) { return (this.player.end_game||noop)(data); };
-    this.start_match = function(data) { return (this.player.start_match||noop)(data); };
-    this.end_match = function(data) { return (this.player.end_match||noop)(data); };
+    this.start_game = function(data) { try { return (this.player.start_game||noop)(data); } catch(e){} };
+    this.end_game = function(data) { try { return (this.player.end_game||noop)(data); } catch(e){} };
+    this.start_match = function(data) { try { return (this.player.start_match||noop)(data); } catch(e){} };
+    this.end_match = function(data) { try { return (this.player.end_match||noop)(data); } catch(e){} };
     this.error = function(err) {
       console.log(err);
       $rootScope.$broadcast("error/player",err);
