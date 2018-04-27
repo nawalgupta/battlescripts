@@ -1,6 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const obfuscator = require('javascript-obfuscator');
+//const obfuscator = require('javascript-obfuscator');
 admin.initializeApp(functions.config().firebase);
 
 
@@ -16,7 +16,7 @@ exports.publish_player = functions.database.ref('/users/{uid}/players/{playerId}
               .then((snapshot)=>{
                 var player={};
                 var src = snapshot.val().source;
-                var obfuscated = obfuscator.obfuscate(src,{compact:true,selfDefending:true}).toString();
+                var obfuscated = src;//obfuscator.obfuscate(src,{compact:true,selfDefending:true}).toString();
                 player.source=obfuscated;
 
                 player.game_id=snapshot.val().game_id;

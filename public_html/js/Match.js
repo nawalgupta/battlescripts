@@ -119,7 +119,7 @@ Match.prototype.get_next_move = function() {
         player_move = p.move(move_request.data || {}, move_request.player_number);
       }
       catch(e) {
-        alert(e);
+        console.log(e);
       }
     }
     // player might have returned a Promise, so only continue when resolved
@@ -142,6 +142,7 @@ Match.prototype.get_next_move = function() {
         if (typeof p.error === "function") {
           p.error(err);
         }
+        this.publish("game.error",err);
       }
       this.render();
       // Do it in a loop until the game is over

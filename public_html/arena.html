@@ -69,6 +69,7 @@
             $scope.player_list.forEach( (p)=>{
               p.selected=false;
               p.wins=0;
+              p.winpct=0;
               p.losses=0;
               p.draws=0;
             } );
@@ -96,11 +97,15 @@
           $scope.players[0].wins += results.player_wins[0];
           $scope.players[0].losses += results.player_wins[1];
           $scope.players[0].draws += results.draws;
+          $scope.players[0].winpct = ($scope.players[0].wins / ($scope.players[0].wins + $scope.players[0].losses + $scope.players[0].draws))*100;
           $scope.players[0].running = false;
+          
           $scope.players[1].wins += results.player_wins[1];
           $scope.players[1].losses += results.player_wins[0];
           $scope.players[1].draws += results.draws;
+          $scope.players[1].winpct = ($scope.players[1].wins / ($scope.players[1].wins + $scope.players[1].losses + $scope.players[1].draws))*100;
           $scope.players[1].running = false;
+          
           $scope.ready_to_start = false;
           $scope.match_over = true;
           if (!$scope.pause) {
@@ -288,14 +293,16 @@
               <thead>
               <tr class="arena-header">
                 <td>Player</td>
+                <td>Win %</td>
                 <td>Wins</td>
                 <td>Losses</td>
                 <td>Draws</td>
               </tr>
               </thead>
               <tbody>
-              <tr ng-repeat="p in selected_players | orderBy:'wins':true">
+              <tr ng-repeat="p in selected_players | orderBy:'winpct':true">
                 <td>{{p.name}} <span style="font-size:80%;">({{p.displayName}})</span></td>
+                <td>{{p.winpct|number:1}}%</td>
                 <td>{{p.wins}}</td>
                 <td>{{p.losses}}</td>
                 <td>{{p.draws}}</td>
