@@ -26,6 +26,7 @@
     <script>
       bsapp.controller("ScreenController", ["$scope", "$battlescripts", "$queryparam", "$http", "$rootScope", function($scope, $battlescripts, $queryparam, $http, $rootScope) {
         var id = $queryparam.get('id');
+        $scope.developer_id = $queryparam.get('user_id') || null;
         $scope.id=id;
         $scope.game = {};
         $scope.json_status="OK";
@@ -61,7 +62,7 @@
         },500));
         // Loading an existing game
         if (!!id) {
-          $battlescripts.login().then(()=>$battlescripts.get_dev_game(id)).then((game)=>{
+          $battlescripts.login().then(()=>$battlescripts.get_dev_game(id,$scope.developer_id)).then((game)=>{
             $scope.game = game;
             $battlescripts.init_canvas($scope.game.canvas);
             $scope.$applyAsync();
@@ -170,6 +171,8 @@
             </div>
 
             <div>Game id:<br>{{game.$id}}</div>
+            <div><a href="/dev-game.html?id={{game.$id}}&user_id={{developer_id || user.uid}}">Developer Link</a></div>
+            <div><a href="/player.html?game_id={{game.$id}}&developer_id={{developer_id || user.uid}}" target="_blank">Player Test Link</a></div>
         </div>
         <div class="panel source" style="position:relative;">
             <div class="title" onclick="$(this.parentNode).toggleClass('collapsed')">Source</div>

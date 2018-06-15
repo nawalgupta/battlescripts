@@ -25,6 +25,11 @@
       $scope.example_game = null;
       $scope.error_message = null;
 
+      // Login
+      $scope.login = function() {
+        $battlescripts.login();
+      };
+
       $scope.play = function () {
         $scope.error_message = null;
         var code = $('#player').val();
